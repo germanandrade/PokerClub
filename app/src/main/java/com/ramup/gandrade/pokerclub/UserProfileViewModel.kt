@@ -10,10 +10,14 @@ import com.google.firebase.auth.FirebaseAuth
 class UserProfileViewModel(val userRepo: UserProfileRepository) : ViewModel() {
     val mAuth = FirebaseAuth.getInstance();
     var user: LiveData<User>
-    val loggedIn=MutableLiveData<Boolean>()
+    val loggedIn = MutableLiveData<Boolean>()
 
     fun buyEndavans(): Task<Void> {
         return userRepo.buyEndavans()
+    }
+
+    fun payDebt(): Task<Void> {
+        return userRepo.payDebt()
     }
 
     fun depositEndavans(valueToDeposit: Int): Task<Void> {
@@ -29,7 +33,7 @@ class UserProfileViewModel(val userRepo: UserProfileRepository) : ViewModel() {
 
         mAuth.addAuthStateListener {
             if (mAuth.currentUser == null) {
-                loggedIn.value=false
+                loggedIn.value = false
             }
         }
         mAuth.signOut()

@@ -36,6 +36,17 @@ class UserProfileRepository() {
         return docRef.set(newUser.toMap())
     }
 
+    fun payDebt(): Task<Void> {
+        var currentDebt = data.value?.debt ?: 0
+        if (currentDebt == 0) {
+            throw Exception("You have no debt")
+        }
+        var newUser = data.value?.copy(debt = 0)
+                ?: User(auth.currentUser?.email ?: "none", 0, 0)
+        data.value = newUser
+        return docRef.set(newUser.toMap())
+    }
+
     fun depositEndavans(valueToDeposit: Int): Task<Void> {
         var currentEndavans = data.value?.endavans ?: 0
         var newUser = data.value?.copy(endavans = currentEndavans + valueToDeposit)

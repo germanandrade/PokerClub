@@ -1,19 +1,21 @@
 ### The app will support these functionalities:
-*Koin instead of dagger
-*Picasso instead of glide
-*Get started -> What can you do 
-*Display name
-*Edit profile
-*Change picture --> filechooser 
-*Pay debt
-*Profile with email 
-*Fragments -> viewPagerFragment
-*Like game interface
-*No network -> queue or can't but feedback 
-*Cache
+
+* Get started -> What can you do 
+* Display name
+* Edit profile
+* Change picture --> filechooser 
+* Pay debt
+* Profile with email 
+* Fragments -> viewPagerFragment
+* Like game interface
+* No network -> queue or can't but feedback 
+* Cache
 
 --------------- // ---------------
-Query actual data
+###Stage 2
+* Koin instead of dagger
+* Picasso instead of glide
+* Query actual data
 
 --------------- // ---------------
 ### Done In Stage 1
@@ -25,9 +27,9 @@ Query actual data
 * Pay Debt
 
 * Profile:
-    *Check Balance (user)
-    *Check Debt (user)
-    *Change password
+    * Check Balance (user)
+    * Check Debt (user)
+    * Change password
 
 --------------- // ---------------
     

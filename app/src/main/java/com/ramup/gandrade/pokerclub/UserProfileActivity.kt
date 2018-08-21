@@ -20,7 +20,7 @@ class UserProfileActivity : FragmentActivity() {
         setContentView(R.layout.activity_user_profile)
         userProfileViewModel.loggedIn.observe(this, Observer {
             loggedIn ->
-            run { if (!loggedIn!!) startActivity<LoginActivity>() }
+            run { if (!loggedIn!!) startActivity<LoginActivity>();finish() }
         })
         GlideApp.with(this)
                 .load("https://firebasestorage.googleapis.com/v0/b/pokerclub-54146.appspot.com/o/defaultProfile.JPG?alt=media&token=084c5677-c710-4c87-9abd-683b459d452b")

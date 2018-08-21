@@ -23,11 +23,24 @@ class MainFunctionsActivity : FragmentActivity() {
 
     fun buyEndavans(view: View) {
         showMessage(view, "Loading...")
-        viewModel.buyEndavans().addOnCompleteListener(this, {
+        viewModel.buyEndavans().addOnCompleteListener(this) {
             if (it.isSuccessful) {
                 createDialog("Endavans Bougth", "Successful! your debt increased $500")
             }
-        })
+        }
+    }
+
+    fun payDebt(view: View) {
+        showMessage(view, "Loading...")
+        try {
+            viewModel.payDebt().addOnCompleteListener(this) {
+                if (it.isSuccessful) {
+                    createDialog("Successful Pay Debt", "Now you have no debts")
+                }
+            }
+        } catch (e: Exception) {
+            createDialog("error", e?.message.toString())
+        }
     }
 
     fun depositEndavans(view: View) {
@@ -46,6 +59,7 @@ class MainFunctionsActivity : FragmentActivity() {
 
     }
 
+
     fun withdrawEndavans(view: View) {
         when {
             withdrawEndavans.text.isEmpty() -> showMessage(view, getString(R.string.empty_withdraw))
@@ -53,11 +67,11 @@ class MainFunctionsActivity : FragmentActivity() {
                 var valueToWithdraw = withdrawEndavans.text.toString().toInt()
                 try {
                     withdrawEndavans.setText("")
-                    viewModel.withdrawEndavans(valueToWithdraw).addOnCompleteListener(this, {
+                    viewModel.withdrawEndavans(valueToWithdraw).addOnCompleteListener(this) {
                         if (it.isSuccessful) {
                             createDialog("Successful Withdraw", "your account decreased E:$valueToWithdraw")
                         }
-                    })
+                    }
                 } catch (e: Exception) {
                     createDialog("error", e?.message.toString())
                 }
@@ -83,4 +97,5 @@ class MainFunctionsActivity : FragmentActivity() {
 
 
     }
+
 }
