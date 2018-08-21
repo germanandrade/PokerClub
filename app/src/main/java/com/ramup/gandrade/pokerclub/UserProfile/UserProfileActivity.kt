@@ -1,4 +1,4 @@
-package com.ramup.gandrade.pokerclub
+package com.ramup.gandrade.pokerclub.UserProfile
 
 import android.arch.lifecycle.Observer
 import android.os.Bundle
@@ -6,9 +6,11 @@ import android.support.v4.app.FragmentActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import com.bumptech.glide.request.RequestOptions
+import com.ramup.gandrade.pokerclub.GlobalActivity
 import com.ramup.gandrade.pokerclub.Login.LoginActivity
-import com.ramup.gandrade.pokerclub.util.GlideApp
+import com.ramup.gandrade.pokerclub.MainFunctionsActivity
+import com.ramup.gandrade.pokerclub.R
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_user_profile.*
 import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
@@ -18,14 +20,12 @@ class UserProfileActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_profile)
-        userProfileViewModel.loggedIn.observe(this, Observer {
-            loggedIn ->
+        userProfileViewModel.loggedIn.observe(this, Observer { loggedIn ->
             run { if (!loggedIn!!) startActivity<LoginActivity>();finish() }
         })
-        GlideApp.with(this)
+        Picasso.get()
                 .load("https://firebasestorage.googleapis.com/v0/b/pokerclub-54146.appspot.com/o/defaultProfile.JPG?alt=media&token=084c5677-c710-4c87-9abd-683b459d452b")
                 .placeholder(R.drawable.man)
-                .apply(RequestOptions.circleCropTransform())
                 .into(profilePic)
 
         name.setText(userProfileViewModel.getName())
@@ -46,6 +46,11 @@ class UserProfileActivity : FragmentActivity() {
     fun button(view: View) {
         startActivity<MainFunctionsActivity>()
     }
+
+    fun list(view: View) {
+        startActivity<GlobalActivity>()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         return true

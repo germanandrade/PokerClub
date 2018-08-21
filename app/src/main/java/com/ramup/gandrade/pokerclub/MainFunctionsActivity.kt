@@ -1,13 +1,14 @@
 package com.ramup.gandrade.pokerclub
 
 import android.app.AlertDialog
-import android.arch.lifecycle.ViewModelProviders
 import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.view.View
 import com.example.gandrade.pokerclub.util.showMessage
+import com.ramup.gandrade.pokerclub.UserProfile.UserProfileActivity
+import com.ramup.gandrade.pokerclub.UserProfile.UserProfileViewModel
 import kotlinx.android.synthetic.main.activity_main_functions.*
 import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel

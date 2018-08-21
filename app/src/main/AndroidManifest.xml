@@ -18,14 +18,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".Login.SignUpActivity" />
-        <activity android:name=".UserProfileActivity" />
-        <activity android:name=".MainFunctionsActivity"
-            android:parentActivityName=".UserProfileActivity">
+        <activity android:name=".UserProfile.UserProfileActivity" />
+        <activity
+            android:name=".MainFunctionsActivity"
+            android:parentActivityName=".UserProfile.UserProfileActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".UserProfileActivity"
-                />
+                android:value=".UserProfile.UserProfileActivity" />
         </activity>
+        <activity android:name=".GlobalActivity"></activity>
     </application>
 
 </manifest>

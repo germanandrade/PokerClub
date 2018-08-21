@@ -1,10 +1,11 @@
-package com.ramup.gandrade.pokerclub
+package com.ramup.gandrade.pokerclub.UserProfile
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.ramup.gandrade.pokerclub.User
 
 
 class UserProfileRepository() {
@@ -50,7 +51,8 @@ class UserProfileRepository() {
     fun depositEndavans(valueToDeposit: Int): Task<Void> {
         var currentEndavans = data.value?.endavans ?: 0
         var newUser = data.value?.copy(endavans = currentEndavans + valueToDeposit)
-                ?: User(auth.currentUser?.email ?: "none", valueToDeposit, 0)
+                ?: User(auth.currentUser?.email
+                        ?: "none", valueToDeposit, 0)
         data.value = newUser
         return docRef.set(newUser.toMap())
     }
@@ -61,7 +63,8 @@ class UserProfileRepository() {
             throw Exception("Not enough Endavans")
         }
         var newUser = data.value?.copy(endavans = currentEndavans - valueToWithDraw)
-                ?: User(auth.currentUser?.email ?: "none", valueToWithDraw, 0)
+                ?: User(auth.currentUser?.email
+                        ?: "none", valueToWithDraw, 0)
         data.value = newUser
         return docRef.update(newUser.toMap())
     }

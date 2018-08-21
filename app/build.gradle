@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
 
 android {
@@ -41,14 +40,15 @@ dependencies {
     //Anko
     implementation "org.jetbrains.anko:anko:0.10.5"
 
-    //Glide
-    implementation 'com.github.bumptech.glide:glide:4.4.0'
-    kapt 'com.github.bumptech.glide:compiler:4.4.0'
-
     //Firestore
     def firebaseVersion = "11.6.0"
     implementation "com.google.firebase:firebase-firestore:$firebaseVersion"
 
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    //Recycler view
+    implementation 'com.android.support:recyclerview-v7:28.0.0-rc01'
 
 
 }

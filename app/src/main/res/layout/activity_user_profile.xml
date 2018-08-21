@@ -7,7 +7,7 @@
     android:gravity="center|center_horizontal"
     android:orientation="vertical"
     android:padding="20dp"
-    tools:context=".UserProfileActivity">
+    tools:context=".UserProfile.UserProfileActivity">
 
     <ImageView
         android:id="@+id/profilePic"
@@ -24,11 +24,8 @@
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="right"
-            android:padding="@dimen/small_padding"
             android:text="@string/loading"
-            android:textAlignment="center"
-            android:textSize="20sp" />
+            style="@style/regularText" />
 
     </LinearLayout>
 
@@ -77,6 +74,12 @@
         android:layout_height="wrap_content"
         android:onClick="button"
         android:text="Others" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="list"
+        android:text="List" />
 
 
 </LinearLayout>

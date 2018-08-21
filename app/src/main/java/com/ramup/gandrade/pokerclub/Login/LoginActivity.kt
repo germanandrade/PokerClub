@@ -7,7 +7,7 @@ import com.example.gandrade.pokerclub.util.hideSoftKeyboard
 import com.example.gandrade.pokerclub.util.isEmpty
 import com.example.gandrade.pokerclub.util.showMessage
 import com.google.android.gms.tasks.OnCompleteListener
-import com.ramup.gandrade.pokerclub.UserProfileActivity
+import com.ramup.gandrade.pokerclub.UserProfile.UserProfileActivity
 import com.ramup.gandrade.pokerclub.R
 import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.architecture.ext.viewModel

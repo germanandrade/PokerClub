@@ -10,7 +10,7 @@ import com.example.gandrade.pokerclub.util.showMessage
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.ramup.gandrade.pokerclub.R
-import com.ramup.gandrade.pokerclub.UserProfileActivity
+import com.ramup.gandrade.pokerclub.UserProfile.UserProfileActivity
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel

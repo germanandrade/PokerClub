@@ -1,11 +1,11 @@
-package com.ramup.gandrade.pokerclub
+package com.ramup.gandrade.pokerclub.UserProfile
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.content.Intent
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.ramup.gandrade.pokerclub.User
 
 class UserProfileViewModel(val userRepo: UserProfileRepository) : ViewModel() {
     val mAuth = FirebaseAuth.getInstance();
