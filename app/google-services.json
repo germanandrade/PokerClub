@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "445828809799",
+    "firebase_url": "https://pokerclub-89f6e.firebaseio.com",
+    "project_id": "pokerclub-89f6e",
+    "storage_bucket": "pokerclub-89f6e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:445828809799:android:c68ba0568000e9f8",
+        "android_client_info": {
+          "package_name": "com.ramup.gandrade.pokerclub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "445828809799-bmgi9m9bb4lvlb4v6jvgfhuuf5e1bk5n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ramup.gandrade.pokerclub",
+            "certificate_hash": "2f953a49d116a8af9fe48c14461c0d5cc62a7e67"
+          }
+        },
+        {
+          "client_id": "445828809799-emg2fd6o7jrkhchcubsf1n2smasmqgnv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBer-ZZwJlceG-KAk5O_4nD26zeJE9JIaA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "445828809799-emg2fd6o7jrkhchcubsf1n2smasmqgnv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
