@@ -6,8 +6,9 @@ import android.support.v4.app.FragmentActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import com.ramup.gandrade.pokerclub.GlobalActivity
+import com.ramup.gandrade.pokerclub.Global.GlobalActivity
 import com.ramup.gandrade.pokerclub.Login.LoginActivity
+import com.ramup.gandrade.pokerclub.Main2Activity
 import com.ramup.gandrade.pokerclub.MainFunctionsActivity
 import com.ramup.gandrade.pokerclub.R
 import com.squareup.picasso.Picasso
@@ -20,6 +21,7 @@ class UserProfileActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_profile)
+
         userProfileViewModel.loggedIn.observe(this, Observer { loggedIn ->
             run { if (!loggedIn!!) startActivity<LoginActivity>();finish() }
         })
@@ -45,6 +47,8 @@ class UserProfileActivity : FragmentActivity() {
 
     fun button(view: View) {
         startActivity<MainFunctionsActivity>()
+    }fun bottom(view: View) {
+        startActivity<Main2Activity>()
     }
 
     fun list(view: View) {
@@ -62,4 +66,5 @@ class UserProfileActivity : FragmentActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
 }

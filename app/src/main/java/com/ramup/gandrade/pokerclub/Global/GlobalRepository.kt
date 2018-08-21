@@ -1,8 +1,9 @@
-package com.ramup.gandrade.pokerclub
+package com.ramup.gandrade.pokerclub.Global
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
+import com.ramup.gandrade.pokerclub.User
 
 
 class GlobalRepository() {

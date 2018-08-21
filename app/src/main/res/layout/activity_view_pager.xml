@@ -5,17 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".Global.GlobalActivity">
+    tools:context=".ViewPager">
 
-
-    <android.support.v7.widget.RecyclerView
-        android:orientation="vertical"
-        android:id="@+id/rv_user_list"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-    </android.support.v7.widget.RecyclerView>
-
+    </android.support.v4.view.ViewPager>
 
 </LinearLayout>

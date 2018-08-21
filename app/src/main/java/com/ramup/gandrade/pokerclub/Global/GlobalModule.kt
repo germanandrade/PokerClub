@@ -1,4 +1,4 @@
-package com.ramup.gandrade.pokerclub
+package com.ramup.gandrade.pokerclub.Global
 
 import org.koin.android.architecture.ext.viewModel
 import org.koin.dsl.module.applicationContext

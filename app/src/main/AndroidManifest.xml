@@ -26,7 +26,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".UserProfile.UserProfileActivity" />
         </activity>
-        <activity android:name=".GlobalActivity"></activity>
+        <activity android:name=".Global.GlobalActivity" />
+        <activity android:name=".ViewPager" />
+        <activity
+            android:name=".Main2Activity"
+            android:label="@string/title_activity_main2"></activity>
     </application>
 
 </manifest>

@@ -69,23 +69,7 @@
 
     </GridLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="button"
-        android:text="Others" />
 
-    <Button
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:onClick="list"
-    android:text="List" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="bottom"
-        android:text="Bottom" />
 
 
 </LinearLayout>
