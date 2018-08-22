@@ -1,7 +1,12 @@
 ### The app will support these functionalities:
 * Like game interface
-* viewPagerFragment
-* Get started -> What can you do 
+	* Create game
+		* Generate QR
+	* Join game
+		* Read QR
+* Confirmation dialogs!
+* Lifesavers		
+* viewPagerFragment ->Get started -> What can you do 
 * Display name
 * Edit profile
 * Change picture --> filechooser 
