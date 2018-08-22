@@ -7,10 +7,8 @@ import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.view.View
 import com.example.gandrade.pokerclub.util.showMessage
-import com.ramup.gandrade.pokerclub.UserProfile.UserProfileActivity
 import com.ramup.gandrade.pokerclub.UserProfile.UserProfileViewModel
 import kotlinx.android.synthetic.main.activity_main_functions.*
-import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
 
 
@@ -92,7 +90,6 @@ class MainFunctionsActivity : FragmentActivity() {
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, DialogInterface.OnClickListener { dialog, which ->
                     // continue with delete
-                    startActivity<UserProfileActivity>()
 
                 }).show()
 

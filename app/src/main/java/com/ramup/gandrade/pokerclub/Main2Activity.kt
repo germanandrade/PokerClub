@@ -11,8 +11,9 @@ import kotlinx.android.synthetic.main.activity_main2.*
 import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
 import android.arch.lifecycle.Observer
-import android.support.v4.app.Fragment
+import com.ramup.gandrade.pokerclub.Game.GameStartFragment
 import com.ramup.gandrade.pokerclub.Global.GlobalFragment
+import com.ramup.gandrade.pokerclub.UserProfile.ProfileFragment
 
 
 class Main2Activity : FragmentActivity() {
@@ -26,6 +27,8 @@ class Main2Activity : FragmentActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_play -> {
+                supportFragmentManager.beginTransaction()
+                        .replace(R.id.root_layout, GameStartFragment.newInstance(),"GameStartFragment").commit()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_profile -> {

@@ -10,7 +10,12 @@ import com.ramup.gandrade.pokerclub.User
 class UserProfileViewModel(val userRepo: UserProfileRepository) : ViewModel() {
     val mAuth = FirebaseAuth.getInstance();
     var user: LiveData<User>
+    lateinit var gameId: LiveData<String>
     val loggedIn = MutableLiveData<Boolean>()
+
+    init {
+        user = userRepo.fetch()
+    }
 
     fun buyEndavans(): Task<Void> {
         return userRepo.buyEndavans()
@@ -43,10 +48,12 @@ class UserProfileViewModel(val userRepo: UserProfileRepository) : ViewModel() {
         return mAuth.currentUser?.email.toString()
     }
 
-
-    init {
-        user = userRepo.fetch()
+    fun  createGame() {
+        gameId = userRepo.createGame()
     }
+
+
+
 
 }
 

@@ -2,17 +2,23 @@ package com.ramup.gandrade.pokerclub.UserProfile
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.content.ContentValues.TAG
+import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ramup.gandrade.pokerclub.User
 
-
 class UserProfileRepository() {
     val auth = FirebaseAuth.getInstance()
     val db = FirebaseFirestore.getInstance()
     val docRef = db.collection("balance").document(auth.currentUser?.uid.toString())
+    val gameRef = db.collection("games")
+
     val data = MutableLiveData<User>()
+    val gameId = MutableLiveData<String>()
+
+
     fun fetch(): LiveData<User> {
         docRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -69,5 +75,13 @@ class UserProfileRepository() {
         return docRef.update(newUser.toMap())
     }
 
+    fun createGame(): LiveData<String> {
+        val doc = gameRef.document()
+        gameId.value = doc.id
 
+        doc.collection("users").document(auth.currentUser?.uid.toString()).set(User(auth.currentUser?.email ?: "err", 0, 0).toMap())
+        return gameId
+    }
 }
+
+

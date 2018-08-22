@@ -2,6 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ramup.gandrade.pokerclub">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true"/>
+
     <application
         android:name=".PokerClubApplication"
         android:allowBackup="true"
@@ -18,19 +27,18 @@
             </intent-filter>
         </activity>
         <activity android:name=".Login.SignUpActivity" />
-        <activity android:name=".UserProfile.UserProfileActivity" />
-        <activity
-            android:name=".MainFunctionsActivity"
-            android:parentActivityName=".UserProfile.UserProfileActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".UserProfile.UserProfileActivity" />
-        </activity>
-        <activity android:name=".Global.GlobalActivity" />
+        <activity android:name=".MainFunctionsActivity" />
         <activity android:name=".ViewPager" />
         <activity
             android:name=".Main2Activity"
-            android:label="@string/title_activity_main2"></activity>
+            android:label="@string/title_activity_main2" />
+        <activity
+            android:name=".Game.CreateGameActivity"
+            android:parentActivityName=".Main2Activity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Main2Activity" />
+        </activity>
     </application>
 
 </manifest>

@@ -9,8 +9,8 @@ import com.example.gandrade.pokerclub.util.passwordsMatch
 import com.example.gandrade.pokerclub.util.showMessage
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
+import com.ramup.gandrade.pokerclub.Main2Activity
 import com.ramup.gandrade.pokerclub.R
-import com.ramup.gandrade.pokerclub.UserProfile.UserProfileActivity
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
@@ -42,7 +42,7 @@ class SignUpActivity : FragmentActivity() {
                 viewModel.signUp(emailSignUp.text.toString(), passwordSignUp.text.toString())
                         .addOnCompleteListener(this, OnCompleteListener {
                             if (it.isSuccessful) {
-                                startActivity<UserProfileActivity>()
+                                startActivity<Main2Activity>()
                                 finish()
                             } else {
                                 showMessage(view, "Error: ${it.exception?.message}")

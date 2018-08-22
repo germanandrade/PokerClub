@@ -1,12 +1,12 @@
-package com.ramup.gandrade.pokerclub
+package com.ramup.gandrade.pokerclub.UserProfile
 
-import android.net.Uri
+import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ramup.gandrade.pokerclub.UserProfile.UserProfileViewModel
+import com.ramup.gandrade.pokerclub.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_user_profile.*
 import org.koin.android.architecture.ext.viewModel
@@ -14,10 +14,6 @@ import org.koin.android.architecture.ext.viewModel
 class ProfileFragment : Fragment() {
     val userProfileViewModel by viewModel<UserProfileViewModel>()
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -27,6 +23,15 @@ class ProfileFragment : Fragment() {
                 .into(profilePic)
 
         name.setText(userProfileViewModel.getName())
+        userProfileViewModel.user.observe(this, Observer {
+            user ->
+            run {
+                debt.text = user?.debt.toString()
+                endavans.text = user?.endavans.toString()
+                name.text = user?.name
+            }
+
+        })
 
     }
 
@@ -35,7 +40,7 @@ class ProfileFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance():ProfileFragment{
+        fun newInstance(): ProfileFragment {
             return ProfileFragment()
         }
     }
