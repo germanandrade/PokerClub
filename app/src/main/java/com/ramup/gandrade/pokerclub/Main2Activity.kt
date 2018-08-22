@@ -22,7 +22,7 @@ class Main2Activity : FragmentActivity() {
         when (item.itemId) {
             R.id.navigation_global -> {
                 supportFragmentManager.beginTransaction()
-                        .replace(R.id.root_layout, ProfileFragment.newInstance(),"GlobalFragment").commit()
+                        .replace(R.id.root_layout, GlobalFragment.newInstance(),"GlobalFragment").commit()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_play -> {
@@ -30,7 +30,7 @@ class Main2Activity : FragmentActivity() {
             }
             R.id.navigation_profile -> {
                 supportFragmentManager.beginTransaction()
-                        .replace(R.id.root_layout, GlobalFragment.newInstance(),"ProfileFragment").commit()
+                        .replace(R.id.root_layout, ProfileFragment.newInstance(),"ProfileFragment").commit()
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -44,6 +44,7 @@ class Main2Activity : FragmentActivity() {
         setContentView(R.layout.activity_main2)
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        navigation.setSelectedItemId(R.id.navigation_global);
         userProfileViewModel.loggedIn.observe(this, Observer { loggedIn ->
             run { if (!loggedIn!!) startActivity<LoginActivity>();finish() }
         })

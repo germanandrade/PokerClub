@@ -7,11 +7,12 @@ import com.example.gandrade.pokerclub.util.hideSoftKeyboard
 import com.example.gandrade.pokerclub.util.isEmpty
 import com.example.gandrade.pokerclub.util.showMessage
 import com.google.android.gms.tasks.OnCompleteListener
-import com.ramup.gandrade.pokerclub.UserProfile.UserProfileActivity
+import com.ramup.gandrade.pokerclub.Main2Activity
 import com.ramup.gandrade.pokerclub.R
+import com.ramup.gandrade.pokerclub.UserProfile.UserProfileActivity
 import kotlinx.android.synthetic.main.activity_login.*
-import org.koin.android.architecture.ext.viewModel
 import org.jetbrains.anko.startActivity
+import org.koin.android.architecture.ext.viewModel
 
 
 class LoginActivity : FragmentActivity() {
@@ -20,7 +21,7 @@ class LoginActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (viewModel.isLogged()) {
-            startActivity<UserProfileActivity>()
+            startActivity<Main2Activity>()
             finish()
         }
         setContentView(R.layout.activity_login)
@@ -35,7 +36,7 @@ class LoginActivity : FragmentActivity() {
             viewModel.sigIn(email.text.toString(), password.text.toString())
                     .addOnCompleteListener(this, OnCompleteListener {
                         if (it.isSuccessful) {
-                            startActivity<UserProfileActivity>()
+                            startActivity<Main2Activity>()
                             finish()
                         } else {
                             showMessage(view, "Error: ${it.exception?.message}")

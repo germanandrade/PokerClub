@@ -1,12 +1,11 @@
 ### The app will support these functionalities:
-* Fragments -> viewPagerFragment
+* Like game interface
+* viewPagerFragment
 * Get started -> What can you do 
 * Display name
 * Edit profile
 * Change picture --> filechooser 
-* Pay debt
 * Profile with email 
-* Like game interface
 * No network -> queue or can't but feedback 
 * Cache
 
@@ -15,6 +14,7 @@
 * Koin instead of dagger
 * Picasso instead of glide
 * Query actual data
+* Fragments
 
 --------------- // ---------------
 ### Done In Stage 1
