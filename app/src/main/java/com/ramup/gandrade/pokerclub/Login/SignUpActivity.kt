@@ -33,15 +33,15 @@ class SignUpActivity : FragmentActivity() {
 
     fun submit(view: View) {
         hideSoftKeyboard(this)
-        val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
         when {
-            isEmpty(emailSignUp) || isEmpty(passwordSignUp) -> showMessage(view, getString(R.string.fill_fields))
+            isEmpty(emailSignUp) || isEmpty(passwordSignUp) || isEmpty(displayName) -> showMessage(view, getString(R.string.fill_fields))
             !passwordsMatch(passwordSignUp, passwordRepeat) -> showMessage(view, "Passwords don't match")
             else -> {
                 showMessage(view, "Loading...")
                 viewModel.signUp(emailSignUp.text.toString(), passwordSignUp.text.toString())
                         .addOnCompleteListener(this, OnCompleteListener {
                             if (it.isSuccessful) {
+                                viewModel.setDisplayName(displayName.text.toString())
                                 startActivity<Main2Activity>()
                                 finish()
                             } else {

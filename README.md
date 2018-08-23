@@ -1,9 +1,8 @@
 ### The app will support these functionalities:
 * Like game interface
-	* Create game
-		* Generate QR
-	* Join game
-		* Read QR
+	* Clubs
+	* News
+	* Table
 * Confirmation dialogs!
 * Lifesavers		
 * viewPagerFragment ->Get started -> What can you do 
@@ -16,6 +15,12 @@
 
 --------------- // ---------------
 ###Done in Stage 2
+* Like game interface
+	* Display name
+	* Create game
+		* Generate QR
+	* Join game
+		* Read QR
 * Koin instead of dagger
 * Picasso instead of glide
 * Query actual data

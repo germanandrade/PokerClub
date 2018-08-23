@@ -31,8 +31,14 @@ class LoginActivity : FragmentActivity() {
         if (isEmpty(email) || isEmpty(password)) {
             showMessage(view, getString(R.string.fill_fields))
         } else {
+            var emailString = email.text.toString()
+            if(!emailString.contains("@"))
+            {
+                emailString+="@endava.com"
+                email.setText(emailString)german
+            }
             showMessage(view, "Loading...")
-            viewModel.sigIn(email.text.toString(), password.text.toString())
+            viewModel.sigIn(emailString, password.text.toString())
                     .addOnCompleteListener(this, OnCompleteListener {
                         if (it.isSuccessful) {
                             startActivity<Main2Activity>()
