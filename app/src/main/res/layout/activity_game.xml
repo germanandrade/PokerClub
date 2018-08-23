@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Global.GlobalFragment">
-
+    android:padding="20dp"
+    tools:context=".Game.GameActivity">
 
     <android.support.v7.widget.RecyclerView
         android:orientation="vertical"

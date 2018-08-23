@@ -35,7 +35,7 @@ class LoginActivity : FragmentActivity() {
             if(!emailString.contains("@"))
             {
                 emailString+="@endava.com"
-                email.setText(emailString)german
+                email.setText(emailString)
             }
             showMessage(view, "Loading...")
             viewModel.sigIn(emailString, password.text.toString())

@@ -39,7 +39,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Main2Activity" />
         </activity>
-        <activity android:name=".ScanActivity"></activity>
+        <activity android:name=".Game.ScanActivity" />
+        <activity
+            android:name=".Game.GameActivity"
+            android:label="@string/title_activity_game"></activity>
     </application>
 
 </manifest>

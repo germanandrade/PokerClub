@@ -1,4 +1,4 @@
-package com.ramup.gandrade.pokerclub
+package com.ramup.gandrade.pokerclub.Game
 
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
@@ -6,20 +6,23 @@ import android.widget.Toast
 import com.google.zxing.Result
 import com.ramup.gandrade.pokerclub.Login.SignUpActivity
 import me.dm7.barcodescanner.zxing.ZXingScannerView
-import android.provider.AlarmClock.EXTRA_MESSAGE
-import android.widget.EditText
 import android.content.Intent
-
-
+import com.example.gandrade.pokerclub.util.showMessage
+import com.ramup.gandrade.pokerclub.UserProfile.UserProfileViewModel
+import org.koin.android.architecture.ext.viewModel
 
 
 class ScanActivity : FragmentActivity(), ZXingScannerView.ResultHandler {
+    val userProfileViewModel by viewModel<UserProfileViewModel>()
+
     override fun handleResult(rawResult: Result?) {
-        Toast.makeText(this, rawResult!!.text, Toast.LENGTH_LONG)
-        val intent = Intent(this, SignUpActivity::class.java)
-        intent.putExtra("email", rawResult!!.text)
+        val id = rawResult!!.text
+        val intent = Intent(this, GameActivity::class.java)
+        intent.putExtra("id", rawResult!!.text)
 
         startActivity(intent)
+
+
     }
 
     private lateinit var mScannerView: ZXingScannerView

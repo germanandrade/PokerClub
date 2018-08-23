@@ -1,8 +1,10 @@
 ### The app will support these functionalities:
+* Cache
 * Like game interface
-	* Clubs
-	* News
-	* Table
+	
+	
+	* News (Firebase Cloud Messaging)
+	
 * Confirmation dialogs!
 * Lifesavers		
 * viewPagerFragment ->Get started -> What can you do 
@@ -11,11 +13,13 @@
 * Change picture --> filechooser 
 * Profile with email 
 * No network -> queue or can't but feedback 
-* Cache
+* Clubs
 
 --------------- // ---------------
 ###Done in Stage 2
 * Like game interface
+	* Active Players
+	* Table
 	* Display name
 	* Create game
 		* Generate QR

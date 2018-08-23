@@ -9,6 +9,7 @@ import com.example.gandrade.pokerclub.util.showMessage
 import com.ramup.gandrade.pokerclub.R
 import com.ramup.gandrade.pokerclub.UserProfile.UserProfileViewModel
 import kotlinx.android.synthetic.main.activity_create_game.*
+import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
 
 class CreateGameActivity : FragmentActivity() {
@@ -19,7 +20,7 @@ class CreateGameActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_game)
         userProfileViewModel.createGame()
-        userProfileViewModel.gameId.observe(this, Observer {
+        userProfileViewModel.gameId?.observe(this, Observer {
             id ->
             showMessage(image,"id:$id")
             if (id != null) {
@@ -35,6 +36,7 @@ class CreateGameActivity : FragmentActivity() {
         image.setImageBitmap(bitmap)
     }
     fun startGame(view: View){
-        showMessage(view,"starting game")
+        startActivity<GameActivity>()
     }
+
 }

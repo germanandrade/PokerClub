@@ -38,9 +38,11 @@
     <string name="title_play">Play</string>
     <string name="tile_profile">Profile</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="create_game">Create game</string>
-    <string name="join_game">Join Game</string>
+    <string name="join_game">Join game</string>
     <string name="display_name_hint">Display name</string>
+    <string name="title_activity_game">GameActivity</string>
+    <string name="continue_game">Continue game</string>
+    <string name="showqr">Show QR</string>
+    <string name="pause_game">Pause game</string>
 </resources>

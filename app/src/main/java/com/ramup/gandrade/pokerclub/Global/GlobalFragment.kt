@@ -8,9 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.ramup.gandrade.pokerclub.R
-import com.ramup.gandrade.pokerclub.User
+import com.ramup.gandrade.pokerclub.UserProfile.User
 import com.ramup.gandrade.pokerclub.UserAdapter
 import kotlinx.android.synthetic.main.activity_global.*
 import kotlinx.android.synthetic.main.activity_global.view.*
@@ -38,7 +37,7 @@ class GlobalFragment : Fragment() {
         var view= inflater.inflate(R.layout.activity_global, container, false)
         view.rv_user_list.layoutManager = LinearLayoutManager(activity!!.applicationContext)
 
-        view.rv_user_list.adapter = UserAdapter(listOf<User>(User("me",45,5)), activity!!.applicationContext)
+        view.rv_user_list.adapter = UserAdapter(listOf<User>(User("me", 45, 5)), activity!!.applicationContext)
 
         return view
     }
