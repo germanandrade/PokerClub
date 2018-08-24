@@ -2,18 +2,15 @@ package com.ramup.gandrade.pokerclub.Game
 
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
-import android.widget.Toast
 import com.google.zxing.Result
-import com.ramup.gandrade.pokerclub.Login.SignUpActivity
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 import android.content.Intent
-import com.example.gandrade.pokerclub.util.showMessage
-import com.ramup.gandrade.pokerclub.UserProfile.UserProfileViewModel
+import com.ramup.gandrade.pokerclub.UserProfile.GameViewModel
 import org.koin.android.architecture.ext.viewModel
 
 
 class ScanActivity : FragmentActivity(), ZXingScannerView.ResultHandler {
-    val userProfileViewModel by viewModel<UserProfileViewModel>()
+    val userProfileViewModel by viewModel<GameViewModel>()
 
     override fun handleResult(rawResult: Result?) {
         val id = rawResult!!.text

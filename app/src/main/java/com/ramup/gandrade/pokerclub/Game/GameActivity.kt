@@ -11,37 +11,36 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import com.example.gandrade.pokerclub.util.TextToImageEncode
 import com.example.gandrade.pokerclub.util.showMessage
 import com.ramup.gandrade.pokerclub.R
 import com.ramup.gandrade.pokerclub.UserAdapter
 import com.ramup.gandrade.pokerclub.UserProfile.User
-import com.ramup.gandrade.pokerclub.UserProfile.UserProfileViewModel
+import com.ramup.gandrade.pokerclub.UserProfile.GameViewModel
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.image_dialog.view.*
 import org.koin.android.architecture.ext.viewModel
 
 class GameActivity : FragmentActivity() {
-    val userProfileViewModel by viewModel<UserProfileViewModel>()
+    val gameViewModel by viewModel<GameViewModel>()
     lateinit var pauseItem:MenuItem
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
         if (intent.extras != null) {
             val gameId = intent.getStringExtra("id")
-            userProfileViewModel.activateUserInGame(gameId)
+            gameViewModel.activateUserInGame(gameId)
         }
         rv_user_list.layoutManager = LinearLayoutManager(this)
         rv_user_list.adapter = UserAdapter(listOf<User>(), this)
 
-        userProfileViewModel.checkActiveUsers()
-        userProfileViewModel.activeUsers.observe(this, Observer { list ->
+        gameViewModel.checkActiveUsers()
+        gameViewModel.activeUsers.observe(this, Observer { list ->
             rv_user_list.adapter = UserAdapter(list!!, this)
 
         })
-        userProfileViewModel.getUser()
-        userProfileViewModel.user.observe(this, Observer { user ->
+        gameViewModel.getUser()
+        gameViewModel.user.observe(this, Observer { user ->
             if (user != null) {
                 if (user.admin)
                     showMessage(rv_user_list,"You're admin!")
@@ -71,7 +70,7 @@ class GameActivity : FragmentActivity() {
     }
 
     private fun pause() {
-        userProfileViewModel.pauseGame()
+        gameViewModel.pauseGame()
     }
 
     private fun showQr() {
@@ -83,7 +82,7 @@ class GameActivity : FragmentActivity() {
         }
         val factory = LayoutInflater.from(this)
         val view: View = factory.inflate(R.layout.image_dialog, null)
-        view.dialog_imageview.setImageBitmap(TextToImageEncode(userProfileViewModel.gameId?.value
+        view.dialog_imageview.setImageBitmap(TextToImageEncode(gameViewModel.gameId?.value
                 ?: "0"))
         builder.setView(view)
         builder.setPositiveButton(android.R.string.yes, DialogInterface.OnClickListener { dialog, which ->

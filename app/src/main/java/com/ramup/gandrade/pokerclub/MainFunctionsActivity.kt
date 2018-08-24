@@ -7,13 +7,13 @@ import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.view.View
 import com.example.gandrade.pokerclub.util.showMessage
-import com.ramup.gandrade.pokerclub.UserProfile.UserProfileViewModel
+import com.ramup.gandrade.pokerclub.UserProfile.GameViewModel
 import kotlinx.android.synthetic.main.activity_main_functions.*
 import org.koin.android.architecture.ext.viewModel
 
 
 class MainFunctionsActivity : FragmentActivity() {
-    val viewModel by viewModel<UserProfileViewModel>()
+    val viewModel by viewModel<GameViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

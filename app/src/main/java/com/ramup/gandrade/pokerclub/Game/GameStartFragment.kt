@@ -2,6 +2,7 @@ package com.ramup.gandrade.pokerclub.Game
 
 import android.Manifest
 import android.app.Activity
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
 import android.content.pm.PackageManager
 import android.os.Build
@@ -12,30 +13,73 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
-import com.example.gandrade.pokerclub.util.showMessage
 import com.ramup.gandrade.pokerclub.R
-import com.ramup.gandrade.pokerclub.UserProfile.UserProfileViewModel
+import com.ramup.gandrade.pokerclub.UserProfile.GameViewModel
 import kotlinx.android.synthetic.main.fragment_game_start.*
 import kotlinx.android.synthetic.main.fragment_game_start.view.*
 import org.jetbrains.anko.support.v4.startActivity
 import org.koin.android.architecture.ext.viewModel
 
 class GameStartFragment : Fragment(), View.OnClickListener {
-    val userProfileViewModel by viewModel<UserProfileViewModel>()
-    var active: Boolean? = null
-    var pause: Boolean? = null
+
+    val gameViewModel by viewModel<GameViewModel>()
+
+    var activeGame: Boolean? = null
+    var pauseGame: Boolean? = null
+
     private val CAMERA_REQUEST_CODE = 101
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_game_start, container, false)
+        view.createGame.setOnClickListener(this)
+        view.joinGame.setOnClickListener(this)
+        view.continueGame.setOnClickListener(this)
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        gameViewModel.checkActiveGames()
+        gameViewModel.checkPausedGame()
+        checkState("activeGame", gameViewModel.activeGameId, joinGame)
+        checkState("pausedGame", gameViewModel.pausedGameId, continueGame)
+    }
+
+    private fun checkState(state: String, gameId: LiveData<String?>?, button: Button) {
+        gameId?.observe(this, Observer { id ->
+            if (id != null) {
+                button.visibility = View.VISIBLE
+            } else {
+                when (state) {
+                    "activeGame" -> activeGame = false
+                    "pausedGame" -> pauseGame = false
+                }
+                checkNoActiveAndNoContinue()
+            }
+        })
+    }
+
+    private fun checkNoActiveAndNoContinue() {
+        if (activeGame != null && pauseGame != null) {
+            if (!activeGame!! && !pauseGame!!) {
+                createGame.visibility = View.VISIBLE
+            }
+        }
+    }
+
+
     override fun onClick(view: View?) {
         when (view?.id) {
-            R.id.create -> startActivity<CreateGameActivity>()
-            R.id.join -> setupPermissions()
+            R.id.createGame -> startActivity<CreateGameActivity>()
+            R.id.joinGame -> setupPermissions()
             R.id.continueGame -> setupPermissions()
         }
     }
 
     private fun resumeGame(id: String) {
-        userProfileViewModel.resumeGame()
+        gameViewModel.resumeGame()
         startActivity<GameActivity>("id" to id)
     }
 
@@ -51,58 +95,6 @@ class GameStartFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        userProfileViewModel.checkActiveGames()
-        userProfileViewModel.checkPausedGame()
-
-        checkIfActive()
-        checkIfPaused()
-
-    }
-
-    private fun checkIfActive() {
-        userProfileViewModel.activeGameId?.observe(this, Observer { id ->
-            if (id != null) {
-
-                join.visibility = View.VISIBLE
-            } else {
-                active = false
-                showMessage(join, "fue nulo el activeGameId")
-                checkNoActiveAndNoContinue()
-            }
-        })
-    }
-
-    private fun checkNoActiveAndNoContinue() {
-        if (active != null && pause != null) {
-            if (!active!! && !pause!!) {
-                create.visibility = View.VISIBLE
-
-            }
-        }
-    }
-
-    private fun checkIfPaused() {
-        userProfileViewModel.pausedGameId.observe(this, Observer { id ->
-            if (id != null) {
-
-                continueGame.visibility = View.VISIBLE
-            } else {
-                pause = false
-                checkNoActiveAndNoContinue()
-            }
-
-        })
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_game_start, container, false)
-        view.create.setOnClickListener(this)
-        view.join.setOnClickListener(this)
-        view.continueGame.setOnClickListener(this)
-        return view
-    }
 
     private fun makeRequest() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -125,11 +117,9 @@ class GameStartFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-
     companion object {
         fun newInstance(): GameStartFragment {
             return GameStartFragment()
         }
     }
-
 }

@@ -5,13 +5,26 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.ramup.gandrade.pokerclub.Game.GameState
 
-class UserProfileViewModel(val userRepo: UserProfileRepository) : ViewModel() {
+class GameViewModel(val userRepo: GameRepository) : ViewModel() {
+
+
+    fun checkActiveGames() {
+        activeGameId = userRepo.checkGames(GameState.ACTIVE)
+    }
+
+    fun checkPausedGame() {
+        pausedGameId = userRepo.checkGames(GameState.PAUSED)
+    }
+
+
+    //----------------
     val mAuth = FirebaseAuth.getInstance();
     lateinit var user: LiveData<User>
-    var gameId: LiveData<String>?=null
+    var gameId: LiveData<String>? = null
     lateinit var pausedGameId: LiveData<String?>
-    var activeGameId: LiveData<String?>?=null
+    var activeGameId: LiveData<String?>? = null
     val loggedIn = MutableLiveData<Boolean>()
     lateinit var activeUsers: LiveData<List<User>>
 
@@ -59,13 +72,6 @@ class UserProfileViewModel(val userRepo: UserProfileRepository) : ViewModel() {
         gameId = userRepo.activateUserInGame(id)
     }
 
-    fun checkPausedGame() {
-        pausedGameId = userRepo.checkPausedGame()
-
-    }
-    fun checkActiveGames() {
-        activeGameId = userRepo.checkActiveGames()
-    }
 
     fun checkActiveUsers() {
         activeUsers = userRepo.getActiveUsers()

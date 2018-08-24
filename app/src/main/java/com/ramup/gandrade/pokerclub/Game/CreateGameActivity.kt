@@ -7,13 +7,13 @@ import android.view.View
 import com.example.gandrade.pokerclub.util.TextToImageEncode
 import com.example.gandrade.pokerclub.util.showMessage
 import com.ramup.gandrade.pokerclub.R
-import com.ramup.gandrade.pokerclub.UserProfile.UserProfileViewModel
+import com.ramup.gandrade.pokerclub.UserProfile.GameViewModel
 import kotlinx.android.synthetic.main.activity_create_game.*
 import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
 
 class CreateGameActivity : FragmentActivity() {
-    val userProfileViewModel by viewModel<UserProfileViewModel>()
+    val userProfileViewModel by viewModel<GameViewModel>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

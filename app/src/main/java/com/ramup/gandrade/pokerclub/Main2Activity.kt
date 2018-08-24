@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.ramup.gandrade.pokerclub.Login.LoginActivity
-import com.ramup.gandrade.pokerclub.UserProfile.UserProfileViewModel
+import com.ramup.gandrade.pokerclub.UserProfile.GameViewModel
 import kotlinx.android.synthetic.main.activity_main2.*
 import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
@@ -17,7 +17,7 @@ import com.ramup.gandrade.pokerclub.UserProfile.ProfileFragment
 
 
 class Main2Activity : FragmentActivity() {
-    val userProfileViewModel by viewModel<UserProfileViewModel>()
+    val userProfileViewModel by viewModel<GameViewModel>()
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
