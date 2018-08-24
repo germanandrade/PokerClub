@@ -2,136 +2,160 @@ package com.ramup.gandrade.pokerclub.UserProfile
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.preference.PreferenceManager
+import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ramup.gandrade.pokerclub.Game.Game
 import com.ramup.gandrade.pokerclub.Game.GameState
-import com.ramup.gandrade.pokerclub.SharedPrefsCache
 
 class GameRepository() {
 
     val auth = FirebaseAuth.getInstance()
 
-    val PREFS_FILENAME="com.rampup.gandrade.pokerclub"
+    val user = MutableLiveData<User?>()
+
+    val currentActiveGameId = MutableLiveData<String?>()
+    val currentPausedGameId = MutableLiveData<String?>()
+
+    val db = FirebaseFirestore.getInstance()
+    val gameRef = db.collection("games")
 
 
-    fun checkGames(gameState:GameState): LiveData<String?> {
-        val gameId = MutableLiveData<String?>()
-        gameRef.whereEqualTo("State", gameState.toString()).get().addOnCompleteListener { task ->
+    fun checkPausedGames(): LiveData<String?> {
+        gameRef.whereEqualTo("State", GameState.PAUSED.toString()).get().addOnCompleteListener { task ->
             if (task.isComplete) {
-                for (doc in task.result){
-                    gameId.value = doc.id
+                for (doc in task.result) {
+                    currentPausedGameId.value = doc.id
                 }
-                if(task.result.isEmpty){
-                    gameId.value=null
+                if (task.result.isEmpty) {
+                    currentPausedGameId.value = null
                 }
             }
         }
-        return gameId
+        return currentPausedGameId
     }
 
-    val gameId = MutableLiveData<String>()
+    fun checkActiveGames(): LiveData<String?> {
+        gameRef.whereEqualTo("State", GameState.ACTIVE.toString()).get().addOnCompleteListener { task ->
+            if (task.isComplete) {
+                for (doc in task.result) {
+                    currentActiveGameId.value = doc.id
+                }
+                if (task.result.isEmpty) {
+                    currentActiveGameId.value = null
+                }
+            }
+        }
+        return currentActiveGameId
+    }
 
+    fun createUserInGame(success: MutableLiveData<Boolean>) {
+        var userDocument = gameRef.document(getCurrentGameId()).collection("users").document(auth.currentUser!!.uid)
+        userDocument.set(User(auth.currentUser!!.displayName!!, 0, 0).toMap()).addOnSuccessListener {
+            success.value = true
+        }
+    }
+
+    fun getCurrentUser(): User? {
+        return when
+        {
+            user==null->null
+            else ->user.value
+        }
+
+    }
 
     fun getCurrentGameId(): String {
-        return gameId.value!!
+        return currentActiveGameId.value!!
     }
 
-    fun createGame(): LiveData<String> {
+    fun getCurrentPausedGameId(): String {
+        return currentPausedGameId.value!!
+    }
+
+
+    fun joinUser(): MutableLiveData<Boolean> {
+        var success = MutableLiveData<Boolean>()
+        var userDocument = gameRef.document(getCurrentGameId()).collection("users").document(auth.currentUser!!.uid)
+        userDocument.update("Active", true)
+                .addOnSuccessListener { success.value = true }
+                .addOnFailureListener(OnFailureListener {
+                    createUserInGame(success)
+                })
+        return success
+    }
+
+    fun leave(success: MutableLiveData<Boolean> = MutableLiveData()): LiveData<Boolean> {
+        var userDocument = gameRef.document(getCurrentGameId()).collection("users").document(auth.currentUser!!.uid)
+        userDocument.update("Active", false)
+                .addOnSuccessListener {
+                    success.value = true
+                    user.value?.active = false
+                }
+        return success
+    }
+
+    fun createGame(): LiveData<String?> {
         val doc = gameRef.document()
-        gameId.value = doc.id
+        currentActiveGameId.value = doc.id
         doc.set(Game().toMap())
         doc.collection("users").document(auth.currentUser?.uid.toString()).set(User(auth.currentUser?.displayName
-                ?: "err", 0, 0,admin = true).toMap())
-        return gameId
+                ?: "err", 0, 0, admin = true).toMap())
+        return currentActiveGameId
     }
 
-    //--------------------------
+    fun pauseGame(): LiveData<Boolean> {
 
-    val db = FirebaseFirestore.getInstance()
-    val docRef = db.collection("balance").document(auth.currentUser?.uid.toString())
-    val gameRef = db.collection("games")
+        var success = MutableLiveData<Boolean>()
+        var gameDocument = gameRef.document(getCurrentGameId())
+        var userDocument = gameDocument.collection("users").document(auth.currentUser!!.uid)
 
-    val data = MutableLiveData<User>()
+        userDocument.update("Admin", false)
+                .addOnSuccessListener {
+                    gameDocument.update("State", GameState.PAUSED.toString()).addOnSuccessListener {
+                        leave(success = success)
+                    }
+                }
+        return success
+    }
+
+    fun resumeGame(): LiveData<Boolean> {
+        var success = MutableLiveData<Boolean>()
+        var gameDocument = gameRef.document(getCurrentPausedGameId())
+        var userDocument = gameDocument.collection("users").document(auth.currentUser!!.uid)
+        gameDocument.update("State", GameState.ACTIVE.toString()).addOnSuccessListener {
+            currentActiveGameId.value=currentPausedGameId.value
+            currentPausedGameId.value=null
+            userDocument.update("Admin", true,"Active",true).addOnSuccessListener {
+                success.value = true }
+        }
+        return success
+    }
 
 
-    fun fetch(): LiveData<User> {
-        gameRef.document(gameId.value?:"0").collection("users").document(auth.currentUser?.uid.toString()).get().addOnCompleteListener { task ->
+    fun fetch(): LiveData<User?> {
+        var userDocument = gameRef.document(getCurrentGameId()).collection("users").document(auth.currentUser!!.uid)
+        userDocument.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val document = task.result
                 if (document.exists()) {
                     val newUser = User(document.data)
-                    data.value = newUser
+                    user.value = newUser
+                } else {
+                    user.value = null
                 }
             }
         }
-        return data
+        return user
     }
-
-    fun buyEndavans(): Task<Void> {
-        var currentDebt = data.value?.debt ?: 0
-        var newUser = data.value?.copy(debt = currentDebt + 500)
-                ?: User(auth.currentUser?.email
-                        ?: "none", 0, 500)
-        data.value = newUser
-        return docRef.set(newUser.toMap())
-    }
-
-    fun payDebt(): Task<Void> {
-        var currentDebt = data.value?.debt ?: 0
-        if (currentDebt == 0) {
-            throw Exception("You have no debt")
-        }
-        var newUser = data.value?.copy(debt = 0)
-                ?: User(auth.currentUser?.email
-                        ?: "none", 0, 0)
-        data.value = newUser
-        return docRef.set(newUser.toMap())
-    }
-
-    fun depositEndavans(valueToDeposit: Int): Task<Void> {
-        var currentEndavans = data.value?.endavans ?: 0
-        var newUser = data.value?.copy(endavans = currentEndavans + valueToDeposit)
-                ?: User(auth.currentUser?.email
-                        ?: "none", valueToDeposit, 0)
-        data.value = newUser
-        return docRef.set(newUser.toMap())
-    }
-
-    fun withdrawEndavans(valueToWithDraw: Int): Task<Void> {
-        var currentEndavans = data.value?.endavans ?: 0
-        if (currentEndavans < valueToWithDraw) {
-            throw Exception("Not enough Endavans")
-        }
-        var newUser = data.value?.copy(endavans = currentEndavans - valueToWithDraw)
-                ?: User(auth.currentUser?.email
-                        ?: "none", valueToWithDraw, 0)
-        data.value = newUser
-        return docRef.update(newUser.toMap())
-    }
-
-
-
-    fun activateUserInGame(id: String): LiveData<String> {
-        gameRef.document(id).collection("users").document(auth.currentUser?.uid.toString()).set(User(auth.currentUser?.displayName
-                ?: "err", 0, 0).toMap())
-        gameId.value = id
-        return gameId
-    }
-
-
-
-
-
-
 
     fun getActiveUsers(): LiveData<List<User>> {
         val activeUsers = MutableLiveData<List<User>>()
 
         val arr = ArrayList<User>(20)
-        gameRef.document(gameId.value?:"0").collection("users").whereEqualTo("Active",true).get().addOnCompleteListener { task ->
+        gameRef.document(currentActiveGameId.value
+                ?: "0").collection("users").whereEqualTo("Active", true).get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 for (document in task.result) {
                     if (document.exists()) {
@@ -146,15 +170,53 @@ class GameRepository() {
         return activeUsers
     }
 
-    fun pauseGame() {
-        gameRef.document(gameId.value?:"0").update("STATE",GameState.PAUSED)
+
+    //--------------------------
+
+    val docRef = db.collection("balance").document(auth.currentUser?.uid.toString())
+
+
+    fun buyEndavans(): Task<Void> {
+        var currentDebt = user.value?.debt ?: 0
+        var newUser = user.value?.copy(debt = currentDebt + 500)
+                ?: User(auth.currentUser?.email
+                        ?: "none", 0, 500)
+        user.value = newUser
+        return docRef.set(newUser.toMap())
     }
 
-    fun resumeGame() {
-
+    fun payDebt(): Task<Void> {
+        var currentDebt = user.value?.debt ?: 0
+        if (currentDebt == 0) {
+            throw Exception("You have no debt")
+        }
+        var newUser = user.value?.copy(debt = 0)
+                ?: User(auth.currentUser?.email
+                        ?: "none", 0, 0)
+        user.value = newUser
+        return docRef.set(newUser.toMap())
     }
 
+    fun depositEndavans(valueToDeposit: Int): Task<Void> {
+        var currentEndavans = user.value?.endavans ?: 0
+        var newUser = user.value?.copy(endavans = currentEndavans + valueToDeposit)
+                ?: User(auth.currentUser?.email
+                        ?: "none", valueToDeposit, 0)
+        user.value = newUser
+        return docRef.set(newUser.toMap())
+    }
 
+    fun withdrawEndavans(valueToWithDraw: Int): Task<Void> {
+        var currentEndavans = user.value?.endavans ?: 0
+        if (currentEndavans < valueToWithDraw) {
+            throw Exception("Not enough Endavans")
+        }
+        var newUser = user.value?.copy(endavans = currentEndavans - valueToWithDraw)
+                ?: User(auth.currentUser?.email
+                        ?: "none", valueToWithDraw, 0)
+        user.value = newUser
+        return docRef.update(newUser.toMap())
+    }
 }
 
 

@@ -7,5 +7,13 @@
         android:id="@+id/pause"
         android:visible="false"
         android:title="@string/pause_game" />
+    <item
+        android:id="@+id/leave"
+        android:title="@string/leave"
+        android:visible="false" />
+    <item
+        android:id="@+id/changeAdmin"
+        android:title="@string/change_admin"
+        android:visible="false" />
 
 </menu>

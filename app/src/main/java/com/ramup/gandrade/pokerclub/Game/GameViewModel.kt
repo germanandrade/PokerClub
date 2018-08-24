@@ -9,30 +9,52 @@ import com.ramup.gandrade.pokerclub.Game.GameState
 
 class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
 
-    lateinit var activeGameId: LiveData<String?>
     lateinit var pausedGameId: LiveData<String?>
 
-    lateinit var gameId: LiveData<String>
+    lateinit var currentActiveGameId: LiveData<String?>
+
+    lateinit var successfulJoin: LiveData<Boolean>
+    lateinit var successfulLeave: LiveData<Boolean>
+    lateinit var successfulResume: LiveData<Boolean>
+
+    lateinit var user: LiveData<User?>
+
+
+    fun getCurrentUser(): User? {
+        return gameRepo.getCurrentUser()
+    }
+
 
     fun checkActiveGames() {
-        activeGameId = gameRepo.checkGames(GameState.ACTIVE)
+        currentActiveGameId = gameRepo.checkActiveGames()
     }
 
     fun checkPausedGame() {
-        pausedGameId = gameRepo.checkGames(GameState.PAUSED)
+        pausedGameId = gameRepo.checkPausedGames()
     }
 
     fun createGame() {
-        gameId = gameRepo.createGame()
+        currentActiveGameId = gameRepo.createGame()
     }
 
     fun getCurrentGameId(): String {
         return gameRepo.getCurrentGameId()
     }
 
+    fun joinUser() {
+        successfulJoin = gameRepo.joinUser()
+    }
+
+    fun leave() {
+        successfulLeave= gameRepo.leave()
+    }
+
+    fun pauseGame() {
+        successfulLeave=gameRepo.pauseGame()
+    }
+
     //----------------
     val mAuth = FirebaseAuth.getInstance();
-    lateinit var user: LiveData<User>
     val loggedIn = MutableLiveData<Boolean>()
     lateinit var activeUsers: LiveData<List<User>>
 
@@ -72,22 +94,14 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
         return mAuth.currentUser?.email.toString()
     }
 
-
-    fun activateUserInGame(id: String) {
-        gameId = gameRepo.activateUserInGame(id)
-    }
-
-
     fun checkActiveUsers() {
         activeUsers = gameRepo.getActiveUsers()
     }
 
-    fun pauseGame() {
-        gameRepo.pauseGame()
-    }
+
 
     fun resumeGame() {
-        gameRepo.resumeGame()
+        successfulResume=gameRepo.resumeGame()
     }
 
 

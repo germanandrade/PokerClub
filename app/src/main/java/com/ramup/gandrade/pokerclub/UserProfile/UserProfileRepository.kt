@@ -10,16 +10,8 @@ import com.ramup.gandrade.pokerclub.Game.Game
 import com.ramup.gandrade.pokerclub.Game.GameState
 
 class UserProfileRepository() {
-    val auth = FirebaseAuth.getInstance()
-    val db = FirebaseFirestore.getInstance()
-    val docRef = db.collection("balance").document(auth.currentUser?.uid.toString())
-    val gameRef = db.collection("games")
-
-    val data = MutableLiveData<User>()
-    val gameId = MutableLiveData<String>()
-
-
     fun fetch(): LiveData<User> {
+
         gameRef.document(gameId.value?:"0").collection("users").document(auth.currentUser?.uid.toString()).get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val document = task.result
@@ -31,6 +23,18 @@ class UserProfileRepository() {
         }
         return data
     }
+
+    //-----------
+    val auth = FirebaseAuth.getInstance()
+    val db = FirebaseFirestore.getInstance()
+    val docRef = db.collection("balance").document(auth.currentUser?.uid.toString())
+    val gameRef = db.collection("games")
+
+    val data = MutableLiveData<User>()
+    val gameId = MutableLiveData<String>()
+
+
+
 
     fun buyEndavans(): Task<Void> {
         var currentDebt = data.value?.debt ?: 0

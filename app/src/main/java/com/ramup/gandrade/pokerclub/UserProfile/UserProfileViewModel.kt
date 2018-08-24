@@ -7,8 +7,14 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 
 class UserProfileViewModel(val userRepo: UserProfileRepository) : ViewModel() {
-    val mAuth = FirebaseAuth.getInstance();
+
+
     lateinit var user: LiveData<User>
+    init {
+        getUser()
+    }
+    //-------------------
+    val mAuth = FirebaseAuth.getInstance();
     var gameId: LiveData<String>?=null
     lateinit var pausedGameId: LiveData<String?>
     var activeGameId: LiveData<String?>?=null

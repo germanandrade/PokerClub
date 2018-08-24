@@ -20,7 +20,7 @@ class CreateGameActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_game)
         gameViewModel.createGame()
-        gameViewModel.gameId?.observe(this, Observer {
+        gameViewModel.currentActiveGameId?.observe(this, Observer {
             id ->
             showMessage(image,"id:$id")
             if (id != null) {

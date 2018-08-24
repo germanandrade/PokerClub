@@ -41,21 +41,42 @@ class GameStartFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        gameViewModel.checkActiveGames()
-        gameViewModel.checkPausedGame()
-        checkState("activeGame", gameViewModel.activeGameId, joinGame)
-        checkState("pausedGame", gameViewModel.pausedGameId, continueGame)
+        checkActiveGame()
+        checkPausedGame()
+
     }
 
-    private fun checkState(state: String, gameId: LiveData<String?>?, button: Button) {
-        gameId?.observe(this, Observer { id ->
+    private fun checkActiveGame() {
+        gameViewModel.checkActiveGames()
+        gameViewModel.currentActiveGameId.observe(this, Observer { id ->
             if (id != null) {
-                button.visibility = View.VISIBLE
+                gameViewModel.getUser()
+                gameViewModel.user.observe(this, Observer { user ->
+                    if (user != null && user.active) {
+                        startActivity<GameActivity>()
+                    } else {
+                        joinGame.visibility = View.VISIBLE
+                        createGame.visibility = View.GONE
+                        continueGame.visibility = View.GONE
+                    }
+                })
             } else {
-                when (state) {
-                    "activeGame" -> activeGame = false
-                    "pausedGame" -> pauseGame = false
-                }
+                activeGame = false
+                checkNoActiveAndNoContinue()
+            }
+        })
+    }
+
+
+    private fun checkPausedGame() {
+        gameViewModel.checkPausedGame()
+        gameViewModel.pausedGameId?.observe(this, Observer { id ->
+            if (id != null) {
+                continueGame.visibility = View.VISIBLE
+                createGame.visibility = View.GONE
+                joinGame.visibility = View.GONE
+            } else {
+                pauseGame = false
                 checkNoActiveAndNoContinue()
             }
         })
@@ -65,6 +86,8 @@ class GameStartFragment : Fragment(), View.OnClickListener {
         if (activeGame != null && pauseGame != null) {
             if (!activeGame!! && !pauseGame!!) {
                 createGame.visibility = View.VISIBLE
+                joinGame.visibility = View.GONE
+                continueGame.visibility = View.GONE
             }
         }
     }
@@ -72,51 +95,56 @@ class GameStartFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(view: View?) {
         when (view?.id) {
-            R.id.createGame -> startActivity<CreateGameActivity>()
-            R.id.joinGame -> setupPermissions()
-            R.id.continueGame -> setupPermissions()
+            R.id.createGame -> {
+                startActivity<CreateGameActivity>();activity?.finish()
+            }
+            R.id.joinGame -> joinGame()
+            R.id.continueGame -> resumeGame()
         }
     }
 
-    private fun resumeGame(id: String) {
+
+    private fun resumeGame() {
         gameViewModel.resumeGame()
-        startActivity<GameActivity>("id" to id)
+        gameViewModel.successfulResume.observe(this, Observer { success ->
+            if (success != null && success) {
+                startActivity<GameActivity>()
+            }
+        })
     }
 
-    private fun setupPermissions() {
-        val permission = ContextCompat.checkSelfPermission(activity!!.applicationContext,
-                Manifest.permission.CAMERA)
+    private fun joinGame() {
+        val permission = ContextCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA)
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(activity, "Permission to camera denied", Toast.LENGTH_LONG)
             makeRequest()
         } else {
             startActivity<ScanActivity>()
+            activity?.finish()
         }
     }
 
 
     private fun makeRequest() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(context as Activity,
-                    arrayOf(Manifest.permission.CAMERA),
-                    CAMERA_REQUEST_CODE)
+            requestPermissions(context as Activity, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE)
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
             CAMERA_REQUEST_CODE -> {
-
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(activity, "Permission has been denied by user", Toast.LENGTH_LONG)
-
                 } else {
                     startActivity<ScanActivity>()
+                    activity?.finish()
                 }
             }
         }
     }
+
     companion object {
         fun newInstance(): GameStartFragment {
             return GameStartFragment()

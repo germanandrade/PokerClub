@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.fragment_user_profile.*
 import org.koin.android.architecture.ext.viewModel
 
 class ProfileFragment : Fragment() {
-    val userProfileViewModel by viewModel<GameViewModel>()
+    val userProfileViewModel by viewModel<UserProfileViewModel>()
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

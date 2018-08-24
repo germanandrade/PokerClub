@@ -13,55 +13,71 @@ import android.view.MenuItem
 import android.view.View
 import com.example.gandrade.pokerclub.util.TextToImageEncode
 import com.example.gandrade.pokerclub.util.showMessage
+import com.ramup.gandrade.pokerclub.Main2Activity
 import com.ramup.gandrade.pokerclub.R
 import com.ramup.gandrade.pokerclub.UserAdapter
 import com.ramup.gandrade.pokerclub.UserProfile.User
 import com.ramup.gandrade.pokerclub.UserProfile.GameViewModel
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.image_dialog.view.*
+import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
 
 class GameActivity : FragmentActivity() {
     val gameViewModel by viewModel<GameViewModel>()
 
     lateinit var pauseItem: MenuItem
+    lateinit var leaveItem: MenuItem
+    lateinit var changeAdminItem: MenuItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        if (intent.extras != null) {
-            val gameId = intent.getStringExtra("id")
-            gameViewModel.activateUserInGame(gameId)
-        }
-
         rv_user_list.layoutManager = LinearLayoutManager(this)
         rv_user_list.adapter = UserAdapter(listOf<User>(), this)
 
-        /*
         gameViewModel.checkActiveUsers()
         gameViewModel.activeUsers.observe(this, Observer { list ->
             rv_user_list.adapter = UserAdapter(list!!, this)
         })
+    }
 
+
+
+    fun setMenu(user: User) {
+        if (user.admin) {
+            showMessage(rv_user_list, "You're admin!")
+            pauseItem.setVisible(true)
+            //changeAdminItem.setVisible(true)
+        } else {
+            leaveItem.setVisible(true)
+        }
+    }
+
+    fun observeUser() {
         gameViewModel.getUser()
         gameViewModel.user.observe(this, Observer { user ->
             if (user != null) {
-                if (user.admin)
-                    showMessage(rv_user_list, "You're admin!")
-                pauseItem.setVisible(true)
+                setMenu(user)
             } else {
                 showMessage(rv_user_list, "You're null!")
             }
-
         })
-        */
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.game_menu, menu)
         pauseItem = menu!!.findItem(R.id.pause)
+        leaveItem = menu!!.findItem(R.id.leave)
+        changeAdminItem = menu!!.findItem(R.id.changeAdmin)
+
+        val user = gameViewModel.getCurrentUser()
+        if (user == null) {
+            observeUser()
+        } else {
+            setMenu(user)
+        }
         return true
     }
 
@@ -69,12 +85,25 @@ class GameActivity : FragmentActivity() {
         when (item.itemId) {
             R.id.showqr -> showQr()
             R.id.pause -> pause()
+            R.id.leave -> leave()
         }
         return super.onOptionsItemSelected(item)
     }
 
+    private fun leave() {
+        gameViewModel.leave()
+        gameViewModel.successfulLeave.observe(this, Observer {
+            startActivity<Main2Activity>()
+            finish()
+        })
+    }
+
     private fun pause() {
         gameViewModel.pauseGame()
+        gameViewModel.successfulLeave.observe(this, Observer {
+            startActivity<Main2Activity>()
+            finish()
+        })
     }
 
     private fun showQr() {
@@ -86,7 +115,7 @@ class GameActivity : FragmentActivity() {
         }
         val factory = LayoutInflater.from(this)
         val view: View = factory.inflate(R.layout.image_dialog, null)
-        showMessage(rv_user_list,"llego ${gameViewModel.getCurrentGameId()}")
+        showMessage(rv_user_list, "llego ${gameViewModel.getCurrentGameId()}")
         view.dialog_imageview.setImageBitmap(TextToImageEncode(gameViewModel.getCurrentGameId()))
         builder.setView(view)
         builder.setPositiveButton(android.R.string.yes, DialogInterface.OnClickListener { dialog, which ->

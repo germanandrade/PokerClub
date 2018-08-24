@@ -45,4 +45,6 @@
     <string name="continue_game">Continue game</string>
     <string name="showqr">Show QR</string>
     <string name="pause_game">Pause game</string>
+    <string name="leave">Leave</string>
+    <string name="change_admin">Change admin</string>
 </resources>
