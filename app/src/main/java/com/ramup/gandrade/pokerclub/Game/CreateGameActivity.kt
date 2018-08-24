@@ -13,14 +13,14 @@ import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
 
 class CreateGameActivity : FragmentActivity() {
-    val userProfileViewModel by viewModel<GameViewModel>()
+    val gameViewModel by viewModel<GameViewModel>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_game)
-        userProfileViewModel.createGame()
-        userProfileViewModel.gameId?.observe(this, Observer {
+        gameViewModel.createGame()
+        gameViewModel.gameId?.observe(this, Observer {
             id ->
             showMessage(image,"id:$id")
             if (id != null) {

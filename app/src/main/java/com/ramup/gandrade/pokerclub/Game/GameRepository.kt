@@ -2,13 +2,20 @@ package com.ramup.gandrade.pokerclub.UserProfile
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.preference.PreferenceManager
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ramup.gandrade.pokerclub.Game.Game
 import com.ramup.gandrade.pokerclub.Game.GameState
+import com.ramup.gandrade.pokerclub.SharedPrefsCache
 
 class GameRepository() {
+
+    val auth = FirebaseAuth.getInstance()
+
+    val PREFS_FILENAME="com.rampup.gandrade.pokerclub"
+
 
     fun checkGames(gameState:GameState): LiveData<String?> {
         val gameId = MutableLiveData<String?>()
@@ -25,15 +32,29 @@ class GameRepository() {
         return gameId
     }
 
+    val gameId = MutableLiveData<String>()
+
+
+    fun getCurrentGameId(): String {
+        return gameId.value!!
+    }
+
+    fun createGame(): LiveData<String> {
+        val doc = gameRef.document()
+        gameId.value = doc.id
+        doc.set(Game().toMap())
+        doc.collection("users").document(auth.currentUser?.uid.toString()).set(User(auth.currentUser?.displayName
+                ?: "err", 0, 0,admin = true).toMap())
+        return gameId
+    }
+
     //--------------------------
 
-    val auth = FirebaseAuth.getInstance()
     val db = FirebaseFirestore.getInstance()
     val docRef = db.collection("balance").document(auth.currentUser?.uid.toString())
     val gameRef = db.collection("games")
 
     val data = MutableLiveData<User>()
-    val gameId = MutableLiveData<String>()
 
 
     fun fetch(): LiveData<User> {
@@ -91,14 +112,7 @@ class GameRepository() {
         return docRef.update(newUser.toMap())
     }
 
-    fun createGame(): LiveData<String> {
-        val doc = gameRef.document()
-        gameId.value = doc.id
-        doc.set(Game().toMap())
-        doc.collection("users").document(auth.currentUser?.uid.toString()).set(User(auth.currentUser?.displayName
-                ?: "err", 0, 0,admin = true).toMap())
-        return gameId
-    }
+
 
     fun activateUserInGame(id: String): LiveData<String> {
         gameRef.document(id).collection("users").document(auth.currentUser?.uid.toString()).set(User(auth.currentUser?.displayName
@@ -139,6 +153,8 @@ class GameRepository() {
     fun resumeGame() {
 
     }
+
+
 }
 
 

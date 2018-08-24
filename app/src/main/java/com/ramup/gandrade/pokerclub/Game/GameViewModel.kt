@@ -7,46 +7,54 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.ramup.gandrade.pokerclub.Game.GameState
 
-class GameViewModel(val userRepo: GameRepository) : ViewModel() {
+class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
 
+    lateinit var activeGameId: LiveData<String?>
+    lateinit var pausedGameId: LiveData<String?>
+
+    lateinit var gameId: LiveData<String>
 
     fun checkActiveGames() {
-        activeGameId = userRepo.checkGames(GameState.ACTIVE)
+        activeGameId = gameRepo.checkGames(GameState.ACTIVE)
     }
 
     fun checkPausedGame() {
-        pausedGameId = userRepo.checkGames(GameState.PAUSED)
+        pausedGameId = gameRepo.checkGames(GameState.PAUSED)
     }
 
+    fun createGame() {
+        gameId = gameRepo.createGame()
+    }
+
+    fun getCurrentGameId(): String {
+        return gameRepo.getCurrentGameId()
+    }
 
     //----------------
     val mAuth = FirebaseAuth.getInstance();
     lateinit var user: LiveData<User>
-    var gameId: LiveData<String>? = null
-    lateinit var pausedGameId: LiveData<String?>
-    var activeGameId: LiveData<String?>? = null
     val loggedIn = MutableLiveData<Boolean>()
     lateinit var activeUsers: LiveData<List<User>>
 
 
     fun getUser() {
-        user = userRepo.fetch()
+        user = gameRepo.fetch()
     }
 
     fun buyEndavans(): Task<Void> {
-        return userRepo.buyEndavans()
+        return gameRepo.buyEndavans()
     }
 
     fun payDebt(): Task<Void> {
-        return userRepo.payDebt()
+        return gameRepo.payDebt()
     }
 
     fun depositEndavans(valueToDeposit: Int): Task<Void> {
-        return userRepo.depositEndavans(valueToDeposit)
+        return gameRepo.depositEndavans(valueToDeposit)
     }
 
     fun withdrawEndavans(valueToWithdraw: Int): Task<Void> {
-        return userRepo.withdrawEndavans(valueToWithdraw)
+        return gameRepo.withdrawEndavans(valueToWithdraw)
 
     }
 
@@ -64,26 +72,25 @@ class GameViewModel(val userRepo: GameRepository) : ViewModel() {
         return mAuth.currentUser?.email.toString()
     }
 
-    fun createGame() {
-        gameId = userRepo.createGame()
-    }
 
     fun activateUserInGame(id: String) {
-        gameId = userRepo.activateUserInGame(id)
+        gameId = gameRepo.activateUserInGame(id)
     }
 
 
     fun checkActiveUsers() {
-        activeUsers = userRepo.getActiveUsers()
+        activeUsers = gameRepo.getActiveUsers()
     }
 
     fun pauseGame() {
-        userRepo.pauseGame()
+        gameRepo.pauseGame()
     }
 
     fun resumeGame() {
-        userRepo.resumeGame()
+        gameRepo.resumeGame()
     }
+
+
 
 
 }
