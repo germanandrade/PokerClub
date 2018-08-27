@@ -27,12 +27,14 @@ class UserAdapter(var arrayList: List<User>, val context: Context) : RecyclerVie
         holder.tvName.text=arrayList.get(pos).name
         holder.tvEndavans.text=arrayList.get(pos).endavans.toString()
         holder.tvDebt.text=arrayList.get(pos).debt.toString()
+        holder.tvLifeSaver.text=arrayList.get(pos).lifeSavers.toString()
     }
 
     class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
         val tvName=view.name
         val tvEndavans=view.endavans
         val tvDebt=view.debt
+        val tvLifeSaver=view.lifeSavers
     }
 
 }

@@ -17,7 +17,7 @@
     <style name="regularText">
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:gravity">right</item>
-        <item name="android:padding">@dimen/small_padding</item>
+        <!--<item name="android:padding">@dimen/small_padding</item> -->
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">20sp</item>
     </style>

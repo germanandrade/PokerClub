@@ -1,12 +1,11 @@
 ### The app will support these functionalities:
+
 * Cache
 * Like game interface
-	
-	
 	* News (Firebase Cloud Messaging)
 	
 * Confirmation dialogs!
-* Lifesavers		
+		
 * viewPagerFragment ->Get started -> What can you do 
 * Display name
 * Edit profile
@@ -17,6 +16,7 @@
 
 --------------- // ---------------
 ###Done in Stage 2
+* Lifesavers
 * Like game interface
 	* Active Players
 	* Table
