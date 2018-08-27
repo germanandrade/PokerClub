@@ -10,6 +10,7 @@ import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.iid.FirebaseInstanceId
 import com.ramup.gandrade.pokerclub.Game.Game
 import com.ramup.gandrade.pokerclub.Game.GameState
 
@@ -103,8 +104,9 @@ class GameRepository() {
         val doc = gameRef.document()
         currentActiveGameId.value = doc.id
         doc.set(Game().toMap())
-        doc.collection("users").document(auth.currentUser?.uid.toString()).set(User(auth.currentUser?.displayName
-                ?: "err", 0, 0, admin = true).toMap())
+        val map = User(auth.currentUser?.displayName?: "err", 0, 0, admin = true).toMap()
+        map.put("Token", FirebaseInstanceId.getInstance().token!!)
+        doc.collection("users").document(auth.currentUser?.uid.toString()).set(map)
         return currentActiveGameId
     }
 
@@ -130,7 +132,7 @@ class GameRepository() {
         gameDocument.update("State", GameState.ACTIVE.toString()).addOnSuccessListener {
             currentActiveGameId.value = currentPausedGameId.value
             currentPausedGameId.value = null
-            userDocument.update("Admin", true, "Active", true).addOnSuccessListener {
+            userDocument.update("Admin", true, "Active", true,"Token", FirebaseInstanceId.getInstance().token).addOnSuccessListener {
                 success.value = true
             }
         }
@@ -181,19 +183,24 @@ class GameRepository() {
 
     //--------------------------
 
-    val docRef = db.collection("balance").document(auth.currentUser?.uid.toString())
+
 
 
     fun buyEndavans(): Task<Void> {
+        var gameDocument = gameRef.document(getCurrentGameId())
+        var userDocument = gameDocument.collection("users").document(auth.currentUser!!.uid)
+
         var currentDebt = user.value?.debt ?: 0
         var newUser = user.value?.copy(debt = currentDebt + 500)
                 ?: User(auth.currentUser?.email
                         ?: "none", 0, 500)
         user.value = newUser
-        return docRef.set(newUser.toMap())
+        return userDocument.update(newUser.toMap())
     }
 
     fun payDebt(): Task<Void> {
+        var gameDocument = gameRef.document(getCurrentGameId())
+        var userDocument = gameDocument.collection("users").document(auth.currentUser!!.uid)
         var currentDebt = user.value?.debt ?: 0
         if (currentDebt == 0) {
             throw Exception("You have no debt")
@@ -202,19 +209,23 @@ class GameRepository() {
                 ?: User(auth.currentUser?.email
                         ?: "none", 0, 0)
         user.value = newUser
-        return docRef.set(newUser.toMap())
+        return userDocument.set(newUser.toMap())
     }
 
     fun depositEndavans(valueToDeposit: Int): Task<Void> {
+        var gameDocument = gameRef.document(getCurrentGameId())
+        var userDocument = gameDocument.collection("users").document(auth.currentUser!!.uid)
         var currentEndavans = user.value?.endavans ?: 0
         var newUser = user.value?.copy(endavans = currentEndavans + valueToDeposit)
                 ?: User(auth.currentUser?.email
                         ?: "none", valueToDeposit, 0)
         user.value = newUser
-        return docRef.set(newUser.toMap())
+        return userDocument.set(newUser.toMap())
     }
 
     fun withdrawEndavans(valueToWithDraw: Int): Task<Void> {
+        var gameDocument = gameRef.document(getCurrentGameId())
+        var userDocument = gameDocument.collection("users").document(auth.currentUser!!.uid)
         var currentEndavans = user.value?.endavans ?: 0
         if (currentEndavans < valueToWithDraw) {
             throw Exception("Not enough Endavans")
@@ -223,7 +234,7 @@ class GameRepository() {
                 ?: User(auth.currentUser?.email
                         ?: "none", valueToWithDraw, 0)
         user.value = newUser
-        return docRef.update(newUser.toMap())
+        return userDocument.update(newUser.toMap())
     }
 }
 

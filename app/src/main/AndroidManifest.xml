@@ -42,7 +42,15 @@
         <activity android:name=".Game.ScanActivity" />
         <activity
             android:name=".Game.GameActivity"
-            android:label="@string/title_activity_game"></activity>
+            android:label="@string/title_activity_game" />
+
+        <service android:name=".MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".NotificationActivity"></activity>
     </application>
 
 </manifest>

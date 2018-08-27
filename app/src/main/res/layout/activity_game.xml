@@ -6,16 +6,88 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center|center_horizontal"
     android:padding="20dp"
     tools:context=".Game.GameActivity">
 
     <android.support.v7.widget.RecyclerView
+        android:paddingTop="20dp"
         android:orientation="vertical"
         android:id="@+id/rv_user_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="200dp">
 
     </android.support.v7.widget.RecyclerView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:onClick="buyEndavans"
+        android:text="@string/buy_endavans"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:weightSum="100">
+
+        <EditText
+            android:id="@+id/depositEndavans"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:hint="Endavans to deposit"
+            android:inputType="number"
+            android:padding="@dimen/padding_functions"
+            android:textSize="16sp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:onClick="depositEndavans"
+            android:padding="@dimen/padding_functions"
+            android:text="@string/deposit_endavans"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="100">
+
+
+        <EditText
+            android:id="@+id/withdrawEndavans"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:hint="@string/endavans_to_withdraw"
+            android:inputType="number"
+            android:padding="@dimen/padding_functions"
+            android:textSize="16sp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:onClick="withdrawEndavans"
+            android:padding="@dimen/padding_functions"
+            android:text="@string/withdraw_endavans"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:onClick="payDebt"
+        android:text="@string/pay_debt"
+        android:textSize="16sp" />
 
 
 </LinearLayout>

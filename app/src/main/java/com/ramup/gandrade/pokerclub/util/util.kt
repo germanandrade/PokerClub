@@ -10,6 +10,12 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.WriterException
 import com.google.zxing.common.BitMatrix
+import java.io.BufferedReader
+import java.io.DataOutputStream
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
+import java.nio.charset.StandardCharsets
 
 fun showMessage(view: View, message: String) {
     Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE).setAction("Action", null).show()
@@ -44,3 +50,47 @@ fun TextToImageEncode(value: String): Bitmap? {
     bitmap.setPixels(pixels, 0, 500, 0, 0, bitMatrixWidth, bitMatrixHeight)
     return bitmap
 }
+
+fun pushToChat(message: String) {
+
+    val serverURL: String = "https://fcm.googleapis.com/fcm/send"
+    val url = URL(serverURL)
+    val connection = url.openConnection() as HttpURLConnection
+    connection.requestMethod = "POST"
+    connection.connectTimeout = 300000
+    connection.connectTimeout = 300000
+    connection.doOutput = true
+
+    val postData: ByteArray = message.toByteArray(StandardCharsets.UTF_8)
+
+    connection.setRequestProperty("charset", "utf-8")
+    connection.setRequestProperty("Content-lenght", postData.size.toString())
+    connection.setRequestProperty("Content-Type", "application/json")
+    connection.setRequestProperty("Authorization", "AAAAZ813xEc:APA91bHTm8_zfC-N7ywnx4TcT4rW1Uh9jjFJlTgRj2_mBpD-iKxAZw1Di87Tr11xPrTuu-aRFBznjFVW5GQt1FaSRqIxP8SaL0Rnt6wq3YgEGwazI8eVWivtWlm2Ki_jdnE7R3q9mchtwSg_RgsvpItsbHyCu9GZ8g")
+
+    try {
+        val outputStream: DataOutputStream = DataOutputStream(connection.outputStream)
+        outputStream.write(postData)
+        outputStream.flush()
+    } catch (exception: Exception) {
+
+    }
+    /**
+    if (connection.responseCode != HttpURLConnection.HTTP_OK && connection.responseCode != HttpURLConnection.HTTP_CREATED) {
+        try {
+
+
+            val reader: BufferedReader = BufferedReader(InputStreamReader(inputStream))
+            val output: String = reader.readLine()
+
+            println("There was error while connecting the chat $output")
+            System.exit(0)
+
+        } catch (exception: Exception) {
+            throw Exception("Exception while push the notification  $exception.message")
+        }
+    }
+    */
+
+}
+

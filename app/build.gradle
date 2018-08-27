@@ -41,10 +41,11 @@ dependencies {
     //Anko
     implementation "org.jetbrains.anko:anko:0.10.5"
 
-    //Firestore
+    //Firebase
     def firebaseVersion = "11.6.0"
     implementation "com.google.firebase:firebase-firestore:$firebaseVersion"
     implementation "com.google.firebase:firebase-auth:$firebaseVersion"
+    implementation "com.google.firebase:firebase-messaging:$firebaseVersion"
 
     //Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'

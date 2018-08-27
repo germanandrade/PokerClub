@@ -1,11 +1,9 @@
 ### The app will support these functionalities:
-
+* Retrofit (MUST)
 * Cache
-* Like game interface
-	* News (Firebase Cloud Messaging)
-	
+* News (Firebase Cloud Messaging)
 * Confirmation dialogs!
-		
+* Playstore!
 * viewPagerFragment ->Get started -> What can you do 
 * Display name
 * Edit profile
@@ -13,9 +11,11 @@
 * Profile with email 
 * No network -> queue or can't but feedback 
 * Clubs
+* execute function only once kotlin
 
 --------------- // ---------------
 ###Done in Stage 2
+
 * Lifesavers
 * Like game interface
 	* Active Players

@@ -11,5 +11,6 @@ class PokerClubApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         startKoin(this, listOf(gameModule,loginModule, userProfileModule, globalModule))
+        //Init sharedPreferences
     }
 }

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:weightSum="60">
 
     <TextView
         android:id="@+id/name"
-        style="@style/regularText"
-        android:layout_width="50dp"
+        style="@style/smallText"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_weight="30"
         android:padding="@dimen/small_padding" />
@@ -20,15 +21,13 @@
 
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
             android:src="@drawable/euro"
-            android:tint="@color/white" />
+            style="@style/icon" />
 
 
         <TextView
             android:id="@+id/endavans"
-            style="@style/regularText"
+            style="@style/smallText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -40,14 +39,14 @@
         android:layout_weight="10"
         android:padding="@dimen/small_padding">
         <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:src="@drawable/debt"
             android:tint="@color/white" />
 
         <TextView
             android:id="@+id/debt"
-            style="@style/regularText"
+            style="@style/smallText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -59,14 +58,12 @@
         android:padding="@dimen/small_padding">
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
             android:src="@drawable/lifesaver"
-            android:tint="@color/white" />
+            style="@style/icon" />
 
         <TextView
             android:id="@+id/lifeSavers"
-            style="@style/regularText"
+            style="@style/smallText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
