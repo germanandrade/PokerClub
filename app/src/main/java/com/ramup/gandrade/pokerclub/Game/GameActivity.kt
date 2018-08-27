@@ -61,7 +61,7 @@ class GameActivity : FragmentActivity() {
             if (user != null) {
                 setMenu(user)
             } else {
-                showMessage(rv_user_list, "You're null!")
+                //showMessage(rv_user_list, "You're null!")
             }
         })
     }

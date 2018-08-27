@@ -2,10 +2,14 @@ package com.ramup.gandrade.pokerclub.UserProfile
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.util.Log
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.QuerySnapshot
 import com.ramup.gandrade.pokerclub.Game.Game
 import com.ramup.gandrade.pokerclub.Game.GameState
 
@@ -58,10 +62,9 @@ class GameRepository() {
     }
 
     fun getCurrentUser(): User? {
-        return when
-        {
-            user==null->null
-            else ->user.value
+        return when {
+            user == null -> null
+            else -> user.value
         }
 
     }
@@ -125,10 +128,11 @@ class GameRepository() {
         var gameDocument = gameRef.document(getCurrentPausedGameId())
         var userDocument = gameDocument.collection("users").document(auth.currentUser!!.uid)
         gameDocument.update("State", GameState.ACTIVE.toString()).addOnSuccessListener {
-            currentActiveGameId.value=currentPausedGameId.value
-            currentPausedGameId.value=null
-            userDocument.update("Admin", true,"Active",true).addOnSuccessListener {
-                success.value = true }
+            currentActiveGameId.value = currentPausedGameId.value
+            currentPausedGameId.value = null
+            userDocument.update("Admin", true, "Active", true).addOnSuccessListener {
+                success.value = true
+            }
         }
         return success
     }
@@ -153,20 +157,24 @@ class GameRepository() {
     fun getActiveUsers(): LiveData<List<User>> {
         val activeUsers = MutableLiveData<List<User>>()
 
-        val arr = ArrayList<User>(20)
-        gameRef.document(currentActiveGameId.value
-                ?: "0").collection("users").whereEqualTo("Active", true).get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                for (document in task.result) {
-                    if (document.exists()) {
-                        val newUser = User(document.data)
-                        arr.add(newUser)
-                    }
-                }
-                activeUsers.value = arr
+        gameRef.document(currentActiveGameId.value!!)
+                .collection("users")
+                .whereEqualTo("Active", true)
+                .addSnapshotListener(EventListener { query, exception ->
+                    if (exception != null) {
+                        Log.d("fail", "fail")
+                    } else {
+                        val arr = ArrayList<User>(20)
 
-            }
-        }
+                        for (document in query) {
+                            if (document.exists()) {
+                                val newUser = User(document.data)
+                                arr.add(newUser)
+                            }
+                        }
+                        activeUsers.value = arr
+                    }
+                })
         return activeUsers
     }
 

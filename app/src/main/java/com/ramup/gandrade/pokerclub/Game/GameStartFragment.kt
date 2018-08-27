@@ -42,8 +42,6 @@ class GameStartFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         checkActiveGame()
-        checkPausedGame()
-
     }
 
     private fun checkActiveGame() {
@@ -52,7 +50,7 @@ class GameStartFragment : Fragment(), View.OnClickListener {
             if (id != null) {
                 gameViewModel.getUser()
                 gameViewModel.user.observe(this, Observer { user ->
-                    if (user != null && user.active) {
+                    if (user != null && user.active  ) {
                         startActivity<GameActivity>()
                     } else {
                         joinGame.visibility = View.VISIBLE
@@ -62,6 +60,7 @@ class GameStartFragment : Fragment(), View.OnClickListener {
                 })
             } else {
                 activeGame = false
+                checkPausedGame()
                 checkNoActiveAndNoContinue()
             }
         })
