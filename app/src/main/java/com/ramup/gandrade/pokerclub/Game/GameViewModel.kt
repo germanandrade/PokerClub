@@ -19,6 +19,8 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
 
     lateinit var user: LiveData<User?>
 
+    lateinit var adminToken: LiveData<String>
+
 
     fun getCurrentUser(): User? {
         return gameRepo.getCurrentUser()
@@ -104,7 +106,9 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
         successfulResume=gameRepo.resumeGame()
     }
 
-
+    fun updateAdminToken() {
+        adminToken = gameRepo.updateAdminToken()
+    }
 
 
 }

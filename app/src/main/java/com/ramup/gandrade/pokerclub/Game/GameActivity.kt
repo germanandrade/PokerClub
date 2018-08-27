@@ -127,12 +127,21 @@ class GameActivity : FragmentActivity() {
     }
 
     fun buyEndavans(view: View) {
+
+        gameViewModel.updateAdminToken()
+        gameViewModel.adminToken.observe(this, Observer {
+            id->
+            showMessage(view,id!!)
+            Log.d("token",id)
+        })
+        /*
         showMessage(view, "Loading...")
         gameViewModel.buyEndavans().addOnCompleteListener(this) {
             if (it.isSuccessful) {
                 createDialog("Endavans Bougth", "Successful! your debt increased $500")
             }
         }
+        */
     }
 
     fun payDebt(view: View) {

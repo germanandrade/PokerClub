@@ -26,6 +26,8 @@ class GameRepository() {
     val db = FirebaseFirestore.getInstance()
     val gameRef = db.collection("games")
 
+    val adminToken = MutableLiveData<String>()
+
 
     fun checkPausedGames(): LiveData<String?> {
         gameRef.whereEqualTo("State", GameState.PAUSED.toString()).get().addOnCompleteListener { task ->
@@ -104,7 +106,7 @@ class GameRepository() {
         val doc = gameRef.document()
         currentActiveGameId.value = doc.id
         doc.set(Game().toMap())
-        val map = User(auth.currentUser?.displayName?: "err", 0, 0, admin = true).toMap()
+        val map = User(auth.currentUser?.displayName ?: "err", 0, 0, admin = true).toMap()
         map.put("Token", FirebaseInstanceId.getInstance().token!!)
         doc.collection("users").document(auth.currentUser?.uid.toString()).set(map)
         return currentActiveGameId
@@ -132,7 +134,7 @@ class GameRepository() {
         gameDocument.update("State", GameState.ACTIVE.toString()).addOnSuccessListener {
             currentActiveGameId.value = currentPausedGameId.value
             currentPausedGameId.value = null
-            userDocument.update("Admin", true, "Active", true,"Token", FirebaseInstanceId.getInstance().token).addOnSuccessListener {
+            userDocument.update("Admin", true, "Active", true, "Token", FirebaseInstanceId.getInstance().token).addOnSuccessListener {
                 success.value = true
             }
         }
@@ -180,10 +182,29 @@ class GameRepository() {
         return activeUsers
     }
 
+    fun updateAdminToken(): LiveData<String> {
+
+        gameRef.document(currentActiveGameId.value!!)
+                .collection("users")
+                .whereEqualTo("Admin", true)
+                .addSnapshotListener(EventListener { query, exception ->
+                    if (exception != null) {
+                        Log.d("fail", "fail")
+                    } else {
+                        for (document in query) {
+                            if (document.exists()) {
+                                val newUser = User(document.data)
+                                adminToken.value = document.data["Token"] as String
+
+                            }
+                        }
+                    }
+                })
+        return adminToken
+    }
+
 
     //--------------------------
-
-
 
 
     fun buyEndavans(): Task<Void> {
@@ -236,6 +257,8 @@ class GameRepository() {
         user.value = newUser
         return userDocument.update(newUser.toMap())
     }
+
+
 }
 
 
