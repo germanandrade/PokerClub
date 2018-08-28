@@ -3,9 +3,13 @@ package com.ramup.gandrade.pokerclub.UserProfile
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.ramup.gandrade.pokerclub.Game.GameState
+import com.ramup.gandrade.pokerclub.Retrofit.RequestType
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
 
@@ -108,6 +112,16 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
 
     fun updateAdminToken() {
         adminToken = gameRepo.updateAdminToken()
+    }
+
+    fun sendNotification(type: RequestType, extra:String?){
+        gameRepo.sendNotification(type,extra).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+                .subscribe ({
+                    result ->
+                    Log.d("Result", "There are ${result} Java developers in Lagos")
+                }, { error ->
+                    error.printStackTrace()
+                })
     }
 
 

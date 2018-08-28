@@ -9,5 +9,6 @@ val gameModule= applicationContext {
     viewModel {
        GameViewModel(get())
     }
-    bean { GameRepository() }
+    bean { GameRepository(get()) }
+    bean { NotificationApiService.create()}
 }

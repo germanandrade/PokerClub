@@ -59,8 +59,21 @@ dependencies {
     //QR reader
     implementation 'me.dm7.barcodescanner:zxing:1.9'
 
-    //Retrofit ( HTTP)
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    // Networking
+    def retrofit_version = '2.2.0'
+    def okhttp_version = '3.8.1'
+
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+
+    // Rx
+    def rxjava_version = '2.1.7'
+
+    implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

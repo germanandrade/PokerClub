@@ -17,6 +17,7 @@ import com.example.gandrade.pokerclub.util.showMessage
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ramup.gandrade.pokerclub.Main2Activity
 import com.ramup.gandrade.pokerclub.R
+import com.ramup.gandrade.pokerclub.Retrofit.RequestType
 import com.ramup.gandrade.pokerclub.UserAdapter
 import com.ramup.gandrade.pokerclub.UserProfile.GameViewModel
 import com.ramup.gandrade.pokerclub.UserProfile.User
@@ -133,6 +134,7 @@ class GameActivity : FragmentActivity() {
             id->
             showMessage(view,id!!)
             Log.d("token",id)
+            gameViewModel.sendNotification(RequestType.BUY,null)
         })
         /*
         showMessage(view, "Loading...")

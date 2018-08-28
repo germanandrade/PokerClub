@@ -8,13 +8,12 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.iid.FirebaseInstanceId
-import com.ramup.gandrade.pokerclub.Game.Game
-import com.ramup.gandrade.pokerclub.Game.GameState
+import com.ramup.gandrade.pokerclub.Game.*
+import com.ramup.gandrade.pokerclub.Retrofit.RequestType
+import io.reactivex.Observable
 
-class GameRepository() {
+class GameRepository(private val notificationApiService: NotificationApiService) {
 
     val auth = FirebaseAuth.getInstance()
 
@@ -256,6 +255,12 @@ class GameRepository() {
                         ?: "none", valueToWithDraw, 0)
         user.value = newUser
         return userDocument.update(newUser.toMap())
+    }
+
+    fun sendNotification(type: RequestType,extra:String?):Observable<MyResponse>{
+        val data =Data(type,extra)
+        val foo=Foo(adminToken.value!!,data)
+        return notificationApiService.sendNotification(foo)
     }
 
 

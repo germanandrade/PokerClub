@@ -19,10 +19,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated.
         val data = remoteMessage?.getData()
-        val myCustomKey = data!!["my_custom_key"]
-        sendNotification(myCustomKey!!)
+        val requestType = data!!["requestType"]
+        val extra = data!!["extra"]
         Log.d(TAG, "From: " + remoteMessage!!.from)
-        Log.d(TAG, "Notification Message Body: " + myCustomKey)
+        Log.d(TAG, "Notification Message Body: $requestType $extra")
         //startActivity<NotificationActivity>("message" to myCustomKey)
 
     }
