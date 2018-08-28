@@ -1,4 +1,4 @@
-package com.ramup.gandrade.pokerclub.Game
+package com.ramup.gandrade.pokerclub.Game.Views
 
 import android.arch.lifecycle.Observer
 import android.os.Bundle
@@ -15,28 +15,24 @@ import org.koin.android.architecture.ext.viewModel
 class CreateGameActivity : FragmentActivity() {
     val gameViewModel by viewModel<GameViewModel>()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_game)
         gameViewModel.createGame()
-        gameViewModel.currentActiveGameId?.observe(this, Observer {
-            id ->
-            showMessage(image,"id:$id")
+        gameViewModel.currentActiveGameId?.observe(this, Observer { id ->
+            showMessage(image, "id:$id")
             if (id != null) {
                 generate(id)
             }
         })
-
-
     }
 
     private fun generate(id: String) {
         val bitmap = TextToImageEncode(id)
         image.setImageBitmap(bitmap)
     }
-    fun startGame(view: View){
+
+    fun startGame(view: View) {
         startActivity<GameActivity>()
     }
-
 }

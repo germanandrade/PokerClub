@@ -6,8 +6,7 @@ import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
-import com.ramup.gandrade.pokerclub.Game.GameState
-import com.ramup.gandrade.pokerclub.Retrofit.RequestType
+import com.ramup.gandrade.pokerclub.Game.Notifications.RequestType
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -52,11 +51,11 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
     }
 
     fun leave() {
-        successfulLeave= gameRepo.leave()
+        successfulLeave = gameRepo.leave()
     }
 
     fun pauseGame() {
-        successfulLeave=gameRepo.pauseGame()
+        successfulLeave = gameRepo.pauseGame()
     }
 
     //----------------
@@ -66,23 +65,23 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
 
 
     fun getUser() {
-        user = gameRepo.fetch()
+        user = gameRepo.fetchUser()
     }
 
-    fun buyEndavans(): Task<Void> {
-        return gameRepo.buyEndavans()
+    fun buyEndavans(uid: String): Task<Void> {
+        return gameRepo.buyEndavans(uid)
     }
 
-    fun payDebt(): Task<Void> {
-        return gameRepo.payDebt()
+    fun payDebt(uid: String): Task<Void> {
+        return gameRepo.payDebt(uid)
     }
 
-    fun depositEndavans(valueToDeposit: Int): Task<Void> {
-        return gameRepo.depositEndavans(valueToDeposit)
+    fun depositEndavans(uid: String, valueToDeposit: Int): Task<Void> {
+        return gameRepo.depositEndavans(uid, valueToDeposit)
     }
 
-    fun withdrawEndavans(valueToWithdraw: Int): Task<Void> {
-        return gameRepo.withdrawEndavans(valueToWithdraw)
+    fun withdrawEndavans(uid: String, valueToWithdraw: Int): Task<Void> {
+        return gameRepo.withdrawEndavans(uid, valueToWithdraw)
 
     }
 
@@ -105,19 +104,17 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
     }
 
 
-
     fun resumeGame() {
-        successfulResume=gameRepo.resumeGame()
+        successfulResume = gameRepo.resumeGame()
     }
 
     fun updateAdminToken() {
         adminToken = gameRepo.updateAdminToken()
     }
 
-    fun sendNotification(type: RequestType, extra:String?){
-        gameRepo.sendNotification(type,extra).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
-                .subscribe ({
-                    result ->
+    fun sendNotification(type: RequestType, extra: Int?) {
+        gameRepo.sendNotification(type, extra).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+                .subscribe({ result ->
                     Log.d("Result", "There are ${result} Java developers in Lagos")
                 }, { error ->
                     error.printStackTrace()

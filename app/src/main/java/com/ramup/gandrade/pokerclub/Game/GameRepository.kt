@@ -10,7 +10,7 @@ import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ramup.gandrade.pokerclub.Game.*
-import com.ramup.gandrade.pokerclub.Retrofit.RequestType
+import com.ramup.gandrade.pokerclub.Game.Notifications.*
 import io.reactivex.Observable
 
 class GameRepository(private val notificationApiService: NotificationApiService) {
@@ -141,7 +141,7 @@ class GameRepository(private val notificationApiService: NotificationApiService)
     }
 
 
-    fun fetch(): LiveData<User?> {
+    fun fetchUser(): LiveData<User?> {
         var userDocument = gameRef.document(getCurrentGameId()).collection("users").document(auth.currentUser!!.uid)
         userDocument.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -159,7 +159,6 @@ class GameRepository(private val notificationApiService: NotificationApiService)
 
     fun getActiveUsers(): LiveData<List<User>> {
         val activeUsers = MutableLiveData<List<User>>()
-
         gameRef.document(currentActiveGameId.value!!)
                 .collection("users")
                 .whereEqualTo("Active", true)
@@ -182,7 +181,6 @@ class GameRepository(private val notificationApiService: NotificationApiService)
     }
 
     fun updateAdminToken(): LiveData<String> {
-
         gameRef.document(currentActiveGameId.value!!)
                 .collection("users")
                 .whereEqualTo("Admin", true)
@@ -206,9 +204,9 @@ class GameRepository(private val notificationApiService: NotificationApiService)
     //--------------------------
 
 
-    fun buyEndavans(): Task<Void> {
+    fun buyEndavans(uid: String): Task<Void> {
         var gameDocument = gameRef.document(getCurrentGameId())
-        var userDocument = gameDocument.collection("users").document(auth.currentUser!!.uid)
+        var userDocument = gameDocument.collection("users").document(uid)
 
         var currentDebt = user.value?.debt ?: 0
         var newUser = user.value?.copy(debt = currentDebt + 500)
@@ -218,9 +216,9 @@ class GameRepository(private val notificationApiService: NotificationApiService)
         return userDocument.update(newUser.toMap())
     }
 
-    fun payDebt(): Task<Void> {
+    fun payDebt(uid: String): Task<Void> {
         var gameDocument = gameRef.document(getCurrentGameId())
-        var userDocument = gameDocument.collection("users").document(auth.currentUser!!.uid)
+        var userDocument = gameDocument.collection("users").document(uid)
         var currentDebt = user.value?.debt ?: 0
         if (currentDebt == 0) {
             throw Exception("You have no debt")
@@ -232,9 +230,9 @@ class GameRepository(private val notificationApiService: NotificationApiService)
         return userDocument.set(newUser.toMap())
     }
 
-    fun depositEndavans(valueToDeposit: Int): Task<Void> {
+    fun depositEndavans(uid: String, valueToDeposit: Int): Task<Void> {
         var gameDocument = gameRef.document(getCurrentGameId())
-        var userDocument = gameDocument.collection("users").document(auth.currentUser!!.uid)
+        var userDocument = gameDocument.collection("users").document(uid)
         var currentEndavans = user.value?.endavans ?: 0
         var newUser = user.value?.copy(endavans = currentEndavans + valueToDeposit)
                 ?: User(auth.currentUser?.email
@@ -243,9 +241,9 @@ class GameRepository(private val notificationApiService: NotificationApiService)
         return userDocument.set(newUser.toMap())
     }
 
-    fun withdrawEndavans(valueToWithDraw: Int): Task<Void> {
+    fun withdrawEndavans(uid: String, valueToWithDraw: Int): Task<Void> {
         var gameDocument = gameRef.document(getCurrentGameId())
-        var userDocument = gameDocument.collection("users").document(auth.currentUser!!.uid)
+        var userDocument = gameDocument.collection("users").document(uid)
         var currentEndavans = user.value?.endavans ?: 0
         if (currentEndavans < valueToWithDraw) {
             throw Exception("Not enough Endavans")
@@ -257,10 +255,10 @@ class GameRepository(private val notificationApiService: NotificationApiService)
         return userDocument.update(newUser.toMap())
     }
 
-    fun sendNotification(type: RequestType,extra:String?):Observable<MyResponse>{
-        val data =Data(type,extra)
-        val foo=Foo(adminToken.value!!,data)
-        return notificationApiService.sendNotification(foo)
+    fun sendNotification(type: RequestType, extra: Int?): Observable<FCMResponse> {
+        val data = Data(auth.currentUser!!.uid, FirebaseInstanceId.getInstance().token!!, type, extra)
+        val request = Request(adminToken.value!!, data)
+        return notificationApiService.sendNotification(request)
     }
 
 

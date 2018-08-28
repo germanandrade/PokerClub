@@ -1,4 +1,4 @@
-package com.ramup.gandrade.pokerclub.Game
+package com.ramup.gandrade.pokerclub.Game.Views
 
 import android.app.AlertDialog
 import android.arch.lifecycle.Observer
@@ -7,17 +7,15 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.example.gandrade.pokerclub.util.TextToImageEncode
 import com.example.gandrade.pokerclub.util.showMessage
-import com.google.firebase.iid.FirebaseInstanceId
+import com.ramup.gandrade.pokerclub.Game.Notifications.RequestType
 import com.ramup.gandrade.pokerclub.Main2Activity
 import com.ramup.gandrade.pokerclub.R
-import com.ramup.gandrade.pokerclub.Retrofit.RequestType
 import com.ramup.gandrade.pokerclub.UserAdapter
 import com.ramup.gandrade.pokerclub.UserProfile.GameViewModel
 import com.ramup.gandrade.pokerclub.UserProfile.User
@@ -45,8 +43,18 @@ class GameActivity : FragmentActivity() {
         gameViewModel.activeUsers.observe(this, Observer { list ->
             rv_user_list.adapter = UserAdapter(list!!, this)
         })
+        gameViewModel.updateAdminToken()
+        gameViewModel.adminToken.observe(this, Observer { id ->
+            enableButtons()
+        })
     }
 
+    private fun enableButtons() {
+        buyButton.isEnabled = true
+        depositButton.isEnabled = true
+        withdrawButton.isEnabled = true
+        payDebtButton.isEnabled = true
+    }
 
 
     fun setMenu(user: User) {
@@ -128,35 +136,13 @@ class GameActivity : FragmentActivity() {
     }
 
     fun buyEndavans(view: View) {
-
-        gameViewModel.updateAdminToken()
-        gameViewModel.adminToken.observe(this, Observer {
-            id->
-            showMessage(view,id!!)
-            Log.d("token",id)
-            gameViewModel.sendNotification(RequestType.BUY,null)
-        })
-        /*
-        showMessage(view, "Loading...")
-        gameViewModel.buyEndavans().addOnCompleteListener(this) {
-            if (it.isSuccessful) {
-                createDialog("Endavans Bougth", "Successful! your debt increased $500")
-            }
-        }
-        */
+        gameViewModel.sendNotification(RequestType.BUY, null)
+        createDialog()
     }
 
     fun payDebt(view: View) {
-        showMessage(view, "Loading...")
-        try {
-            gameViewModel.payDebt().addOnCompleteListener(this) {
-                if (it.isSuccessful) {
-                    createDialog("Successful Pay Debt", "Now you have no debts")
-                }
-            }
-        } catch (e: Exception) {
-            createDialog("error", e?.message.toString())
-        }
+        gameViewModel.sendNotification(RequestType.PAY, null)
+        createDialog()
     }
 
     fun depositEndavans(view: View) {
@@ -164,47 +150,35 @@ class GameActivity : FragmentActivity() {
             depositEndavans.text.isEmpty() -> showMessage(view, getString(R.string.empty_deposit))
             else -> {
                 var valueToDeposit = depositEndavans.text.toString().toInt()
-                gameViewModel.depositEndavans(valueToDeposit).addOnCompleteListener(this) {
-                    if (it.isSuccessful) {
-                        depositEndavans.setText("")
-                        createDialog("Successful Deposit", "your account increased E:$valueToDeposit")
-                    }
-                }
+                depositEndavans.setText("")
+                gameViewModel.sendNotification(RequestType.DEPOSIT, valueToDeposit)
+                createDialog()
             }
         }
-
     }
-
 
     fun withdrawEndavans(view: View) {
         when {
             withdrawEndavans.text.isEmpty() -> showMessage(view, getString(R.string.empty_withdraw))
             else -> {
                 var valueToWithdraw = withdrawEndavans.text.toString().toInt()
-                try {
-                    withdrawEndavans.setText("")
-                    gameViewModel.withdrawEndavans(valueToWithdraw).addOnCompleteListener(this) {
-                        if (it.isSuccessful) {
-                            createDialog("Successful Withdraw", "your account decreased E:$valueToWithdraw")
-                        }
-                    }
-                } catch (e: Exception) {
-                    createDialog("error", e?.message.toString())
-                }
+                withdrawEndavans.setText("")
+                gameViewModel.sendNotification(RequestType.WITHDRAW, valueToWithdraw)
+                createDialog()
             }
         }
 
     }
 
-    private fun createDialog(title: String, message: String) {
+    private fun createDialog() {
         val builder: AlertDialog.Builder
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder = AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
         } else {
             builder = AlertDialog.Builder(this)
         }
-        builder.setTitle(title)
-                .setMessage(message)
+        builder.setTitle("Complete")
+                .setMessage("Your request was sent, wait until admin aprove it")
                 .setPositiveButton(android.R.string.yes, DialogInterface.OnClickListener { dialog, which ->
                     // continue with delete
 

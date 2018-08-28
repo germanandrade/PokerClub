@@ -1,11 +1,10 @@
-package com.ramup.gandrade.pokerclub.Game
+package com.ramup.gandrade.pokerclub.Game.Views
 
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import com.google.zxing.Result
 import me.dm7.barcodescanner.zxing.ZXingScannerView
-import android.content.Intent
 import com.example.gandrade.pokerclub.util.showMessage
 import com.ramup.gandrade.pokerclub.UserProfile.GameViewModel
 import org.jetbrains.anko.startActivity

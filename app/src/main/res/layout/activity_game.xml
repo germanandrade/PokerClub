@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:gravity="center|center_horizontal"
+    android:orientation="vertical"
     android:padding="20dp"
-    tools:context=".Game.GameActivity">
+    tools:context=".Game.Views.GameActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:paddingTop="20dp"
-        android:orientation="vertical"
         android:id="@+id/rv_user_list"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="200dp"
+        android:orientation="vertical"
+        android:paddingTop="20dp">
 
     </android.support.v7.widget.RecyclerView>
 
     <Button
+        android:id="@+id/buyButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
+        android:enabled="false"
         android:onClick="buyEndavans"
         android:text="@string/buy_endavans"
         android:textSize="16sp" />
@@ -44,9 +45,11 @@
             android:textSize="16sp" />
 
         <Button
+            android:id="@+id/depositButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="50"
+            android:enabled="false"
             android:onClick="depositEndavans"
             android:padding="@dimen/padding_functions"
             android:text="@string/deposit_endavans"
@@ -72,9 +75,11 @@
             android:textSize="16sp" />
 
         <Button
+            android:id="@+id/withdrawButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="50"
+            android:enabled="false"
             android:onClick="withdrawEndavans"
             android:padding="@dimen/padding_functions"
             android:text="@string/withdraw_endavans"
@@ -82,9 +87,11 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/payDebtButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
+        android:enabled="false"
         android:onClick="payDebt"
         android:text="@string/pay_debt"
         android:textSize="16sp" />

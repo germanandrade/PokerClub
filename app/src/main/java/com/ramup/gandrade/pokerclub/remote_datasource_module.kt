@@ -1,7 +1,7 @@
 package com.ramup.gandrade.pokerclub
 
 import BASE_URL
-import com.ramup.gandrade.pokerclub.Game.NotificationApiService
+import com.ramup.gandrade.pokerclub.Game.Notifications.NotificationApiService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module.applicationContext

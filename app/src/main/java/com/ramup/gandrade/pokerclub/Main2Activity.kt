@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.activity_main2.*
 import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
 import android.arch.lifecycle.Observer
-import com.ramup.gandrade.pokerclub.Game.GameStartFragment
+import com.ramup.gandrade.pokerclub.Game.Views.GameStartFragment
 import com.ramup.gandrade.pokerclub.Global.GlobalFragment
 import com.ramup.gandrade.pokerclub.UserProfile.ProfileFragment
 

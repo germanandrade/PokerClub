@@ -34,15 +34,15 @@
             android:name=".Main2Activity"
             android:label="@string/title_activity_main2" />
         <activity
-            android:name=".Game.CreateGameActivity"
+            android:name=".Game.Views.CreateGameActivity"
             android:parentActivityName=".Main2Activity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Main2Activity" />
         </activity>
-        <activity android:name=".Game.ScanActivity" />
+        <activity android:name=".Game.Views.ScanActivity" />
         <activity
-            android:name=".Game.GameActivity"
+            android:name=".Game.Views.GameActivity"
             android:label="@string/title_activity_game" />
 
         <service android:name=".MyFirebaseMessagingService">
