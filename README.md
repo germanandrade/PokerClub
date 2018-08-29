@@ -1,4 +1,7 @@
 ### The app will support these functionalities:
+* Global view: List of all users in active or paused games sorted by endavans and debt
+* Refactor
+* Crashlytics
 * Cache
 * Confirmation dialogs!
 * Playstore!
@@ -14,10 +17,13 @@
 *Test (Unit, Intrumentation: Expresso, automatiz)
 --------------- // ---------------
 ###Done in Stage 3
-* Retrofit (MUST)
-* News (Firebase Cloud Messaging)
-* Crashlytics
-
+* Retrofit 
+	* Post message to https://fcm.googleapis.com/fcm/send 
+* Notifications (Firebase Cloud Messaging)
+	* Buy, Deposit, Withdraw, Pay now dependt on admin aprove
+	* Admin modifies DB and respond with notification
+	* BroadcastReceiver to manage notification within response
+* Autocomplete @endava.com
 
 --------------- // ---------------
 ###Done in Stage 2
@@ -27,6 +33,7 @@
 	* Active Players
 	* Table
 	* Display name
+	* Attendance with QR
 	* Create game
 		* Generate QR
 	* Join game
@@ -51,11 +58,10 @@
     * Change password
 
 --------------- // ---------------
-    
+
+*** BACKLOG ***
+
 * Check historic transactions
-
-
-    
 * Check Balance (global)
 * Check Debt (global)
 
@@ -69,12 +75,9 @@
 * Propose a rule
 
 * Restart Endavans (every Friday)
-* Buy recharge
+* Buy LifeSaver
 
 * Reset Password
-* Autocomplete @endava.com
 
 ### Nice to have:
-
 * Image recognition: Take a picture -> It resolves your endavans
-* Attendance with QR
