@@ -17,6 +17,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.nio.charset.StandardCharsets
 
+
 fun showMessage(view: View, message: String) {
     Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE).setAction("Action", null).show()
 }

@@ -12,4 +12,5 @@ val gameModule = applicationContext {
     }
     bean { GameRepository(get()) }
     bean { NotificationApiService.create() }
+    bean{NotificationCounter()}
 }

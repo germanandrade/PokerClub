@@ -7,21 +7,23 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
-import android.os.Handler
 import android.support.v4.app.NotificationCompat
 import android.util.Log
-import android.widget.Toast
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.ramup.gandrade.pokerclub.Game.NotificationCounter
 import com.ramup.gandrade.pokerclub.R
-import android.os.Looper
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
+import android.support.v4.content.ContextCompat.getSystemService
 
 
-class MyFirebaseMessagingService() : FirebaseMessagingService() {
+
+
+class MyFirebaseMessagingService() : FirebaseMessagingService(), KoinComponent {
     val TAG = "Service"
-    val NOTFICATION_ID = 0
     private val CHANNEL = "Channel"
-    val URL = "https://developer.android.com/design/patterns/notifications.html";
+    val notificationCounter by inject<NotificationCounter>()
 
 
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
@@ -29,7 +31,7 @@ class MyFirebaseMessagingService() : FirebaseMessagingService() {
         // If the application is in the foreground handle both data and notification messages here.
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated.
-        val plain =remoteMessage?.getData()
+        val plain = remoteMessage?.getData()
         Log.d(TAG, "Plain: " + plain)
 
         val data: Data = Data(plain)
@@ -51,6 +53,7 @@ class MyFirebaseMessagingService() : FirebaseMessagingService() {
     }
 
     private fun sendUserNotification(data: Data, success: Boolean) {
+
         val defaultSoundUri = RingtoneManager.getDefaultUri((RingtoneManager.TYPE_NOTIFICATION))
         val notificationBuilder = NotificationCompat.Builder(applicationContext, CHANNEL)
                 .setContentText(message(data, success))
@@ -61,20 +64,22 @@ class MyFirebaseMessagingService() : FirebaseMessagingService() {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(NOTFICATION_ID, notificationBuilder.build())
+        notificationManager.notify(notificationCounter.getId(), notificationBuilder.build())
     }
 
 
     private fun sendAdminNotification(data: Data) {
 
-
+        val currentNotificationId = notificationCounter.getId()
         val acceptIntent = Intent(ACTION_ACCEPT_TRANSACTION)
         acceptIntent.putExtra("data", data)
-        val acceptPendingIntent = PendingIntent.getBroadcast(this, NOTFICATION_ID, acceptIntent, PendingIntent.FLAG_ONE_SHOT)
+        acceptIntent.putExtra("id", currentNotificationId)
+        val acceptPendingIntent = PendingIntent.getBroadcast(this, currentNotificationId, acceptIntent, PendingIntent.FLAG_ONE_SHOT)
 
         val rejectIntent = Intent(ACTION_REJECT_TRANSACTION)
         rejectIntent.putExtra("data", data)
-        val rejectPendingIntent = PendingIntent.getBroadcast(this, NOTFICATION_ID, rejectIntent, PendingIntent.FLAG_ONE_SHOT)
+        rejectIntent.putExtra("id", currentNotificationId)
+        val rejectPendingIntent = PendingIntent.getBroadcast(this, currentNotificationId, rejectIntent, PendingIntent.FLAG_ONE_SHOT)
 
 
         val defaultSoundUri = RingtoneManager.getDefaultUri((RingtoneManager.TYPE_NOTIFICATION))
@@ -88,7 +93,7 @@ class MyFirebaseMessagingService() : FirebaseMessagingService() {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(NOTFICATION_ID, notificationBuilder.build())
+        notificationManager.notify(currentNotificationId, notificationBuilder.build())
     }
 
 
