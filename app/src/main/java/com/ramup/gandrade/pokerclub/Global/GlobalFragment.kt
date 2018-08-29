@@ -37,7 +37,7 @@ class GlobalFragment : Fragment() {
         var view= inflater.inflate(R.layout.activity_global, container, false)
         view.rv_user_list.layoutManager = LinearLayoutManager(activity!!.applicationContext)
 
-        view.rv_user_list.adapter = UserAdapter(listOf<User>(User("me", 45, 5)), activity!!.applicationContext)
+        view.rv_user_list.adapter = UserAdapter(mutableMapOf<String,User>(), activity!!.applicationContext)
 
         return view
     }

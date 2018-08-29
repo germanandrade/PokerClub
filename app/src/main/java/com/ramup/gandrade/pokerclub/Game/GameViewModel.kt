@@ -61,7 +61,7 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
     //----------------
     val mAuth = FirebaseAuth.getInstance();
     val loggedIn = MutableLiveData<Boolean>()
-    lateinit var activeUsers: LiveData<List<User>>
+    lateinit var activeUsers: LiveData<MutableMap<String,User>>
 
 
     fun getUser() {

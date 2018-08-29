@@ -37,14 +37,14 @@ class GameActivity : FragmentActivity() {
         setContentView(R.layout.activity_game)
 
         rv_user_list.layoutManager = LinearLayoutManager(this)
-        rv_user_list.adapter = UserAdapter(listOf<User>(), this)
+        rv_user_list.adapter = UserAdapter(mutableMapOf<String,User>(), this)
 
         gameViewModel.checkActiveUsers()
         gameViewModel.activeUsers.observe(this, Observer { list ->
             rv_user_list.adapter = UserAdapter(list!!, this)
         })
         gameViewModel.updateAdminToken()
-        gameViewModel.adminToken.observe(this, Observer { id ->
+        gameViewModel.adminToken.observe(this, Observer { _ ->
             enableButtons()
         })
     }

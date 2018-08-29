@@ -1,7 +1,5 @@
 ### The app will support these functionalities:
-* Retrofit (MUST)
 * Cache
-* News (Firebase Cloud Messaging)
 * Confirmation dialogs!
 * Playstore!
 * viewPagerFragment ->Get started -> What can you do 
@@ -12,6 +10,14 @@
 * No network -> queue or can't but feedback 
 * Clubs
 * execute function only once kotlin
+*********-----------------************
+*Test (Unit, Intrumentation: Expresso, automatiz)
+--------------- // ---------------
+###Done in Stage 3
+* Retrofit (MUST)
+* News (Firebase Cloud Messaging)
+* Crashlytics
+
 
 --------------- // ---------------
 ###Done in Stage 2

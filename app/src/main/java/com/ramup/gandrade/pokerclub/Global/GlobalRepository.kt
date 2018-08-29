@@ -9,16 +9,16 @@ import com.ramup.gandrade.pokerclub.UserProfile.User
 class GlobalRepository() {
     val db = FirebaseFirestore.getInstance()
     val docRef = db.collection("balance")
-    val data = MutableLiveData<List<User>>()
+    val data = MutableLiveData<MutableMap<String,User>>()
 
-    fun fetch(): LiveData<List<User>> {
-        val arr = ArrayList<User>(20)
+    fun fetch(): LiveData<MutableMap<String,User>> {
+        val arr = mutableMapOf<String,User>()
         docRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 for (document in task.result) {
                     if (document.exists()) {
                         val newUser = User(document.data)
-                        arr.add(newUser)
+                        arr.put(newUser.id,newUser)
                     }
                 }
                 data.value = arr

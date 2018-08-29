@@ -6,7 +6,7 @@ import com.ramup.gandrade.pokerclub.UserProfile.User
 
 class GlobalViewModel(val globalRepo: GlobalRepository) : ViewModel() {
 
-    var users: LiveData<List<User>>
+    var users: LiveData<MutableMap<String,User>>
 
     init {
         users = globalRepo.fetch()

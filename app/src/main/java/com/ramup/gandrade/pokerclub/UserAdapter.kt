@@ -8,11 +8,12 @@ import android.view.ViewGroup
 import com.ramup.gandrade.pokerclub.UserProfile.User
 import kotlinx.android.synthetic.main.user_list_item.view.*
 
-class UserAdapter(var arrayList: List<User>, val context: Context) : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
+class UserAdapter(var map: MutableMap<String,User>, val context: Context) : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
 
+    val keys =map.keys.toTypedArray()
 
     override fun getItemCount(): Int {
-        return arrayList.size
+        return map.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -24,10 +25,10 @@ class UserAdapter(var arrayList: List<User>, val context: Context) : RecyclerVie
     }
 
     override fun onBindViewHolder(holder: ViewHolder, pos: Int) {
-        holder.tvName.text=arrayList.get(pos).name
-        holder.tvEndavans.text=arrayList.get(pos).endavans.toString()
-        holder.tvDebt.text=arrayList.get(pos).debt.toString()
-        holder.tvLifeSaver.text=arrayList.get(pos).lifeSavers.toString()
+        holder.tvName.text=map.get(keys[pos])!!.name
+        holder.tvEndavans.text=map.get(keys[pos])!!.endavans.toString()
+        holder.tvDebt.text=map.get(keys[pos])!!.debt.toString()
+        holder.tvLifeSaver.text=map.get(keys[pos])!!.lifeSavers.toString()
     }
 
     class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {

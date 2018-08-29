@@ -1,3 +1,4 @@
+
 package com.ramup.gandrade.pokerclub
 
 import android.app.AlertDialog
@@ -13,6 +14,8 @@ import org.koin.android.architecture.ext.viewModel
 
 
 class MainFunctionsActivity : FragmentActivity() {
+    /**
+     *
     val viewModel by viewModel<GameViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +25,7 @@ class MainFunctionsActivity : FragmentActivity() {
 
     fun buyEndavans(view: View) {
         showMessage(view, "Loading...")
-        viewModel.buyEndavans().addOnCompleteListener(this) {
+        viewModel.buyEndavans(uid = ).addOnCompleteListener(this) {
             if (it.isSuccessful) {
                 createDialog("Endavans Bougth", "Successful! your debt increased $500")
             }
@@ -95,5 +98,6 @@ class MainFunctionsActivity : FragmentActivity() {
 
 
     }
+     */
 
 }

@@ -45,11 +45,21 @@
             android:name=".Game.Views.GameActivity"
             android:label="@string/title_activity_game" />
 
-        <service android:name=".MyFirebaseMessagingService">
+        <service android:name=".Game.Notifications.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <receiver
+            android:name=".Game.Notifications.NotificationReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.rampup.gandrade.pokerclub.game.notifications.myfirebasemessagingservice.ACTION_ACCEPT_TRANSACTION" />
+                <action android:name="com.rampup.gandrade.pokerclub.game.notifications.myfirebasemessagingservice.ACTION_REJECT_TRANSACTION" />
+            </intent-filter>
+        </receiver>
 
         <activity android:name=".NotificationActivity"></activity>
     </application>

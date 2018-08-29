@@ -47,7 +47,7 @@ class Main2Activity : FragmentActivity() {
         setContentView(R.layout.activity_main2)
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        navigation.setSelectedItemId(R.id.navigation_global);
+        navigation.setSelectedItemId(R.id.navigation_play);
         userProfileViewModel.loggedIn.observe(this, Observer { loggedIn ->
             run { if (!loggedIn!!) startActivity<LoginActivity>();finish() }
         })

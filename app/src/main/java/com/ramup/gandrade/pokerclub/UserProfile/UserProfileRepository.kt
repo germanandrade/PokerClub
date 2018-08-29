@@ -39,8 +39,7 @@ class UserProfileRepository() {
     fun buyEndavans(): Task<Void> {
         var currentDebt = data.value?.debt ?: 0
         var newUser = data.value?.copy(debt = currentDebt + 500)
-                ?: User(auth.currentUser?.email
-                        ?: "none", 0, 500)
+                ?: User(auth.currentUser?.email!!, 0, 500,auth.currentUser?.uid!!)
         data.value = newUser
         return docRef.set(newUser.toMap())
     }
@@ -51,8 +50,7 @@ class UserProfileRepository() {
             throw Exception("You have no debt")
         }
         var newUser = data.value?.copy(debt = 0)
-                ?: User(auth.currentUser?.email
-                        ?: "none", 0, 0)
+                ?: User(auth.currentUser!!.email!!, 0, 0,auth.currentUser!!.uid)
         data.value = newUser
         return docRef.set(newUser.toMap())
     }
@@ -60,8 +58,7 @@ class UserProfileRepository() {
     fun depositEndavans(valueToDeposit: Int): Task<Void> {
         var currentEndavans = data.value?.endavans ?: 0
         var newUser = data.value?.copy(endavans = currentEndavans + valueToDeposit)
-                ?: User(auth.currentUser?.email
-                        ?: "none", valueToDeposit, 0)
+                ?: User(auth.currentUser!!.email!!, valueToDeposit, 0,auth.currentUser!!.uid!!)
         data.value = newUser
         return docRef.set(newUser.toMap())
     }
@@ -72,8 +69,7 @@ class UserProfileRepository() {
             throw Exception("Not enough Endavans")
         }
         var newUser = data.value?.copy(endavans = currentEndavans - valueToWithDraw)
-                ?: User(auth.currentUser?.email
-                        ?: "none", valueToWithDraw, 0)
+                ?: User(auth.currentUser!!.email!!, valueToWithDraw, 0,auth.currentUser!!.uid!!)
         data.value = newUser
         return docRef.update(newUser.toMap())
     }
@@ -82,14 +78,13 @@ class UserProfileRepository() {
         val doc = gameRef.document()
         gameId.value = doc.id
         doc.set(Game().toMap())
-        doc.collection("users").document(auth.currentUser?.uid.toString()).set(User(auth.currentUser?.displayName
-                ?: "err", 0, 0,admin = true).toMap())
+        doc.collection("users").document(auth.currentUser?.uid.toString()).set(User(auth.currentUser!!.displayName!!, 0, 0,auth.currentUser!!.uid!!,admin = true).toMap())
         return gameId
     }
 
     fun activateUserInGame(id: String): LiveData<String> {
-        gameRef.document(id).collection("users").document(auth.currentUser?.uid.toString()).set(User(auth.currentUser?.displayName
-                ?: "err", 0, 0).toMap())
+        gameRef.document(id).collection("users").
+                document(auth.currentUser?.uid.toString()).set(User(auth.currentUser!!.displayName!!, 0, 0,auth.currentUser!!.uid!!).toMap())
         gameId.value = id
         return gameId
     }

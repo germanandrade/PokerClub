@@ -8,12 +8,12 @@
 
     <item
         android:id="@+id/navigation_play"
-        android:icon="@drawable/ic_play_arrow_black_24dp"
+        android:icon="@drawable/ic_games_black_24dp"
         android:title="@string/title_play" />
 
     <item
         android:id="@+id/navigation_profile"
-        android:icon="@drawable/ic_person_outline_black_24dp"
+        android:icon="@drawable/ic_profile"
         android:title="@string/tile_profile" />
 
 </menu>

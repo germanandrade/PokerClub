@@ -16,6 +16,7 @@ import io.reactivex.Observable
 class GameRepository(private val notificationApiService: NotificationApiService) {
 
     val auth = FirebaseAuth.getInstance()
+    val TAG = GameRepository::class.java.simpleName
 
     val user = MutableLiveData<User?>()
 
@@ -26,6 +27,8 @@ class GameRepository(private val notificationApiService: NotificationApiService)
     val gameRef = db.collection("games")
 
     val adminToken = MutableLiveData<String>()
+
+    val activeUsers = MutableLiveData<MutableMap<String, User>>()
 
 
     fun checkPausedGames(): LiveData<String?> {
@@ -58,7 +61,7 @@ class GameRepository(private val notificationApiService: NotificationApiService)
 
     fun createUserInGame(success: MutableLiveData<Boolean>) {
         var userDocument = gameRef.document(getCurrentGameId()).collection("users").document(auth.currentUser!!.uid)
-        userDocument.set(User(auth.currentUser!!.displayName!!, 0, 0).toMap()).addOnSuccessListener {
+        userDocument.set(User(auth.currentUser!!.displayName!!, 0, 0, auth.currentUser!!.uid).toMap()).addOnSuccessListener {
             success.value = true
         }
     }
@@ -105,7 +108,7 @@ class GameRepository(private val notificationApiService: NotificationApiService)
         val doc = gameRef.document()
         currentActiveGameId.value = doc.id
         doc.set(Game().toMap())
-        val map = User(auth.currentUser?.displayName ?: "err", 0, 0, admin = true).toMap()
+        val map = User(auth.currentUser?.displayName!!, 0, 0, auth.currentUser!!.uid, admin = true).toMap()
         map.put("Token", FirebaseInstanceId.getInstance().token!!)
         doc.collection("users").document(auth.currentUser?.uid.toString()).set(map)
         return currentActiveGameId
@@ -157,8 +160,8 @@ class GameRepository(private val notificationApiService: NotificationApiService)
         return user
     }
 
-    fun getActiveUsers(): LiveData<List<User>> {
-        val activeUsers = MutableLiveData<List<User>>()
+
+    fun getActiveUsers(): LiveData<MutableMap<String, User>> {
         gameRef.document(currentActiveGameId.value!!)
                 .collection("users")
                 .whereEqualTo("Active", true)
@@ -166,12 +169,12 @@ class GameRepository(private val notificationApiService: NotificationApiService)
                     if (exception != null) {
                         Log.d("fail", "fail")
                     } else {
-                        val arr = ArrayList<User>(20)
+                        val arr = mutableMapOf<String, User>()
 
                         for (document in query) {
                             if (document.exists()) {
                                 val newUser = User(document.data)
-                                arr.add(newUser)
+                                arr.put(newUser.id, newUser)
                             }
                         }
                         activeUsers.value = arr
@@ -190,9 +193,8 @@ class GameRepository(private val notificationApiService: NotificationApiService)
                     } else {
                         for (document in query) {
                             if (document.exists()) {
-                                val newUser = User(document.data)
-                                adminToken.value = document.data["Token"] as String
-
+                                adminToken.value = document.data["Token"] as String?
+                                Log.d(TAG, "AdminToken:${adminToken.value}")
                             }
                         }
                     }
@@ -207,57 +209,55 @@ class GameRepository(private val notificationApiService: NotificationApiService)
     fun buyEndavans(uid: String): Task<Void> {
         var gameDocument = gameRef.document(getCurrentGameId())
         var userDocument = gameDocument.collection("users").document(uid)
+        val current: User = activeUsers.value!!.get(uid)!!
 
-        var currentDebt = user.value?.debt ?: 0
-        var newUser = user.value?.copy(debt = currentDebt + 500)
-                ?: User(auth.currentUser?.email
-                        ?: "none", 0, 500)
-        user.value = newUser
-        return userDocument.update(newUser.toMap())
+        return userDocument.update("Debt", current.debt + 500)
     }
 
     fun payDebt(uid: String): Task<Void> {
+
         var gameDocument = gameRef.document(getCurrentGameId())
         var userDocument = gameDocument.collection("users").document(uid)
-        var currentDebt = user.value?.debt ?: 0
+        val current: User = activeUsers.value!!.get(uid)!!
+        var currentDebt = current.debt
+
         if (currentDebt == 0) {
             throw Exception("You have no debt")
         }
-        var newUser = user.value?.copy(debt = 0)
-                ?: User(auth.currentUser?.email
-                        ?: "none", 0, 0)
-        user.value = newUser
-        return userDocument.set(newUser.toMap())
+        return userDocument.update("Debt", 0)
     }
 
     fun depositEndavans(uid: String, valueToDeposit: Int): Task<Void> {
         var gameDocument = gameRef.document(getCurrentGameId())
         var userDocument = gameDocument.collection("users").document(uid)
-        var currentEndavans = user.value?.endavans ?: 0
-        var newUser = user.value?.copy(endavans = currentEndavans + valueToDeposit)
-                ?: User(auth.currentUser?.email
-                        ?: "none", valueToDeposit, 0)
-        user.value = newUser
-        return userDocument.set(newUser.toMap())
+        val current: User = activeUsers.value!!.get(uid)!!
+
+        var currentEndavans = current.endavans
+
+        return userDocument.update("Endavans", currentEndavans + valueToDeposit)
     }
 
     fun withdrawEndavans(uid: String, valueToWithDraw: Int): Task<Void> {
         var gameDocument = gameRef.document(getCurrentGameId())
         var userDocument = gameDocument.collection("users").document(uid)
-        var currentEndavans = user.value?.endavans ?: 0
+        val current: User = activeUsers.value!!.get(uid)!!
+
+        var currentEndavans = current.endavans
         if (currentEndavans < valueToWithDraw) {
             throw Exception("Not enough Endavans")
         }
-        var newUser = user.value?.copy(endavans = currentEndavans - valueToWithDraw)
-                ?: User(auth.currentUser?.email
-                        ?: "none", valueToWithDraw, 0)
-        user.value = newUser
-        return userDocument.update(newUser.toMap())
+
+        return userDocument.update("Endavans", currentEndavans - valueToWithDraw)
     }
 
     fun sendNotification(type: RequestType, extra: Int?): Observable<FCMResponse> {
-        val data = Data(auth.currentUser!!.uid, FirebaseInstanceId.getInstance().token!!, type, extra)
+        val data = Data(auth.currentUser!!.displayName!!, auth.currentUser!!.uid, FirebaseInstanceId.getInstance().token!!, type.toString(), extra)
         val request = Request(adminToken.value!!, data)
+        return notificationApiService.sendNotification(request)
+    }
+
+    fun sendSuccessNotification(data: Data): Observable<FCMResponse> {
+        val request = Request(data.token, data)
         return notificationApiService.sendNotification(request)
     }
 
