@@ -25,8 +25,8 @@
     <style name="smallText">
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:gravity">right</item>
-        <!--<item name="android:padding">@dimen/small_padding</item> -->
         <item name="android:textAlignment">center</item>
+        <item name="android:layout_marginRight">@dimen/padding</item>
         <item name="android:textSize">18sp</item>
     </style>
 

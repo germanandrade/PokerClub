@@ -1,71 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:weightSum="60">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/name"
         style="@style/smallText"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_weight="30"
         android:padding="@dimen/small_padding" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+
+    <ImageView
+        style="@style/icon"
+        android:layout_marginTop="@dimen/small_padding"
+        android:src="@drawable/euro" />
+
+
+    <TextView
+        android:id="@+id/endavans"
+        style="@style/smallText"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:layout_weight="10"
-        android:padding="@dimen/small_padding">
+        android:paddingTop="@dimen/small_padding" />
 
 
-        <ImageView
-            android:src="@drawable/euro"
-            style="@style/icon" />
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="@dimen/small_padding"
+        android:src="@drawable/debt"
+        android:tint="@color/white" />
+
+    <TextView
+        android:id="@+id/debt"
+        style="@style/smallText"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content" />
 
 
-        <TextView
-            android:id="@+id/endavans"
-            style="@style/smallText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+    <ImageView
+        style="@style/icon"
+        android:layout_marginTop="@dimen/small_padding"
+        android:src="@drawable/lifesaver" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/lifeSavers"
+        style="@style/smallText"
         android:layout_width="wrap_content"
-
-        android:layout_height="wrap_content"
-        android:layout_weight="10"
-        android:padding="@dimen/small_padding">
-        <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@drawable/debt"
-            android:tint="@color/white" />
-
-        <TextView
-            android:id="@+id/debt"
-            style="@style/smallText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="10"
-        android:padding="@dimen/small_padding">
-
-        <ImageView
-            android:src="@drawable/lifesaver"
-            style="@style/icon" />
-
-        <TextView
-            android:id="@+id/lifeSavers"
-            style="@style/smallText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

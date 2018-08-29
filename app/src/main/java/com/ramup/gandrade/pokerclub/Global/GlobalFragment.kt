@@ -18,32 +18,29 @@ import org.koin.android.architecture.ext.viewModel
 class GlobalFragment : Fragment() {
     val globalViewModel by viewModel<GlobalViewModel>()
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        globalViewModel.users.observe(this, Observer { list ->
-            Log.d("TAG!",list.toString())
-            rv_user_list.adapter = UserAdapter(list!!, activity!!.applicationContext)
+        globalViewModel.checkCurrentGameId()
+        globalViewModel.currentGameId.observe(this, Observer {
+            globalViewModel.fetchUsers()
+            globalViewModel.activeUsers.observe(this, Observer { list ->
+                rv_user_list.adapter = UserAdapter(list!!, activity!!.applicationContext)
+            })
         })
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var view= inflater.inflate(R.layout.activity_global, container, false)
+        var view = inflater.inflate(R.layout.activity_global, container, false)
         view.rv_user_list.layoutManager = LinearLayoutManager(activity!!.applicationContext)
 
-        view.rv_user_list.adapter = UserAdapter(mutableMapOf<String,User>(), activity!!.applicationContext)
+        view.rv_user_list.adapter = UserAdapter(mutableMapOf<String, User>(), activity!!.applicationContext)
 
         return view
     }
 
     companion object {
-        fun newInstance():GlobalFragment{
+        fun newInstance(): GlobalFragment {
             return GlobalFragment()
         }
     }

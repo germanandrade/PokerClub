@@ -1,7 +1,4 @@
 ### The app will support these functionalities:
-* Global view: List of all users in active or paused games sorted by endavans and debt
-* Refactor
-* Crashlytics
 * Cache
 * Confirmation dialogs!
 * Playstore!
@@ -13,6 +10,12 @@
 * No network -> queue or can't but feedback 
 * Clubs
 * execute function only once kotlin
+
+/**** DOING ****\
+* Global view: List of all users in active or paused games sorted by endavans and debt
+* Refactor
+* Crashlytics
+
 *********-----------------************
 *Test (Unit, Intrumentation: Expresso, automatiz)
 --------------- // ---------------
