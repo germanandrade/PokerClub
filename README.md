@@ -1,11 +1,8 @@
 ### The app will support these functionalities:
-* WithdrawAll
 * Cache
 * Confirmation dialogs!
 * Playstore!
 * viewPagerFragment ->Get started -> What can you do 
-* Display name
-* Edit profile
 * Change picture --> filechooser 
 * Profile with email 
 * No network -> queue or can't but feedback 
@@ -13,20 +10,25 @@
 * execute function only once kotlin
 
 /**** DOING ****\
-* Crashlytics [DONE]
-* Refactor
-	* Global view: List of all users in active or paused games sorted by endavans and debt [DONE]
-	* Profile view: 
-		* Data from current game[DONE]
-		* Change display name [DONE]
-		* Change Image 
-	*App Icon
-
+* Include Image in ListItem
+* WithdrawAll
+* Use LifeSaver
+* Fix Bugs
+*App Icon
 * Loading view
 
 *********-----------------************
 *Test (Unit, Intrumentation: Expresso, automatiz)
 --------------- // ---------------
+###Done in Stage 4
+* Crashlytics [DONE]
+* Refactor
+	* Global view: List of all users in active or paused games sorted by endavans and debt [DONE]
+	* Profile view: 
+		* Data from current game[DONE]
+		* Edit profile
+			* Change display name [DONE]
+			* Change Image [DONE]
 ###Done in Stage 3
 * Retrofit 
 	* Post message to https://fcm.googleapis.com/fcm/send 
