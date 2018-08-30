@@ -1,16 +1,21 @@
 package com.ramup.gandrade.pokerclub
 
 import android.content.Context
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.ramup.gandrade.pokerclub.Picasso.RoundTransformation
 import com.ramup.gandrade.pokerclub.UserProfile.User
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Transformation
+import kotlinx.android.synthetic.main.fragment_user_profile.*
 import kotlinx.android.synthetic.main.user_list_item.view.*
 
-class UserAdapter(var map: MutableMap<String,User>, val context: Context) : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
+class UserAdapter(var map: MutableMap<String, User>, val context: Context) : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
 
-    val keys =map.keys.toTypedArray()
+    val keys = map.keys.toTypedArray()
 
     override fun getItemCount(): Int {
         return map.size
@@ -25,17 +30,26 @@ class UserAdapter(var map: MutableMap<String,User>, val context: Context) : Recy
     }
 
     override fun onBindViewHolder(holder: ViewHolder, pos: Int) {
-        holder.tvName.text=map.get(keys[pos])!!.name
-        holder.tvEndavans.text=map.get(keys[pos])!!.endavans.toString()
-        holder.tvDebt.text=map.get(keys[pos])!!.debt.toString()
-        holder.tvLifeSaver.text=map.get(keys[pos])!!.lifeSavers.toString()
+        val user = map.get(keys[pos])!!
+        holder.tvName.text = user.name
+        holder.tvEndavans.text = user.endavans.toString()
+        holder.tvDebt.text = user.debt.toString()
+        holder.tvLifeSaver.text = user.lifeSavers.toString()
+        val transformation = RoundTransformation()
+        Picasso.get()
+                .load(user.imageUrl)
+                .placeholder(R.drawable.man)
+                .transform(transformation)
+                .fit()
+                .into(holder.tvProfileImage)
     }
 
-    class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
-        val tvName=view.name
-        val tvEndavans=view.endavans
-        val tvDebt=view.debt
-        val tvLifeSaver=view.lifeSavers
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val tvName = view.name
+        val tvEndavans = view.endavans
+        val tvDebt = view.debt
+        val tvLifeSaver = view.lifeSavers
+        val tvProfileImage = view.profileImage
     }
 
 }

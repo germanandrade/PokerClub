@@ -1,53 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+
+    android:layout_gravity="center"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/profileImage"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/small_padding" />
 
     <TextView
         android:id="@+id/name"
-        style="@style/smallText"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/small_padding" />
+        style="@style/smallTextGlobal"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:text="@string/loading"
+        android:textAlignment="viewStart"
+        android:textSize="14sp" />
 
 
     <ImageView
         style="@style/icon"
+        android:layout_height="match_parent"
         android:layout_marginHorizontal="@dimen/small_padding"
         android:src="@drawable/euro" />
 
 
     <TextView
         android:id="@+id/endavans"
-        style="@style/smallText"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/small_padding" />
+        style="@style/smallTextGlobal"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:text="00000"
+        android:textAlignment="viewStart"
+        android:textSize="14sp" />
 
 
     <ImageView
         android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_height="match_parent"
         android:layout_marginHorizontal="@dimen/small_padding"
         android:src="@drawable/debt"
         android:tint="@color/white" />
 
     <TextView
         android:id="@+id/debt"
-        style="@style/smallText"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content" />
+        style="@style/smallTextGlobal"
+        android:layout_width="35dp"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:text="@string/_0"
+        android:textAlignment="viewStart"
+        android:textSize="14sp"
+        tools:text="0000" />
 
 
     <ImageView
         style="@style/icon"
+        android:layout_height="match_parent"
         android:layout_marginHorizontal="@dimen/small_padding"
         android:src="@drawable/lifesaver" />
 
     <TextView
         android:id="@+id/lifeSavers"
-        style="@style/smallText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        style="@style/smallTextGlobal"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:textAlignment="viewStart"
+        android:textSize="14sp"
+        tools:text="@string/_0" />
 
 </LinearLayout>

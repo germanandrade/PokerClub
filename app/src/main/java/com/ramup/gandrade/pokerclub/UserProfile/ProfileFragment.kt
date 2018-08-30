@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.gandrade.pokerclub.util.bitmapToUriConverter
 import com.example.gandrade.pokerclub.util.showMessage
+import com.ramup.gandrade.pokerclub.Picasso.RoundTransformation
 import com.ramup.gandrade.pokerclub.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_user_profile.*
@@ -88,7 +89,7 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
     private fun doneEdition() {
         val newName = name.text.toString()
         userProfileViewModel.updateChanges(newName, bitmap)
-        showMessage(name,"Loading...")
+        showMessage(name, "Loading...")
     }
 
 
@@ -140,6 +141,7 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
         Picasso.get()
                 .load(user.imageUrl)
                 .placeholder(R.drawable.man)
+                .transform(RoundTransformation())
                 .into(profilePic)
     }
 

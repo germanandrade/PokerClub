@@ -30,6 +30,13 @@
         <item name="android:textSize">18sp</item>
     </style>
 
+    <style name="smallTextGlobal">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
     <style name="smallTextProfile">
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:gravity">right</item>
