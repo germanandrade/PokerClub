@@ -1,4 +1,5 @@
 ### The app will support these functionalities:
+* addSnapshotListener efficeciently
 * Cache
 * Confirmation dialogs!
 * Playstore!
@@ -10,10 +11,10 @@
 * execute function only once kotlin
 
 /**** DOING ****\
-* Include Image in ListItem
+* Include Image in ListItem [DONE]
+* Fix Bugs[DONE]
 * WithdrawAll
 * Use LifeSaver
-* Fix Bugs
 *App Icon
 * Loading view
 

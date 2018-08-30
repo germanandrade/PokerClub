@@ -1,24 +1,21 @@
 package com.ramup.gandrade.pokerclub
 
+import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.FragmentActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import com.ramup.gandrade.pokerclub.Game.Views.GameStartFragment
+import com.ramup.gandrade.pokerclub.Global.GlobalFragment
 import com.ramup.gandrade.pokerclub.Login.LoginActivity
 import com.ramup.gandrade.pokerclub.UserProfile.GameViewModel
+import com.ramup.gandrade.pokerclub.UserProfile.ProfileFragment
+import com.ramup.gandrade.pokerclub.UserProfile.UserProfileViewModel
 import kotlinx.android.synthetic.main.activity_main2.*
 import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
-import android.arch.lifecycle.Observer
-import android.view.View
-import android.widget.Toast
-import com.example.gandrade.pokerclub.util.showMessage
-import com.ramup.gandrade.pokerclub.Game.Views.GameStartFragment
-import com.ramup.gandrade.pokerclub.Global.GlobalFragment
-import com.ramup.gandrade.pokerclub.R.id.navigation_profile
-import com.ramup.gandrade.pokerclub.UserProfile.ProfileFragment
-import com.ramup.gandrade.pokerclub.UserProfile.UserProfileViewModel
 
 
 class Main2Activity : FragmentActivity() {

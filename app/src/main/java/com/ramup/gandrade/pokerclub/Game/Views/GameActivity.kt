@@ -158,15 +158,9 @@ class GameActivity : FragmentActivity() {
     }
 
     fun withdrawEndavans(view: View) {
-        when {
-            withdrawEndavans.text.isEmpty() -> showMessage(view, getString(R.string.empty_withdraw))
-            else -> {
-                var valueToWithdraw = withdrawEndavans.text.toString().toInt()
-                withdrawEndavans.setText("")
-                gameViewModel.sendNotification(RequestType.WITHDRAW, valueToWithdraw)
-                createDialog()
-            }
-        }
+        val cdd = WithdrawDialog(this,gameViewModel)
+        cdd.show()
+
 
     }
 

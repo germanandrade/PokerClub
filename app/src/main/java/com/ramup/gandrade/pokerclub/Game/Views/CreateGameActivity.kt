@@ -34,5 +34,6 @@ class CreateGameActivity : FragmentActivity() {
 
     fun startGame(view: View) {
         startActivity<GameActivity>()
+        finish()
     }
 }

@@ -19,7 +19,7 @@
 
     <Button
         android:id="@+id/buyButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:enabled="false"
@@ -27,73 +27,79 @@
         android:text="@string/buy_endavans"
         android:textSize="16sp" />
 
-    <LinearLayout
+    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/GridLayout1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:weightSum="100">
-
-        <EditText
-            android:id="@+id/depositEndavans"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="50"
-            android:hint="Endavans to deposit"
-            android:inputType="number"
-            android:padding="@dimen/padding_functions"
-            android:textSize="16sp" />
+        android:layout_height="200dp"
+        android:layout_weight="200"
+        android:columnCount="2"
+        android:orientation="horizontal"
+        android:rowCount="2"
+        tools:context=".GridXMLActivity">
 
         <Button
             android:id="@+id/depositButton"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="50"
+            android:layout_columnWeight="50"
+            android:layout_rowWeight="50"
             android:enabled="false"
             android:onClick="depositEndavans"
             android:padding="@dimen/padding_functions"
             android:text="@string/deposit_endavans"
             android:textSize="16sp" />
 
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="100">
-
-
-        <EditText
-            android:id="@+id/withdrawEndavans"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="50"
-            android:hint="@string/endavans_to_withdraw"
-            android:inputType="number"
-            android:padding="@dimen/padding_functions"
-            android:textSize="16sp" />
 
         <Button
             android:id="@+id/withdrawButton"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="50"
+            android:layout_columnWeight="50"
+            android:layout_rowWeight="50"
             android:enabled="false"
             android:onClick="withdrawEndavans"
             android:padding="@dimen/padding_functions"
             android:text="@string/withdraw_endavans"
             android:textSize="16sp" />
-    </LinearLayout>
 
-    <Button
-        android:id="@+id/payDebtButton"
-        android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/payDebtButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="50"
+            android:layout_rowWeight="50"
+            android:enabled="false"
+            android:onClick="payDebt"
+            android:text="@string/pay_debt"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/useLifeSaver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="50"
+            android:layout_rowWeight="50"
+            android:enabled="false"
+            android:onClick="payDebt"
+            android:text="@string/pay_debt"
+            android:textSize="16sp" />
+
+
+    </GridLayout>
+
+    <EditText
+        android:id="@+id/depositEndavans"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:enabled="false"
-        android:onClick="payDebt"
-        android:text="@string/pay_debt"
+        android:layout_weight="50"
+        android:hint="Endavans to deposit"
+        android:inputType="number"
+        android:padding="@dimen/padding_functions"
         android:textSize="16sp" />
+
+
+
 
 
 </LinearLayout>

@@ -48,8 +48,9 @@ class GameStartFragment : Fragment(), View.OnClickListener {
             if (id != null) {
                 gameViewModel.getUser()
                 gameViewModel.user.observe(this, Observer { user ->
-                    if (user != null && user.active  ) {
+                    if (user != null && user.active) {
                         startActivity<GameActivity>()
+                        activity!!.finish()
                     } else {
                         joinGame.visibility = View.VISIBLE
                         createGame.visibility = View.GONE
@@ -94,6 +95,7 @@ class GameStartFragment : Fragment(), View.OnClickListener {
         when (view?.id) {
             R.id.createGame -> {
                 startActivity<CreateGameActivity>();activity?.finish()
+                activity!!.finish()
             }
             R.id.joinGame -> joinGame()
             R.id.continueGame -> resumeGame()
@@ -106,6 +108,7 @@ class GameStartFragment : Fragment(), View.OnClickListener {
         gameViewModel.successfulResume.observe(this, Observer { success ->
             if (success != null && success) {
                 startActivity<GameActivity>()
+                activity!!.finish()
             }
         })
     }
@@ -118,7 +121,7 @@ class GameStartFragment : Fragment(), View.OnClickListener {
             makeRequest()
         } else {
             startActivity<ScanActivity>()
-            activity?.finish()
+            activity!!.finish()
         }
     }
 
@@ -136,7 +139,7 @@ class GameStartFragment : Fragment(), View.OnClickListener {
                     Toast.makeText(activity, "Permission has been denied by user", Toast.LENGTH_LONG)
                 } else {
                     startActivity<ScanActivity>()
-                    activity?.finish()
+                    activity!!.finish()
                 }
             }
         }
