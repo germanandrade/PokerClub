@@ -1,8 +1,12 @@
 package com.example.gandrade.pokerclub.util
 
 import android.app.Activity
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.support.design.widget.Snackbar
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
@@ -12,10 +16,12 @@ import com.google.zxing.WriterException
 import com.google.zxing.common.BitMatrix
 import java.io.BufferedReader
 import java.io.DataOutputStream
+import java.io.File
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import java.nio.charset.StandardCharsets
+import java.util.*
 
 
 fun showMessage(view: View, message: String) {
@@ -52,46 +58,51 @@ fun TextToImageEncode(value: String): Bitmap? {
     return bitmap
 }
 
-fun pushToChat(message: String) {
+fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
+    // Raw height and width of image
+    val height = options.outHeight;
+    val width = options.outWidth;
+    var inSampleSize = 1;
 
-    val serverURL: String = "https://fcm.googleapis.com/fcm/send"
-    val url = URL(serverURL)
-    val connection = url.openConnection() as HttpURLConnection
-    connection.requestMethod = "POST"
-    connection.connectTimeout = 300000
-    connection.connectTimeout = 300000
-    connection.doOutput = true
+    if (height > reqHeight || width > reqWidth) {
 
-    val postData: ByteArray = message.toByteArray(StandardCharsets.UTF_8)
+        val halfHeight = height / 2;
+        val halfWidth = width / 2;
 
-    connection.setRequestProperty("charset", "utf-8")
-    connection.setRequestProperty("Content-lenght", postData.size.toString())
-    connection.setRequestProperty("Content-Type", "application/json")
-    connection.setRequestProperty("Authorization", "AAAAZ813xEc:APA91bHTm8_zfC-N7ywnx4TcT4rW1Uh9jjFJlTgRj2_mBpD-iKxAZw1Di87Tr11xPrTuu-aRFBznjFVW5GQt1FaSRqIxP8SaL0Rnt6wq3YgEGwazI8eVWivtWlm2Ki_jdnE7R3q9mchtwSg_RgsvpItsbHyCu9GZ8g")
-
-    try {
-        val outputStream: DataOutputStream = DataOutputStream(connection.outputStream)
-        outputStream.write(postData)
-        outputStream.flush()
-    } catch (exception: Exception) {
-
-    }
-    /**
-    if (connection.responseCode != HttpURLConnection.HTTP_OK && connection.responseCode != HttpURLConnection.HTTP_CREATED) {
-        try {
-
-
-            val reader: BufferedReader = BufferedReader(InputStreamReader(inputStream))
-            val output: String = reader.readLine()
-
-            println("There was error while connecting the chat $output")
-            System.exit(0)
-
-        } catch (exception: Exception) {
-            throw Exception("Exception while push the notification  $exception.message")
+        // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+        // height and width larger than the requested height and width.
+        while ((halfHeight / inSampleSize) >= reqHeight
+                && (halfWidth / inSampleSize) >= reqWidth) {
+            inSampleSize *= 2;
         }
     }
-    */
 
+    return inSampleSize;
+}
+
+fun bitmapToUriConverter(mBitmap: Bitmap, activity: Activity): Uri? {
+    var uri: Uri? = null;
+    try {
+        var options = BitmapFactory.Options();
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, 100, 100);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        val newBitmap = Bitmap.createScaledBitmap(mBitmap, 200, 200, true);
+        val file = File(activity.getFilesDir(), "Image" + Random().nextInt() + ".jpeg");
+        val out = activity.openFileOutput(file.getName(), Context.MODE_PRIVATE);
+        newBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+        out.flush();
+        out.close();
+        //get absolute path
+        val realPath = file.getAbsolutePath();
+        val f = File(realPath);
+        uri = Uri.fromFile(f);
+
+    } catch (e: Exception) {
+        Log.e("Your Error Message", e.message);
+    }
+    return uri;
 }
 

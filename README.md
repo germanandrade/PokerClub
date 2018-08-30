@@ -1,4 +1,5 @@
 ### The app will support these functionalities:
+* WithdrawAll
 * Cache
 * Confirmation dialogs!
 * Playstore!
@@ -12,9 +13,16 @@
 * execute function only once kotlin
 
 /**** DOING ****\
-* Global view: List of all users in active or paused games sorted by endavans and debt
+* Crashlytics [DONE]
 * Refactor
-* Crashlytics
+	* Global view: List of all users in active or paused games sorted by endavans and debt [DONE]
+	* Profile view: 
+		* Data from current game[DONE]
+		* Change display name [DONE]
+		* Change Image 
+	*App Icon
+
+* Loading view
 
 *********-----------------************
 *Test (Unit, Intrumentation: Expresso, automatiz)

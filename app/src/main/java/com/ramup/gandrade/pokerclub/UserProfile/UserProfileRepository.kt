@@ -2,150 +2,87 @@ package com.ramup.gandrade.pokerclub.UserProfile
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.graphics.Bitmap
 import android.util.Log
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
-import com.ramup.gandrade.pokerclub.Game.Game
-import com.ramup.gandrade.pokerclub.Game.GameState
+import com.google.firebase.storage.FirebaseStorage
+import java.io.ByteArrayOutputStream
+import java.text.SimpleDateFormat
+import java.util.*
 
 class UserProfileRepository() {
-    fun fetch(): LiveData<User> {
-
-        gameRef.document(gameId.value?:"0").collection("users").document(auth.currentUser?.uid.toString()).get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val document = task.result
-                if (document.exists()) {
-                    val newUser = User(document.data)
-                    data.value = newUser
-                }
-            }
-        }
-        return data
-    }
-
-    //-----------
-    val auth = FirebaseAuth.getInstance()
-    val db = FirebaseFirestore.getInstance()
-    val docRef = db.collection("balance").document(auth.currentUser?.uid.toString())
-    val gameRef = db.collection("games")
-
-    val data = MutableLiveData<User>()
-    val gameId = MutableLiveData<String>()
+    private val db = FirebaseFirestore.getInstance()
+    private val gameRef = db.collection("games")
+    private val auth = FirebaseAuth.getInstance()
+    var storage = FirebaseStorage.getInstance()
 
 
+    private val currentGameId = MutableLiveData<String>()
+    private val user = MutableLiveData<User>()
+    val editMode = MutableLiveData<Boolean>()
 
 
-    fun buyEndavans(): Task<Void> {
-        var currentDebt = data.value?.debt ?: 0
-        var newUser = data.value?.copy(debt = currentDebt + 500)
-                ?: User(auth.currentUser?.email!!, 0, 500,auth.currentUser?.uid!!)
-        data.value = newUser
-        return docRef.set(newUser.toMap())
-    }
-
-    fun payDebt(): Task<Void> {
-        var currentDebt = data.value?.debt ?: 0
-        if (currentDebt == 0) {
-            throw Exception("You have no debt")
-        }
-        var newUser = data.value?.copy(debt = 0)
-                ?: User(auth.currentUser!!.email!!, 0, 0,auth.currentUser!!.uid)
-        data.value = newUser
-        return docRef.set(newUser.toMap())
-    }
-
-    fun depositEndavans(valueToDeposit: Int): Task<Void> {
-        var currentEndavans = data.value?.endavans ?: 0
-        var newUser = data.value?.copy(endavans = currentEndavans + valueToDeposit)
-                ?: User(auth.currentUser!!.email!!, valueToDeposit, 0,auth.currentUser!!.uid!!)
-        data.value = newUser
-        return docRef.set(newUser.toMap())
-    }
-
-    fun withdrawEndavans(valueToWithDraw: Int): Task<Void> {
-        var currentEndavans = data.value?.endavans ?: 0
-        if (currentEndavans < valueToWithDraw) {
-            throw Exception("Not enough Endavans")
-        }
-        var newUser = data.value?.copy(endavans = currentEndavans - valueToWithDraw)
-                ?: User(auth.currentUser!!.email!!, valueToWithDraw, 0,auth.currentUser!!.uid!!)
-        data.value = newUser
-        return docRef.update(newUser.toMap())
-    }
-
-    fun createGame(): LiveData<String> {
-        val doc = gameRef.document()
-        gameId.value = doc.id
-        doc.set(Game().toMap())
-        doc.collection("users").document(auth.currentUser?.uid.toString()).set(User(auth.currentUser!!.displayName!!, 0, 0,auth.currentUser!!.uid!!,admin = true).toMap())
-        return gameId
-    }
-
-    fun activateUserInGame(id: String): LiveData<String> {
-        gameRef.document(id).collection("users").
-                document(auth.currentUser?.uid.toString()).set(User(auth.currentUser!!.displayName!!, 0, 0,auth.currentUser!!.uid!!).toMap())
-        gameId.value = id
-        return gameId
-    }
-
-    fun checkActiveGames(): LiveData<String?> {
-        val activeGame = MutableLiveData<String?>()
-        gameRef.whereEqualTo("State", GameState.ACTIVE.toString()).get().addOnCompleteListener { task ->
+    fun checkCurrentGameId(): LiveData<String?> {
+        gameRef.get().addOnCompleteListener { task ->
             if (task.isComplete) {
-                for (doc in task.result){
-                    activeGame.value = doc.id
-                }
-                if(task.result.isEmpty){
-                    activeGame.value=null
+                for (doc in task.result) {
+                    currentGameId.value = doc.id
                 }
             }
         }
-        return activeGame
+        return currentGameId
     }
 
-    fun checkPausedGame(): LiveData<String?> {
-        val pausedGame = MutableLiveData<String?>()
-        gameRef.whereEqualTo("State", GameState.PAUSED.toString()).get().addOnCompleteListener { task ->
-            if (task.isComplete) {
-                for (doc in task.result){
-                    pausedGame.value = doc.id
-                }
-                if(task.result.isEmpty){
-                    pausedGame.value=null
-                }
+    fun fetchUser(): LiveData<User> {
+        val userDoc = gameRef.document(currentGameId.value!!).collection("users").document(auth.currentUser!!.uid)
+        userDoc.addSnapshotListener(EventListener { query, exception ->
+            if (exception != null) {
+                Log.d("fail", "fail")
+            } else {
+                user.value = User(query.data)
             }
-        }
-        return pausedGame
+        })
+
+        return user
     }
 
+    fun editProfile(): MutableLiveData<Boolean> {
+        editMode.value = editMode.value == null || !editMode.value!!
+        return editMode
+    }
 
+    fun updateChanges(newDisplayName: String, bitmap: Bitmap?) {
+        val user = auth.currentUser
+        val profileUpdates = UserProfileChangeRequest.Builder().setDisplayName(newDisplayName).build()
+        user?.updateProfile(profileUpdates)
+        if (bitmap != null) {
+            uploadImage(bitmap, newDisplayName)
+        } else {
+            val userDoc = gameRef.document(currentGameId.value!!).collection("users").document(auth.currentUser!!.uid)
+            userDoc.update("Name", newDisplayName).addOnSuccessListener { editProfile() }
+        }
 
-    fun getActiveUsers(): LiveData<List<User>> {
-        val activeUsers = MutableLiveData<List<User>>()
+    }
 
-        val arr = ArrayList<User>(20)
-        gameRef.document(gameId.value?:"0").collection("users").whereEqualTo("Active",true).get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                for (document in task.result) {
-                    if (document.exists()) {
-                        val newUser = User(document.data)
-                        arr.add(newUser)
-                    }
+    fun uploadImage(bitmap: Bitmap, newDisplayName: String) {
+        val storageRef = storage.reference
+        val df = SimpleDateFormat("ddMMyyHHmmss")
+        val dataobj = Date()
+        val imagePath = auth.currentUser!!.uid + "." + df.format(dataobj) + ".jpg"
+        val ImageRef = storageRef.child("imagePost/" + imagePath)
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data = baos.toByteArray()
+        val uploadTask = ImageRef.putBytes(data)
+                .addOnSuccessListener { taskSnapshot ->
+                    val url = taskSnapshot.downloadUrl!!.toString()
+                    val userDoc = gameRef.document(currentGameId.value!!).collection("users").document(auth.currentUser!!.uid)
+                    userDoc.update("ImgUrl", url, "Name", newDisplayName)
+                    editProfile()
                 }
-                activeUsers.value = arr
-
-            }
-        }
-        return activeUsers
-    }
-
-    fun pauseGame() {
-        gameRef.document(gameId.value?:"0").update("STATE",GameState.PAUSED)
-    }
-
-    fun resumeGame() {
-
     }
 }
 

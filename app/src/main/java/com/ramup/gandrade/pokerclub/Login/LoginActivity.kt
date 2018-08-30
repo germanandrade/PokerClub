@@ -7,6 +7,7 @@ import com.example.gandrade.pokerclub.util.hideSoftKeyboard
 import com.example.gandrade.pokerclub.util.isEmpty
 import com.example.gandrade.pokerclub.util.showMessage
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.ramup.gandrade.pokerclub.Main2Activity
 import com.ramup.gandrade.pokerclub.R
 import kotlinx.android.synthetic.main.activity_login.*
@@ -15,10 +16,12 @@ import org.koin.android.architecture.ext.viewModel
 
 
 class LoginActivity : FragmentActivity() {
+    lateinit var mFirebaseAnalytics: FirebaseAnalytics
     val viewModel by viewModel<LoginViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         if (viewModel.isLogged()) {
             startActivity<Main2Activity>()
             finish()

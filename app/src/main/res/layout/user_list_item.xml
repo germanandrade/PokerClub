@@ -13,7 +13,7 @@
 
     <ImageView
         style="@style/icon"
-        android:layout_marginTop="@dimen/small_padding"
+        android:layout_marginHorizontal="@dimen/small_padding"
         android:src="@drawable/euro" />
 
 
@@ -28,7 +28,7 @@
     <ImageView
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginTop="@dimen/small_padding"
+        android:layout_marginHorizontal="@dimen/small_padding"
         android:src="@drawable/debt"
         android:tint="@color/white" />
 
@@ -41,7 +41,7 @@
 
     <ImageView
         style="@style/icon"
-        android:layout_marginTop="@dimen/small_padding"
+        android:layout_marginHorizontal="@dimen/small_padding"
         android:src="@drawable/lifesaver" />
 
     <TextView

@@ -11,35 +11,40 @@ import kotlinx.android.synthetic.main.activity_main2.*
 import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
 import android.arch.lifecycle.Observer
+import android.view.View
+import android.widget.Toast
+import com.example.gandrade.pokerclub.util.showMessage
 import com.ramup.gandrade.pokerclub.Game.Views.GameStartFragment
 import com.ramup.gandrade.pokerclub.Global.GlobalFragment
+import com.ramup.gandrade.pokerclub.R.id.navigation_profile
 import com.ramup.gandrade.pokerclub.UserProfile.ProfileFragment
+import com.ramup.gandrade.pokerclub.UserProfile.UserProfileViewModel
 
 
 class Main2Activity : FragmentActivity() {
-    val userProfileViewModel by viewModel<GameViewModel>()
+    val gameViewModel by viewModel<GameViewModel>()
+    val userProfileViewModel by viewModel<UserProfileViewModel>()
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_global -> {
                 supportFragmentManager.beginTransaction()
-                        .replace(R.id.root_layout, GlobalFragment.newInstance(),"GlobalFragment").commit()
+                        .replace(R.id.root_layout, GlobalFragment.newInstance(), "GlobalFragment").commit()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_play -> {
                 supportFragmentManager.beginTransaction()
-                        .replace(R.id.root_layout, GameStartFragment.newInstance(),"GameStartFragment").commit()
+                        .replace(R.id.root_layout, GameStartFragment.newInstance(), "GameStartFragment").commit()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_profile -> {
                 supportFragmentManager.beginTransaction()
-                        .replace(R.id.root_layout, ProfileFragment.newInstance(),"ProfileFragment").commit()
+                        .replace(R.id.root_layout, ProfileFragment.newInstance(), "ProfileFragment").commit()
                 return@OnNavigationItemSelectedListener true
             }
         }
         false
     }
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,10 +53,13 @@ class Main2Activity : FragmentActivity() {
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         navigation.setSelectedItemId(R.id.navigation_play);
-        userProfileViewModel.loggedIn.observe(this, Observer { loggedIn ->
+        gameViewModel.loggedIn.observe(this, Observer { loggedIn ->
             run { if (!loggedIn!!) startActivity<LoginActivity>();finish() }
         })
     }
+
+
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         return true
@@ -59,8 +67,17 @@ class Main2Activity : FragmentActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.signout -> userProfileViewModel.signOut()
+            R.id.signout -> gameViewModel.signOut()
+            R.id.editProfile -> editProfile()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun editProfile() {
+        userProfileViewModel.editProfile()
+        userProfileViewModel.editMode.observe(this, Observer { editMode ->
+            navigation.setSelectedItemId(R.id.navigation_profile);
+            Toast.makeText(this, "Main2Activity", Toast.LENGTH_SHORT).show()
+        })
     }
 }
