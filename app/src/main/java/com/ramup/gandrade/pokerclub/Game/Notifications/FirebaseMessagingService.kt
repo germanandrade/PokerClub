@@ -15,45 +15,24 @@ import com.ramup.gandrade.pokerclub.Game.NotificationCounter
 import com.ramup.gandrade.pokerclub.R
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
-import android.support.v4.content.ContextCompat.getSystemService
 
+class FirebaseMessagingService() : FirebaseMessagingService(), KoinComponent {
 
-
-
-class MyFirebaseMessagingService() : FirebaseMessagingService(), KoinComponent {
     val TAG = "Service"
     private val CHANNEL = "Channel"
     val notificationCounter by inject<NotificationCounter>()
 
-
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
-        // Handle FCM messages here.
-        // If the application is in the foreground handle both data and notification messages here.
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated.
         val plain = remoteMessage?.getData()
-        Log.d(TAG, "Plain: " + plain)
-
-        val data: Data = Data(plain)
-        Log.d(TAG, "From: " + remoteMessage!!.from)
-        Log.d(TAG, "Notification Message Body: ${data.token}")
-
-
-        //startActivity<NotificationActivity>()
+        val data = Data(plain)
         if (data.success == null) {
             sendAdminNotification(data)
         } else {
             sendUserNotification(data, data.success!!)
         }
-
-    }
-
-    fun message(data: Data, success: Boolean): String {
-        return "${if (success) "Succesfully" else "Failed"} ${data.requestType} ${if (data.extra != null) data.extra else ""}"
     }
 
     private fun sendUserNotification(data: Data, success: Boolean) {
-
         val defaultSoundUri = RingtoneManager.getDefaultUri((RingtoneManager.TYPE_NOTIFICATION))
         val notificationBuilder = NotificationCompat.Builder(applicationContext, CHANNEL)
                 .setContentText(message(data, success))
@@ -67,9 +46,7 @@ class MyFirebaseMessagingService() : FirebaseMessagingService(), KoinComponent {
         notificationManager.notify(notificationCounter.getId(), notificationBuilder.build())
     }
 
-
     private fun sendAdminNotification(data: Data) {
-
         val currentNotificationId = notificationCounter.getId()
         val acceptIntent = Intent(ACTION_ACCEPT_TRANSACTION)
         acceptIntent.putExtra("data", data)
@@ -80,7 +57,6 @@ class MyFirebaseMessagingService() : FirebaseMessagingService(), KoinComponent {
         rejectIntent.putExtra("data", data)
         rejectIntent.putExtra("id", currentNotificationId)
         val rejectPendingIntent = PendingIntent.getBroadcast(this, currentNotificationId, rejectIntent, PendingIntent.FLAG_ONE_SHOT)
-
 
         val defaultSoundUri = RingtoneManager.getDefaultUri((RingtoneManager.TYPE_NOTIFICATION))
         val notificationBuilder = NotificationCompat.Builder(applicationContext, CHANNEL).setContentText(data.toString())
@@ -94,6 +70,10 @@ class MyFirebaseMessagingService() : FirebaseMessagingService(), KoinComponent {
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(currentNotificationId, notificationBuilder.build())
+    }
+
+    fun message(data: Data, success: Boolean): String {
+        return "${if (success) "Succesfully" else "Failed"} ${data.requestType} ${if (data.extra != null) data.extra else ""}"
     }
 
 

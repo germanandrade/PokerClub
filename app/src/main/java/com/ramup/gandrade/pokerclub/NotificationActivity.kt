@@ -7,18 +7,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.RingtoneManager
-import android.net.Uri
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.NotificationCompat
-import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
-import com.google.firebase.messaging.RemoteMessage
 import com.ramup.gandrade.pokerclub.Game.Notifications.Data
-import com.ramup.gandrade.pokerclub.Game.Notifications.MyFirebaseMessagingService
-import com.ramup.gandrade.pokerclub.Game.Notifications.RequestType
-import com.ramup.gandrade.pokerclub.UserProfile.GameRepository
 import kotlinx.android.synthetic.main.activity_notification.*
 
 class NotificationActivity : FragmentActivity() {

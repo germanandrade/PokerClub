@@ -90,6 +90,7 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
     private fun doneEdition() {
         val newName = name.text.toString()
         userProfileViewModel.updateChanges(newName, bitmap)
+        progressBar.visibility=View.VISIBLE
     }
 
 

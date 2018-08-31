@@ -16,10 +16,6 @@ interface NotificationApiService {
     @POST("send")
     fun sendNotification(@Body body: Request): Observable<FCMResponse>
 
-
-    /**
-     * Companion object to create the GithubApiService
-     */
     companion object Factory {
         fun create(): NotificationApiService {
             val retrofit = Retrofit.Builder()

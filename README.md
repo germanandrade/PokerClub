@@ -5,11 +5,15 @@
 * Auth con google y facebook
 
 /**** DOING ****\
+* Loading view [DONE]
+* viewPagerFragment->Get started -> What can you do 
+* viewPagerFragment 
+
+* Image Fragment
 * Playstore!
-* Loading view
+
 * addSnapshotListener efficeciently
 * Cache
-* viewPagerFragment ->Get started -> What can you do 
 
 
 *********-----------------************

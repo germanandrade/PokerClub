@@ -42,13 +42,11 @@ class GameActivity : FragmentActivity() {
         gameViewModel.activeUsers.observe(this, Observer { list ->
             currentUser = list!![FirebaseAuth.getInstance().currentUser!!.uid]
             rv_user_list.adapter = UserAdapter(list!!, this)
-            disableButtons(currentUser!!)
+            if (currentUser != null) disableButtons(currentUser!!)
         })
         gameViewModel.updateAdminToken()
         gameViewModel.adminToken.observe(this, Observer { _ ->
-            if (currentUser != null) {
-                disableButtons(currentUser!!)
-            }
+            if (currentUser != null) disableButtons(currentUser!!)
         })
     }
 

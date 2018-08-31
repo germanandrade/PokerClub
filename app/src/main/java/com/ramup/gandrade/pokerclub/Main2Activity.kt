@@ -51,8 +51,11 @@ class Main2Activity : FragmentActivity() {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         navigation.setSelectedItemId(R.id.navigation_play);
         gameViewModel.loggedIn.observe(this, Observer { loggedIn ->
-            run { if (!loggedIn!!) startActivity<LoginActivity>();finish() }
+            logged(loggedIn!!).let {  }
         })
+    }
+    fun logged(logged:Boolean){
+        startActivity<LoginActivity>();finish()
     }
 
 
