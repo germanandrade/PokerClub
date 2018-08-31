@@ -61,28 +61,11 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
     //----------------
     val mAuth = FirebaseAuth.getInstance();
     val loggedIn = MutableLiveData<Boolean>()
-    lateinit var activeUsers: LiveData<MutableMap<String,User>>
+    lateinit var activeUsers: LiveData<MutableMap<String, User>>
 
 
     fun getUser() {
         user = gameRepo.fetchUser()
-    }
-
-    fun buyEndavans(uid: String): Task<Void> {
-        return gameRepo.buyEndavans(uid)
-    }
-
-    fun payDebt(uid: String): Task<Void> {
-        return gameRepo.payDebt(uid)
-    }
-
-    fun depositEndavans(uid: String, valueToDeposit: Int): Task<Void> {
-        return gameRepo.depositEndavans(uid, valueToDeposit)
-    }
-
-    fun withdrawEndavans(uid: String, valueToWithdraw: Int): Task<Void> {
-        return gameRepo.withdrawEndavans(uid, valueToWithdraw)
-
     }
 
     fun signOut() {
@@ -93,10 +76,6 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
             }
         }
         mAuth.signOut()
-    }
-
-    fun getName(): String {
-        return mAuth.currentUser?.email.toString()
     }
 
     fun checkActiveUsers() {

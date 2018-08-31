@@ -1,5 +1,5 @@
 package com.ramup.gandrade.pokerclub.Game.Notifications
 
 enum class RequestType {
-    BUY, DEPOSIT, WITHDRAW,PAY
+    BUY, DEPOSIT, WITHDRAW,PAY,LIFESAVER
 }

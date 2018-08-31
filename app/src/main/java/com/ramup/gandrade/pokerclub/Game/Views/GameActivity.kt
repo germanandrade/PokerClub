@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer
 import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.FragmentActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import android.view.MenuItem
 import android.view.View
 import com.example.gandrade.pokerclub.util.TextToImageEncode
 import com.example.gandrade.pokerclub.util.showMessage
+import com.google.firebase.auth.FirebaseAuth
 import com.ramup.gandrade.pokerclub.Game.Notifications.RequestType
 import com.ramup.gandrade.pokerclub.Main2Activity
 import com.ramup.gandrade.pokerclub.R
@@ -32,15 +34,18 @@ class GameActivity : FragmentActivity() {
     lateinit var leaveItem: MenuItem
     lateinit var changeAdminItem: MenuItem
 
+    var currentUser: User? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
         rv_user_list.layoutManager = LinearLayoutManager(this)
-        rv_user_list.adapter = UserAdapter(mutableMapOf<String,User>(), this)
+        rv_user_list.adapter = UserAdapter(mutableMapOf<String, User>(), this)
 
         gameViewModel.checkActiveUsers()
         gameViewModel.activeUsers.observe(this, Observer { list ->
+            currentUser = list!![FirebaseAuth.getInstance().currentUser!!.uid]
             rv_user_list.adapter = UserAdapter(list!!, this)
         })
         gameViewModel.updateAdminToken()
@@ -54,12 +59,13 @@ class GameActivity : FragmentActivity() {
         depositButton.isEnabled = true
         withdrawButton.isEnabled = true
         payDebtButton.isEnabled = true
+        useLifeSaver.isEnabled = true
     }
 
 
     fun setMenu(user: User) {
         if (user.admin) {
-            showMessage(rv_user_list, "You're admin!")
+            showMessage(rv_user_list, "You're admin!", Snackbar.LENGTH_SHORT)
             pauseItem.setVisible(true)
             //changeAdminItem.setVisible(true)
         } else {
@@ -135,50 +141,32 @@ class GameActivity : FragmentActivity() {
         }).show()
     }
 
+
+    val onclick: (requestType: RequestType, defaultValue: Int?) -> Unit = { requestType, value -> gameViewModel.sendNotification(requestType, value) }
+
+    fun useLifeSaver(view: View) {
+        HelperDialog(this, onclick, getString(R.string.empty_deposit), RequestType.LIFESAVER,
+                getString(R.string.use_lifesaver), getString(R.string.use), null).show()
+    }
+
     fun buyEndavans(view: View) {
-        gameViewModel.sendNotification(RequestType.BUY, null)
-        createDialog()
+        HelperDialog(this, onclick, getString(R.string.empty_deposit), RequestType.BUY,
+                getString(R.string.buy_endavans), getString(R.string.buy), null).show()
     }
 
     fun payDebt(view: View) {
-        gameViewModel.sendNotification(RequestType.PAY, null)
-        createDialog()
+        HelperDialog(this, onclick, getString(R.string.empty_deposit), RequestType.PAY
+                , getString(R.string.pay_debt), getString(R.string.pay), currentUser?.debt!!).show()
     }
 
+
     fun depositEndavans(view: View) {
-        when {
-            depositEndavans.text.isEmpty() -> showMessage(view, getString(R.string.empty_deposit))
-            else -> {
-                var valueToDeposit = depositEndavans.text.toString().toInt()
-                depositEndavans.setText("")
-                gameViewModel.sendNotification(RequestType.DEPOSIT, valueToDeposit)
-                createDialog()
-            }
-        }
+        HelperDialog(this, onclick, getString(R.string.empty_deposit),
+                RequestType.DEPOSIT, getString(R.string.deposit_endavans), getString(R.string.deposit), 1000).show()
     }
 
     fun withdrawEndavans(view: View) {
-        val cdd = WithdrawDialog(this,gameViewModel)
-        cdd.show()
-
-
+        HelperDialog(this, onclick, getString(R.string.empty_withdraw),
+                RequestType.WITHDRAW, getString(R.string.withdraw_endavans), getString(R.string.withdraw), currentUser?.endavans!!).show()
     }
-
-    private fun createDialog() {
-        val builder: AlertDialog.Builder
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder = AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
-        } else {
-            builder = AlertDialog.Builder(this)
-        }
-        builder.setTitle("Complete")
-                .setMessage("Your request was sent, wait until admin aprove it")
-                .setPositiveButton(android.R.string.yes, DialogInterface.OnClickListener { dialog, which ->
-                    // continue with delete
-
-                }).show()
-
-
-    }
-
 }

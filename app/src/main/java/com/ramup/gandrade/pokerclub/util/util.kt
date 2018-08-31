@@ -24,8 +24,8 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 
 
-fun showMessage(view: View, message: String) {
-    Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE).setAction("Action", null).show()
+fun showMessage(view: View, message: String, length: Int = Snackbar.LENGTH_INDEFINITE) {
+    Snackbar.make(view, message, length).setAction("Action", null).show()
 }
 
 fun hideSoftKeyboard(activity: Activity) {

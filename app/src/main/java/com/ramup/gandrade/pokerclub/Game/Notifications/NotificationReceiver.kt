@@ -6,7 +6,6 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.support.v4.content.ContextCompat.getSystemService
 import android.util.Log
 import android.widget.Toast
 import com.ramup.gandrade.pokerclub.UserProfile.GameRepository
@@ -27,13 +26,11 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
 
         if (intent.action == ACTION_ACCEPT_TRANSACTION) {
 
-            val equals = data.requestType.equals(RequestType.BUY.toString())
             val task = when {
-                equals -> {
-                    gameRepo.buyEndavans(data.dbId)
-                }
+                data.requestType.equals(RequestType.BUY.toString()) -> {gameRepo.buyEndavans(data.dbId)}
+                data.requestType.equals(RequestType.LIFESAVER.toString()) -> {gameRepo.useLifeSaver(data.dbId)}
                 data.requestType.equals(RequestType.DEPOSIT.toString()) -> gameRepo.depositEndavans(data.dbId, data.extra!!)
-                data.requestType.equals(RequestType.PAY.toString()) -> gameRepo.payDebt(data.dbId)
+                data.requestType.equals(RequestType.PAY.toString()) -> gameRepo.payDebt(data.dbId,data.extra!!)
                 data.requestType.equals(RequestType.WITHDRAW.toString()) -> gameRepo.withdrawEndavans(data.dbId, data.extra!!)
                 else -> null
             }

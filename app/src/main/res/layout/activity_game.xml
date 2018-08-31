@@ -81,25 +81,10 @@
             android:layout_columnWeight="50"
             android:layout_rowWeight="50"
             android:enabled="false"
-            android:onClick="payDebt"
-            android:text="@string/pay_debt"
+            android:onClick="useLifeSaver"
+            android:text="@string/use_life_saver"
             android:textSize="16sp" />
 
 
     </GridLayout>
-
-    <EditText
-        android:id="@+id/depositEndavans"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="50"
-        android:hint="Endavans to deposit"
-        android:inputType="number"
-        android:padding="@dimen/padding_functions"
-        android:textSize="16sp" />
-
-
-
-
-
 </LinearLayout>

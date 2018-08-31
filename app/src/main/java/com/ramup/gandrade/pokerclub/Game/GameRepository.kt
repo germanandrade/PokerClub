@@ -214,17 +214,24 @@ class GameRepository(private val notificationApiService: NotificationApiService)
         return userDocument.update("Debt", current.debt + 500)
     }
 
-    fun payDebt(uid: String): Task<Void> {
+    fun useLifeSaver(uid: String): Task<Void>? {
+        var gameDocument = gameRef.document(getCurrentGameId())
+        var userDocument = gameDocument.collection("users").document(uid)
+        val current: User = activeUsers.value!!.get(uid)!!
+        return userDocument.update("LifeSavers", current.lifeSavers - 1)
+    }
+
+    fun payDebt(uid: String, payValue: Int): Task<Void> {
 
         var gameDocument = gameRef.document(getCurrentGameId())
         var userDocument = gameDocument.collection("users").document(uid)
         val current: User = activeUsers.value!!.get(uid)!!
         var currentDebt = current.debt
 
-        if (currentDebt == 0) {
-            throw Exception("You have no debt")
+        if (payValue > currentDebt) {
+            throw Exception("You can't pay more")
         }
-        return userDocument.update("Debt", 0)
+        return userDocument.update("Debt", currentDebt - payValue)
     }
 
     fun depositEndavans(uid: String, valueToDeposit: Int): Task<Void> {

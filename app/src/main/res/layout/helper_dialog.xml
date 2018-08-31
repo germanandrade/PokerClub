@@ -4,8 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+
     <EditText
-        android:id="@+id/withdrawEndavans"
+        android:id="@+id/editTextHelperDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="50"
@@ -15,7 +16,7 @@
         android:textSize="16sp" />
 
     <Button
-        android:id="@+id/withdraw"
+        android:id="@+id/buttonHelperDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="withdraw"

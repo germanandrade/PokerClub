@@ -9,6 +9,7 @@
 * No network -> queue or can't but feedback 
 * Clubs
 * execute function only once kotlin
+* Auth con google y facebook
 
 /**** DOING ****\
 * Include Image in ListItem [DONE]
