@@ -1,27 +1,30 @@
 ### The app will support these functionalities:
-* addSnapshotListener efficeciently
-* Cache
-* Confirmation dialogs!
-* Playstore!
-* viewPagerFragment ->Get started -> What can you do 
-* Change picture --> filechooser 
-* Profile with email 
 * No network -> queue or can't but feedback 
 * Clubs
 * execute function only once kotlin
 * Auth con google y facebook
 
 /**** DOING ****\
-* Include Image in ListItem [DONE]
-* Fix Bugs[DONE]
-* WithdrawAll
-* Use LifeSaver
-*App Icon
+* Playstore!
 * Loading view
+* addSnapshotListener efficeciently
+* Cache
+* viewPagerFragment ->Get started -> What can you do 
+
 
 *********-----------------************
 *Test (Unit, Intrumentation: Expresso, automatiz)
 --------------- // ---------------
+###Done in Stage 5
+* Include Image in ListItem [DONE]
+* Fix Bugs[DONE]
+* WithdrawAll [DONE]
+* Use LifeSaver [DONE]
+* App Icon [DONE]
+* Disable buttons that can't be triggered! [DONE]
+* Confirmation dialogs! [DONE]
+
+
 ###Done in Stage 4
 * Crashlytics [DONE]
 * Refactor

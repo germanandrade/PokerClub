@@ -19,44 +19,43 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
 
 
     override fun onReceive(context: Context, intent: Intent) {
-
-
         val data: Data = intent.getSerializableExtra("data") as Data
-        val id: Int = intent.getIntExtra("id",0)
-
+        val id: Int = intent.getIntExtra("id", 0)
         if (intent.action == ACTION_ACCEPT_TRANSACTION) {
 
             val task = when {
-                data.requestType.equals(RequestType.BUY.toString()) -> {gameRepo.buyEndavans(data.dbId)}
-                data.requestType.equals(RequestType.LIFESAVER.toString()) -> {gameRepo.useLifeSaver(data.dbId)}
+                data.requestType.equals(RequestType.BUY.toString()) -> {
+                    gameRepo.buyEndavans(data.dbId)
+                }
+                data.requestType.equals(RequestType.LIFESAVER.toString()) -> {
+                    gameRepo.useLifeSaver(data.dbId)
+                }
                 data.requestType.equals(RequestType.DEPOSIT.toString()) -> gameRepo.depositEndavans(data.dbId, data.extra!!)
-                data.requestType.equals(RequestType.PAY.toString()) -> gameRepo.payDebt(data.dbId,data.extra!!)
+                data.requestType.equals(RequestType.PAY.toString()) -> gameRepo.payDebt(data.dbId, data.extra!!)
                 data.requestType.equals(RequestType.WITHDRAW.toString()) -> gameRepo.withdrawEndavans(data.dbId, data.extra!!)
                 else -> null
             }
-
-            task!!
-                    .addOnSuccessListener {
-                        data.success = true
-                        gameRepo.sendSuccessNotification(data).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
-                                .subscribe({ result ->
-                                    Log.d("Result", "There are ${result} Java developers in Lagos")
-                                }, { error ->
-                                    error.printStackTrace()
-                                })
-                        Toast.makeText(context,"Sent notification $data",Toast.LENGTH_LONG).show()
-                    }
+            task!!.addOnSuccessListener {
+                data.success = true
+                gameRepo.sendSuccessNotification(data).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            Log.d("Result", "There are ${result} Java developers in Lagos")
+                        }, { error ->
+                            error.printStackTrace()
+                        })
+                Toast.makeText(context, "Sent notification $data", Toast.LENGTH_LONG).show()
+            }
                     .addOnFailureListener {
                         data.success = false
                         gameRepo.sendSuccessNotification(data)
                     }
-
         } else if (intent.action == ACTION_REJECT_TRANSACTION) {
         }
-        clearNotification(context,id)
+        clearNotification(context, id)
 
     }
-    fun clearNotification(context:Context,id:Int) {
+
+    fun clearNotification(context: Context, id: Int) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(id)
     }

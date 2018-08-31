@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -89,7 +90,6 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
     private fun doneEdition() {
         val newName = name.text.toString()
         userProfileViewModel.updateChanges(newName, bitmap)
-        showMessage(name, "Loading...")
     }
 
 

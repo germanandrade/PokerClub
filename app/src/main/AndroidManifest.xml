@@ -35,7 +35,9 @@
             android:label="@string/title_activity_main2" />
         <activity
             android:name=".Game.Views.CreateGameActivity"
-            android:parentActivityName=".Main2Activity">
+            android:parentActivityName=".Main2Activity"
+
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Main2Activity" />
@@ -43,7 +45,8 @@
         <activity android:name=".Game.Views.ScanActivity" />
         <activity
             android:name=".Game.Views.GameActivity"
-            android:label="@string/title_activity_game" />
+            android:label="@string/title_activity_game"
+            android:windowSoftInputMode="adjustPan" />
 
         <service android:name=".Game.Notifications.MyFirebaseMessagingService">
             <intent-filter>

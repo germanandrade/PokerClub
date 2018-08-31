@@ -74,7 +74,7 @@ class Main2Activity : FragmentActivity() {
         userProfileViewModel.editProfile()
         userProfileViewModel.editMode.observe(this, Observer { editMode ->
             navigation.setSelectedItemId(R.id.navigation_profile);
-            Toast.makeText(this, "Main2Activity", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Changes saved", Toast.LENGTH_SHORT).show()
         })
     }
 }

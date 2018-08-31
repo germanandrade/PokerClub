@@ -162,24 +162,26 @@ class GameRepository(private val notificationApiService: NotificationApiService)
 
 
     fun getActiveUsers(): LiveData<MutableMap<String, User>> {
-        gameRef.document(currentActiveGameId.value!!)
-                .collection("users")
-                .whereEqualTo("Active", true)
-                .addSnapshotListener(EventListener { query, exception ->
-                    if (exception != null) {
-                        Log.d("fail", "fail")
-                    } else {
-                        val arr = mutableMapOf<String, User>()
+        if (currentActiveGameId.value != null) {
+            gameRef.document(currentActiveGameId.value!!)
+                    .collection("users")
+                    .whereEqualTo("Active", true)
+                    .addSnapshotListener(EventListener { query, exception ->
+                        if (exception != null) {
+                            Log.d("fail", "fail")
+                        } else {
+                            val arr = mutableMapOf<String, User>()
 
-                        for (document in query) {
-                            if (document.exists()) {
-                                val newUser = User(document.data)
-                                arr.put(newUser.id, newUser)
+                            for (document in query) {
+                                if (document.exists()) {
+                                    val newUser = User(document.data)
+                                    arr.put(newUser.id, newUser)
+                                }
                             }
+                            activeUsers.value = arr
                         }
-                        activeUsers.value = arr
-                    }
-                })
+                    })
+        }
         return activeUsers
     }
 

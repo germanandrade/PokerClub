@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import com.example.gandrade.pokerclub.util.TextToImageEncode
 import com.example.gandrade.pokerclub.util.showMessage
 import com.google.firebase.auth.FirebaseAuth
@@ -47,11 +48,21 @@ class GameActivity : FragmentActivity() {
         gameViewModel.activeUsers.observe(this, Observer { list ->
             currentUser = list!![FirebaseAuth.getInstance().currentUser!!.uid]
             rv_user_list.adapter = UserAdapter(list!!, this)
+            disableButtons(currentUser!!)
         })
         gameViewModel.updateAdminToken()
         gameViewModel.adminToken.observe(this, Observer { _ ->
-            enableButtons()
+            if (currentUser != null) {
+                disableButtons(currentUser!!)
+            }
         })
+    }
+
+    private fun disableButtons(user: User) {
+        enableButtons()
+        if (user.debt == 0) payDebtButton.isEnabled = false
+        if (user.endavans == 0) withdrawButton.isEnabled = false
+        if (user.lifeSavers <= 0) useLifeSaver.isEnabled = false
     }
 
     private fun enableButtons() {
@@ -60,6 +71,7 @@ class GameActivity : FragmentActivity() {
         withdrawButton.isEnabled = true
         payDebtButton.isEnabled = true
         useLifeSaver.isEnabled = true
+
     }
 
 
@@ -142,31 +154,35 @@ class GameActivity : FragmentActivity() {
     }
 
 
-    val onclick: (requestType: RequestType, defaultValue: Int?) -> Unit = { requestType, value -> gameViewModel.sendNotification(requestType, value) }
+    val onclick: (requestType: RequestType, defaultValue: Int?) -> Unit =
+            { requestType, value ->
+                gameViewModel.sendNotification(requestType, value)
+                Toast.makeText(this, "Request sent!", Toast.LENGTH_SHORT).show()
+            }
 
     fun useLifeSaver(view: View) {
         HelperDialog(this, onclick, getString(R.string.empty_deposit), RequestType.LIFESAVER,
-                getString(R.string.use_lifesaver), getString(R.string.use), null).show()
+                getString(R.string.use_lifesaver), getString(R.string.use), null, null).show()
     }
 
     fun buyEndavans(view: View) {
         HelperDialog(this, onclick, getString(R.string.empty_deposit), RequestType.BUY,
-                getString(R.string.buy_endavans), getString(R.string.buy), null).show()
+                getString(R.string.buy_endavans), getString(R.string.buy), null, null).show()
     }
 
     fun payDebt(view: View) {
         HelperDialog(this, onclick, getString(R.string.empty_deposit), RequestType.PAY
-                , getString(R.string.pay_debt), getString(R.string.pay), currentUser?.debt!!).show()
+                , getString(R.string.pay_debt), getString(R.string.pay), currentUser?.debt!!, currentUser?.debt!!).show()
     }
 
 
     fun depositEndavans(view: View) {
         HelperDialog(this, onclick, getString(R.string.empty_deposit),
-                RequestType.DEPOSIT, getString(R.string.deposit_endavans), getString(R.string.deposit), 1000).show()
+                RequestType.DEPOSIT, getString(R.string.deposit_endavans), getString(R.string.deposit), 1000, null).show()
     }
 
     fun withdrawEndavans(view: View) {
         HelperDialog(this, onclick, getString(R.string.empty_withdraw),
-                RequestType.WITHDRAW, getString(R.string.withdraw_endavans), getString(R.string.withdraw), currentUser?.endavans!!).show()
+                RequestType.WITHDRAW, getString(R.string.withdraw_endavans), getString(R.string.withdraw), currentUser?.endavans!!, currentUser?.endavans!!).show()
     }
 }
