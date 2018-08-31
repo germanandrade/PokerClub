@@ -78,24 +78,18 @@
 --------------- // ---------------
 
 *** BACKLOG ***
-
 * Check historic transactions
 * Check Balance (global)
 * Check Debt (global)
-
 * Ranking debt monthly
 * Ranking endavans monthly
 * Ranking debt annually
 * Ranking endavans annually
-
 * Check poker rules
 * Check intern rules
 * Propose a rule
-
 * Restart Endavans (every Friday)
 * Buy LifeSaver
-
 * Reset Password
-
 ### Nice to have:
 * Image recognition: Take a picture -> It resolves your endavans

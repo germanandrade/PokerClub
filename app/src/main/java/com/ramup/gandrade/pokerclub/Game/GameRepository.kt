@@ -179,9 +179,11 @@ class GameRepository(private val notificationApiService: NotificationApiService)
                                 }
                             }
                             activeUsers.value = arr
+                            user.value = arr[auth.currentUser!!.uid]
                         }
                     })
         }
+
         return activeUsers
     }
 

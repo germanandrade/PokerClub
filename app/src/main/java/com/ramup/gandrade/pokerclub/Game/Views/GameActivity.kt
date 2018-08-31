@@ -27,23 +27,17 @@ import kotlinx.android.synthetic.main.image_dialog.view.*
 import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
 
-
 class GameActivity : FragmentActivity() {
     val gameViewModel by viewModel<GameViewModel>()
-
     lateinit var pauseItem: MenuItem
     lateinit var leaveItem: MenuItem
     lateinit var changeAdminItem: MenuItem
-
     var currentUser: User? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
-
         rv_user_list.layoutManager = LinearLayoutManager(this)
         rv_user_list.adapter = UserAdapter(mutableMapOf<String, User>(), this)
-
         gameViewModel.checkActiveUsers()
         gameViewModel.activeUsers.observe(this, Observer { list ->
             currentUser = list!![FirebaseAuth.getInstance().currentUser!!.uid]
@@ -71,7 +65,6 @@ class GameActivity : FragmentActivity() {
         withdrawButton.isEnabled = true
         payDebtButton.isEnabled = true
         useLifeSaver.isEnabled = true
-
     }
 
 
@@ -85,16 +78,6 @@ class GameActivity : FragmentActivity() {
         }
     }
 
-    fun observeUser() {
-        gameViewModel.getUser()
-        gameViewModel.user.observe(this, Observer { user ->
-            if (user != null) {
-                setMenu(user)
-            } else {
-                //showMessage(rv_user_list, "You're null!")
-            }
-        })
-    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.game_menu, menu)
@@ -103,9 +86,7 @@ class GameActivity : FragmentActivity() {
         changeAdminItem = menu!!.findItem(R.id.changeAdmin)
 
         val user = gameViewModel.getCurrentUser()
-        if (user == null) {
-            observeUser()
-        } else {
+        if (user != null) {
             setMenu(user)
         }
         return true

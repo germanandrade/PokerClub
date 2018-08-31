@@ -78,6 +78,10 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
         mAuth.signOut()
     }
 
+    fun getName(): String {
+        return mAuth.currentUser?.email.toString()
+    }
+
     fun checkActiveUsers() {
         activeUsers = gameRepo.getActiveUsers()
     }
