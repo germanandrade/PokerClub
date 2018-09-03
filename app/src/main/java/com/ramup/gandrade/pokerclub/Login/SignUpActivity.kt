@@ -8,7 +8,6 @@ import com.example.gandrade.pokerclub.util.isEmpty
 import com.example.gandrade.pokerclub.util.passwordsMatch
 import com.example.gandrade.pokerclub.util.showMessage
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.auth.FirebaseAuth
 import com.ramup.gandrade.pokerclub.Main2Activity
 import com.ramup.gandrade.pokerclub.R
 import kotlinx.android.synthetic.main.activity_sign_up.*
@@ -21,7 +20,6 @@ class SignUpActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
-
         emailSignUp.setText(intent.getStringExtra("email"))
         passwordSignUp.setText(intent.getStringExtra("password"))
     }

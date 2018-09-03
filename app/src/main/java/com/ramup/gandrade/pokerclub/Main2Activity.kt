@@ -63,6 +63,7 @@ class Main2Activity : AppCompatActivity() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
+
                 navigation.menu.getItem(position).isChecked = true
             }
         })
@@ -70,7 +71,8 @@ class Main2Activity : AppCompatActivity() {
     }
 
     fun logged(logged: Boolean) {
-        startActivity<LoginActivity>();finish()
+        startActivity<LoginActivity>()
+        finish()
     }
 
 

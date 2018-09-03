@@ -17,12 +17,12 @@ import org.koin.android.architecture.ext.viewModel
 
 class LoginActivity : FragmentActivity() {
     lateinit var mFirebaseAnalytics: FirebaseAnalytics
-    val viewModel by viewModel<LoginViewModel>()
+    val loginViewModel by viewModel<LoginViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        if (viewModel.isLogged()) {
+        if (loginViewModel.isLogged()) {
             startActivity<Main2Activity>()
             finish()
         }
@@ -33,15 +33,15 @@ class LoginActivity : FragmentActivity() {
         hideSoftKeyboard(this)
         if (isEmpty(email) || isEmpty(password)) {
             showMessage(view, getString(R.string.fill_fields))
-        } else {
+        }
+        else {
             var emailString = email.text.toString()
-            if(!emailString.contains("@"))
-            {
-                emailString+="@endava.com"
+            if (!emailString.contains("@")) {
+                emailString += "@endava.com"
                 email.setText(emailString)
             }
             showMessage(view, "Loading...")
-            viewModel.sigIn(emailString, password.text.toString())
+            loginViewModel.sigIn(emailString, password.text.toString())
                     .addOnCompleteListener(this, OnCompleteListener {
                         if (it.isSuccessful) {
                             startActivity<Main2Activity>()

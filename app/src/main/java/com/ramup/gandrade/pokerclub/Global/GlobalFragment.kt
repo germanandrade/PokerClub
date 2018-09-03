@@ -24,16 +24,16 @@ class GlobalFragment : Fragment() {
         globalViewModel.currentGameId.observe(this, Observer {
             globalViewModel.fetchUsers()
             globalViewModel.activeUsers.observe(this, Observer { list ->
-                rv_user_list.adapter = UserAdapter(list!!, activity!!.applicationContext)
+                rv_user_list.adapter = UserAdapter(list!!, activity!!)
             })
         })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.fragment_global, container, false)
-        view.rv_user_list.layoutManager = LinearLayoutManager(activity!!.applicationContext)
+        view.rv_user_list.layoutManager = LinearLayoutManager(activity!!)
 
-        view.rv_user_list.adapter = UserAdapter(mutableMapOf<String, User>(), activity!!.applicationContext)
+        view.rv_user_list.adapter = UserAdapter(mutableMapOf<String, User>(), activity!!)
 
         return view
     }

@@ -12,9 +12,9 @@ import io.reactivex.schedulers.Schedulers
 
 class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
 
-    lateinit var pausedGameId: LiveData<String?>
+    lateinit var pausedGameId: LiveData<String>
 
-    lateinit var currentActiveGameId: LiveData<String?>
+    lateinit var currentActiveGameId: LiveData<String>
 
     lateinit var successfulJoin: LiveData<Boolean>
     lateinit var successfulLeave: LiveData<Boolean>

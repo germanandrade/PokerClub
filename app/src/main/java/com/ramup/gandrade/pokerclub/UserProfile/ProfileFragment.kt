@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.gandrade.pokerclub.util.bitmapToUriConverter
 import com.example.gandrade.pokerclub.util.showMessage
+import com.ramup.gandrade.pokerclub.Global.ProfilePicDialog
 import com.ramup.gandrade.pokerclub.Picasso.RoundTransformation
 import com.ramup.gandrade.pokerclub.R
 import com.squareup.picasso.Picasso
@@ -50,6 +51,7 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
                 .load(uri)
                 .placeholder(R.drawable.man)
                 .into(profilePic)
+
     }
 
 
@@ -95,7 +97,7 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
     private fun doneEdition() {
         val newName = name.text.toString()
         userProfileViewModel.updateChanges(newName, bitmap)
-        progressBar.visibility=View.VISIBLE
+        progressBar.visibility = View.VISIBLE
     }
 
 
@@ -116,6 +118,7 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
             })
         })
         endEdit.setOnClickListener(this)
+
     }
 
 
@@ -148,7 +151,13 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
                 .load(user.imageUrl)
                 .placeholder(R.drawable.man)
                 .transform(RoundTransformation())
+                .fit()
                 .into(profilePic)
+        profilePic.setOnClickListener(View.OnClickListener {
+            if (user.imageUrl != null) {
+                ProfilePicDialog(activity!!, "", user.imageUrl!!).show()
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

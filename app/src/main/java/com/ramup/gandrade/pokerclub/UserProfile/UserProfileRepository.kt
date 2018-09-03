@@ -42,7 +42,9 @@ class UserProfileRepository() {
             if (exception != null) {
                 Log.d("fail", "fail")
             } else {
-                user.value = User(query.data)
+                if(query.exists()){
+                    user.value = User(query.data)
+                }
             }
         })
 

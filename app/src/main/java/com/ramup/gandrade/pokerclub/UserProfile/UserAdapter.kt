@@ -5,10 +5,12 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.ramup.gandrade.pokerclub.Global.ProfilePicDialog
 import com.ramup.gandrade.pokerclub.Picasso.RoundTransformation
 import com.ramup.gandrade.pokerclub.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.user_list_item.view.*
+import org.koin.dsl.module.applicationContext
 
 class UserAdapter(var map: MutableMap<String, User>, val context: Context) : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
 
@@ -39,6 +41,10 @@ class UserAdapter(var map: MutableMap<String, User>, val context: Context) : Rec
                 .transform(transformation)
                 .fit()
                 .into(holder.tvProfileImage)
+        holder.tvProfileImage.setOnClickListener(View.OnClickListener {
+            if(user.imageUrl!=null)
+            ProfilePicDialog(context, user.name, user.imageUrl!!).show()
+        })
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

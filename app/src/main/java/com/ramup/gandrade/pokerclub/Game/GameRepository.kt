@@ -20,8 +20,8 @@ class GameRepository(private val notificationApiService: NotificationApiService)
 
     val user = MutableLiveData<User?>()
 
-    val currentActiveGameId = MutableLiveData<String?>()
-    val currentPausedGameId = MutableLiveData<String?>()
+    val currentActiveGameId = MutableLiveData<String>()
+    val currentPausedGameId = MutableLiveData<String>()
 
     val db = FirebaseFirestore.getInstance()
     val gameRef = db.collection("games")
@@ -31,8 +31,21 @@ class GameRepository(private val notificationApiService: NotificationApiService)
     val activeUsers = MutableLiveData<MutableMap<String, User>>()
 
 
-    fun checkPausedGames(): LiveData<String?> {
-        gameRef.whereEqualTo("State", GameState.PAUSED.toString()).get().addOnCompleteListener { task ->
+    fun checkPausedGames(): LiveData<String> {
+        gameRef.whereEqualTo("State", GameState.PAUSED.toString())
+                .addSnapshotListener(EventListener { query, exception ->
+                    if (exception != null) {
+                        Log.d("fail", "fail")
+                    } else {
+                        for (doc in query) {
+                            if (doc.exists()) {
+                                currentPausedGameId.value = doc.id
+                            }
+                        }
+                    }
+                })
+        /*
+                .get().addOnCompleteListener { task ->
             if (task.isComplete) {
                 for (doc in task.result) {
                     currentPausedGameId.value = doc.id
@@ -42,20 +55,23 @@ class GameRepository(private val notificationApiService: NotificationApiService)
                 }
             }
         }
+        */
         return currentPausedGameId
     }
 
-    fun checkActiveGames(): LiveData<String?> {
-        gameRef.whereEqualTo("State", GameState.ACTIVE.toString()).get().addOnCompleteListener { task ->
-            if (task.isComplete) {
-                for (doc in task.result) {
-                    currentActiveGameId.value = doc.id
-                }
-                if (task.result.isEmpty) {
-                    currentActiveGameId.value = null
-                }
-            }
-        }
+    fun checkActiveGames(): LiveData<String> {
+        gameRef.whereEqualTo("State", GameState.ACTIVE.toString())
+                .addSnapshotListener(EventListener { query, exception ->
+                    if (exception != null) {
+                        Log.d("fail", "fail")
+                    } else {
+                        for (doc in query) {
+                            if (doc.exists()) {
+                                currentActiveGameId.value = doc.id
+                            }
+                        }
+                    }
+                })
         return currentActiveGameId
     }
 
@@ -104,7 +120,7 @@ class GameRepository(private val notificationApiService: NotificationApiService)
         return success
     }
 
-    fun createGame(): LiveData<String?> {
+    fun createGame(): LiveData<String> {
         val doc = gameRef.document()
         currentActiveGameId.value = doc.id
         doc.set(Game().toMap())

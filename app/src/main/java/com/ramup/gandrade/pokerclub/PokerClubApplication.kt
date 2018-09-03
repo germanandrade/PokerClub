@@ -1,6 +1,7 @@
 package com.ramup.gandrade.pokerclub
 
 import android.app.Application
+import android.content.SharedPreferences
 import com.ramup.gandrade.pokerclub.Game.gameModule
 import com.ramup.gandrade.pokerclub.Global.globalModule
 import com.ramup.gandrade.pokerclub.Login.loginModule
@@ -12,5 +13,6 @@ class PokerClubApplication : Application() {
         super.onCreate()
         startKoin(this, listOf(gameModule,loginModule, userProfileModule, globalModule))
         //Init sharedPreferences
+        //SharedPreferences
     }
 }

@@ -1,23 +1,27 @@
 ### The app will support these functionalities:
-* No network -> queue or can't but feedback 
-* Clubs
-* execute function only once kotlin
-* Auth con google y facebook
 
 /**** DOING ****\
-* Loading view [DONE]
-* viewPagerFragment [DONE]
-* viewPagerFragment->Get started -> What can you do 
-* Image Fragment
-* Playstore!
+* Stop observable
+* Playstore! (Con código ofuscado proguard)
+* Test (Unit, Intrumentation: Expresso, automatiz)
 
+* execute function only once kotlin [DONE]
+
+
+* No network -> queue or can't but feedback 
+* Clubs
 * addSnapshotListener efficeciently
 * Cache
+* Auth con google y facebook
 
 
-*********-----------------************
-*Test (Unit, Intrumentation: Expresso, automatiz)
 --------------- // ---------------
+###Done in Stage 6
+* Loading view [DONE]
+* viewPagerFragment [DONE]
+* viewPagerFragment->Get started -> What can you do [DONE] 
+* Image Fragment [DONE]
+
 ###Done in Stage 5
 * Include Image in ListItem [DONE]
 * Fix Bugs[DONE]
@@ -92,7 +96,6 @@
 * Check intern rules
 * Propose a rule
 * Restart Endavans (every Friday)
-* Buy LifeSaver
 * Reset Password
 ### Nice to have:
 * Image recognition: Take a picture -> It resolves your endavans

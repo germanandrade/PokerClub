@@ -6,7 +6,7 @@ import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v4.app.FragmentActivity
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.Menu
@@ -19,20 +19,21 @@ import com.google.firebase.auth.FirebaseAuth
 import com.ramup.gandrade.pokerclub.Game.Notifications.RequestType
 import com.ramup.gandrade.pokerclub.Main2Activity
 import com.ramup.gandrade.pokerclub.R
-import com.ramup.gandrade.pokerclub.UserProfile.UserAdapter
 import com.ramup.gandrade.pokerclub.UserProfile.GameViewModel
 import com.ramup.gandrade.pokerclub.UserProfile.User
+import com.ramup.gandrade.pokerclub.UserProfile.UserAdapter
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.image_dialog.view.*
 import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
 
-class GameActivity : FragmentActivity() {
+class GameActivity : AppCompatActivity() {
     val gameViewModel by viewModel<GameViewModel>()
     lateinit var pauseItem: MenuItem
     lateinit var leaveItem: MenuItem
     lateinit var changeAdminItem: MenuItem
     var currentUser: User? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
@@ -48,6 +49,7 @@ class GameActivity : FragmentActivity() {
         gameViewModel.adminToken.observe(this, Observer { _ ->
             if (currentUser != null) disableButtons(currentUser!!)
         })
+        supportActionBar!!.show()
     }
 
     private fun disableButtons(user: User) {
