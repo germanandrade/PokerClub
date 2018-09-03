@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.FragmentActivity
+import android.support.v4.view.ViewPager
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -14,6 +15,7 @@ import com.ramup.gandrade.pokerclub.UserProfile.GameViewModel
 import com.ramup.gandrade.pokerclub.UserProfile.ProfileFragment
 import com.ramup.gandrade.pokerclub.UserProfile.UserProfileViewModel
 import kotlinx.android.synthetic.main.activity_main2.*
+import kotlinx.android.synthetic.main.activity_view_pager.*
 import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
 
@@ -25,18 +27,16 @@ class Main2Activity : FragmentActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_global -> {
-                supportFragmentManager.beginTransaction()
-                        .replace(R.id.root_layout, GlobalFragment.newInstance(), "GlobalFragment").commit()
+                myViewPager.setCurrentItem(0)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_play -> {
-                supportFragmentManager.beginTransaction()
-                        .replace(R.id.root_layout, GameStartFragment.newInstance(), "GameStartFragment").commit()
+                myViewPager.setCurrentItem(1)
+
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_profile -> {
-                supportFragmentManager.beginTransaction()
-                        .replace(R.id.root_layout, ProfileFragment.newInstance(), "ProfileFragment").commit()
+                myViewPager.setCurrentItem(2)
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -49,15 +49,25 @@ class Main2Activity : FragmentActivity() {
         setContentView(R.layout.activity_main2)
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        navigation.setSelectedItemId(R.id.navigation_play);
+        navigation.selectedItemId = R.id.navigation_play
         gameViewModel.loggedIn.observe(this, Observer { loggedIn ->
-            logged(loggedIn!!).let {  }
+            logged(loggedIn!!).let { }
+        })
+
+        myViewPager.adapter = ViewPagerAdapter(supportFragmentManager)
+        myViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                navigation.menu.getItem(position).isChecked = true
+            }
         })
     }
-    fun logged(logged:Boolean){
+
+    fun logged(logged: Boolean) {
         startActivity<LoginActivity>();finish()
     }
-
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -76,7 +86,7 @@ class Main2Activity : FragmentActivity() {
     private fun editProfile() {
         userProfileViewModel.editProfile()
         userProfileViewModel.editMode.observe(this, Observer { editMode ->
-            navigation.setSelectedItemId(R.id.navigation_profile);
+            navigation.selectedItemId = R.id.navigation_profile
             Toast.makeText(this, "Changes saved", Toast.LENGTH_SHORT).show()
         })
     }
