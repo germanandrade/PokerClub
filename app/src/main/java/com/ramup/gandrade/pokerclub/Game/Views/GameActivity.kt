@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.ramup.gandrade.pokerclub.Game.Notifications.RequestType
 import com.ramup.gandrade.pokerclub.Main2Activity
 import com.ramup.gandrade.pokerclub.R
-import com.ramup.gandrade.pokerclub.UserAdapter
+import com.ramup.gandrade.pokerclub.UserProfile.UserAdapter
 import com.ramup.gandrade.pokerclub.UserProfile.GameViewModel
 import com.ramup.gandrade.pokerclub.UserProfile.User
 import kotlinx.android.synthetic.main.activity_game.*

@@ -7,7 +7,7 @@ import com.ramup.gandrade.pokerclub.Game.Views.GameStartFragment
 import com.ramup.gandrade.pokerclub.Global.GlobalFragment
 import com.ramup.gandrade.pokerclub.UserProfile.ProfileFragment
 
-class ViewPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+class Main2ViewPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     private val COUNT = 3
     override fun getItem(position: Int): Fragment? {
         var fragment: Fragment? = null

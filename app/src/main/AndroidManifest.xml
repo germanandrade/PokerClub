@@ -28,20 +28,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".Login.SignUpActivity" />
-        <activity android:name=".MainFunctionsActivity" />
-        <activity android:name=".ViewPager" />
+        <activity android:name=".GetStarted.GetStartedActivity" />
         <activity
             android:name=".Main2Activity"
             android:label="@string/title_activity_main2" />
-        <activity
-            android:name=".Game.Views.CreateGameActivity"
-            android:parentActivityName=".Main2Activity"
 
-            >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Main2Activity" />
-        </activity>
         <activity android:name=".Game.Views.ScanActivity" />
         <activity
             android:name=".Game.Views.GameActivity"
@@ -64,7 +55,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".NotificationActivity"></activity>
+
     </application>
 
 </manifest>

@@ -130,8 +130,7 @@ class GameStartFragment : Fragment(), View.OnClickListener {
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.createGame -> {
-                startActivity<CreateGameActivity>();activity?.finish()
-                activity!!.finish()
+                gameViewModel.createGame()
             }
             R.id.joinGame -> joinGame()
             R.id.continueGame -> resumeGame()

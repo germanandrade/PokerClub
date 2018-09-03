@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat" />
+
+    <style name="AppTheme.Base" parent="android:Theme.Material">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="MyCustomTabLayout" parent="@style/Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">#FF4081</item>
+    </style>
+</resources>

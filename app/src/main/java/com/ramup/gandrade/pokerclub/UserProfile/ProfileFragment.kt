@@ -28,6 +28,7 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
     val CAMERA = 2
     var bitmap: Bitmap? = null
     var uri: Uri? = null
+
     override fun invoke(p1: DialogInterface, pos: Int) {
         when (pos) {
             0 -> chooseFromGallery()
@@ -67,6 +68,10 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
             R.id.endEdit -> doneEdition()
             R.id.profilePic -> changeProfilePic()
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
     private fun changeProfilePic() {

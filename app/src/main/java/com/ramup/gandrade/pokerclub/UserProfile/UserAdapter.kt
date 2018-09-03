@@ -1,16 +1,13 @@
-package com.ramup.gandrade.pokerclub
+package com.ramup.gandrade.pokerclub.UserProfile
 
 import android.content.Context
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ramup.gandrade.pokerclub.Picasso.RoundTransformation
-import com.ramup.gandrade.pokerclub.UserProfile.User
+import com.ramup.gandrade.pokerclub.R
 import com.squareup.picasso.Picasso
-import com.squareup.picasso.Transformation
-import kotlinx.android.synthetic.main.fragment_user_profile.*
 import kotlinx.android.synthetic.main.user_list_item.view.*
 
 class UserAdapter(var map: MutableMap<String, User>, val context: Context) : RecyclerView.Adapter<UserAdapter.ViewHolder>() {

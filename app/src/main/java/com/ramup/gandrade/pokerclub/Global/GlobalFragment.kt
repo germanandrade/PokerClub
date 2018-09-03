@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.ramup.gandrade.pokerclub.R
 import com.ramup.gandrade.pokerclub.UserProfile.User
-import com.ramup.gandrade.pokerclub.UserAdapter
+import com.ramup.gandrade.pokerclub.UserProfile.UserAdapter
 import kotlinx.android.synthetic.main.fragment_global.*
 import kotlinx.android.synthetic.main.fragment_global.view.*
 import org.koin.android.architecture.ext.viewModel

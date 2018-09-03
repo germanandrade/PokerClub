@@ -6,9 +6,8 @@
 
 /**** DOING ****\
 * Loading view [DONE]
-* viewPagerFragment
+* viewPagerFragment [DONE]
 * viewPagerFragment->Get started -> What can you do 
- 
 * Image Fragment
 * Playstore!
 
