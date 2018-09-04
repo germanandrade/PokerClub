@@ -24,7 +24,7 @@ class UserProfileViewModel(val userRepo: UserProfileRepository) : ViewModel() {
     }
 
     fun updateChanges(newName: String, bitmap: Bitmap?) {
-        userRepo.updateChanges(newName,bitmap)
+        editMode = userRepo.updateChanges(newName,bitmap)
     }
 
 

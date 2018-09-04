@@ -2,9 +2,12 @@ package com.ramup.gandrade.pokerclub.UserProfile
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.os.AsyncTask
 import android.util.Log
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
+import com.google.android.gms.tasks.Tasks.call
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
@@ -12,6 +15,9 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.ramup.gandrade.pokerclub.Game.*
 import com.ramup.gandrade.pokerclub.Game.Notifications.*
 import io.reactivex.Observable
+import android.widget.Toast
+import com.ramup.gandrade.pokerclub.myTask
+
 
 class GameRepository(private val notificationApiService: NotificationApiService) {
 
@@ -21,7 +27,7 @@ class GameRepository(private val notificationApiService: NotificationApiService)
     val user = MutableLiveData<User?>()
 
     val currentActiveGameId = MutableLiveData<String>()
-    val currentPausedGameId = MutableLiveData<String>()
+    var currentPausedGameId = MutableLiveData<String>()
 
     val db = FirebaseFirestore.getInstance()
     val gameRef = db.collection("games")
@@ -68,6 +74,8 @@ class GameRepository(private val notificationApiService: NotificationApiService)
                         for (doc in query) {
                             if (doc.exists()) {
                                 currentActiveGameId.value = doc.id
+                                //tHIS FIXES NOT DISPLAYING join button but breakes GameActivity
+                                //currentPausedGameId = MutableLiveData<String>()
                             }
                         }
                     }
@@ -145,17 +153,31 @@ class GameRepository(private val notificationApiService: NotificationApiService)
         return success
     }
 
+    fun adminCount() {
+        var gameDocument = gameRef.document(getCurrentPausedGameId())
+
+    }
+
     fun resumeGame(): LiveData<Boolean> {
         var success = MutableLiveData<Boolean>()
         var gameDocument = gameRef.document(getCurrentPausedGameId())
         var userDocument = gameDocument.collection("users").document(auth.currentUser!!.uid)
-        gameDocument.update("State", GameState.ACTIVE.toString()).addOnSuccessListener {
-            currentActiveGameId.value = currentPausedGameId.value
-            currentPausedGameId.value = null
-            userDocument.update("Admin", true, "Active", true, "Token", FirebaseInstanceId.getInstance().token).addOnSuccessListener {
-                success.value = true
+        gameDocument.collection("users").whereEqualTo("Admin", true).get().addOnCompleteListener { task ->
+            if (task.isSuccessful && task.result.documents.count() > 0) {
+                success.value = false
+            } else {
+                gameDocument.update("State", GameState.ACTIVE.toString()).addOnSuccessListener {
+                    currentActiveGameId.value = currentPausedGameId.value
+                    currentPausedGameId.value = null
+                    userDocument.update("Admin", true, "Active", true, "Token", FirebaseInstanceId.getInstance().token)
+                            .addOnSuccessListener {
+                                success.value = true
+                            }
+                            .addOnFailureListener { it -> Log.d("ex", "Exception") }
+                }
             }
         }
+
         return success
     }
 
@@ -204,21 +226,30 @@ class GameRepository(private val notificationApiService: NotificationApiService)
     }
 
     fun updateAdminToken(): LiveData<String> {
-        gameRef.document(currentActiveGameId.value!!)
-                .collection("users")
-                .whereEqualTo("Admin", true)
-                .addSnapshotListener(EventListener { query, exception ->
-                    if (exception != null) {
-                        Log.d("fail", "fail")
-                    } else {
-                        for (document in query) {
-                            if (document.exists()) {
-                                adminToken.value = document.data["Token"] as String?
-                                Log.d(TAG, "AdminToken:${adminToken.value}")
+        try{
+            if (currentActiveGameId.value != null) {
+
+                gameRef.document(currentActiveGameId.value!!)
+                        .collection("users")
+                        .whereEqualTo("Admin", true)
+                        .addSnapshotListener(EventListener { query, exception ->
+                            if (exception != null) {
+                                Log.d("fail", "fail")
+                            } else {
+                                for (document in query) {
+                                    if (document.exists()) {
+                                        adminToken.value = document.data["Token"] as String?
+                                        Log.d(TAG, "AdminToken:${adminToken.value}")
+                                    }
+                                }
                             }
-                        }
-                    }
-                })
+                        })
+                return adminToken
+            }
+        }
+        catch (e:Exception){
+            throw Exception("${e.message} Game isn't active")
+        }
         return adminToken
     }
 
@@ -227,54 +258,75 @@ class GameRepository(private val notificationApiService: NotificationApiService)
 
 
     fun buyEndavans(uid: String): Task<Void> {
-        var gameDocument = gameRef.document(getCurrentGameId())
-        var userDocument = gameDocument.collection("users").document(uid)
-        val current: User = activeUsers.value!!.get(uid)!!
+        try {
+            var gameDocument = gameRef.document(getCurrentGameId())
+            var userDocument = gameDocument.collection("users").document(uid)
+            val current: User = activeUsers.value!!.get(uid)!!
+            return userDocument.update("Debt", current.debt + 500)
+        } catch (e: Exception) {
+            return myTask()
+        }
 
-        return userDocument.update("Debt", current.debt + 500)
     }
 
     fun useLifeSaver(uid: String): Task<Void>? {
-        var gameDocument = gameRef.document(getCurrentGameId())
-        var userDocument = gameDocument.collection("users").document(uid)
-        val current: User = activeUsers.value!!.get(uid)!!
-        return userDocument.update("LifeSavers", current.lifeSavers - 1)
+        try {
+            var gameDocument = gameRef.document(getCurrentGameId())
+            var userDocument = gameDocument.collection("users").document(uid)
+            val current: User = activeUsers.value!!.get(uid)!!
+            return userDocument.update("LifeSavers", current.lifeSavers - 1)
+        } catch (e: Exception) {
+            return myTask()
+        }
     }
 
     fun payDebt(uid: String, payValue: Int): Task<Void> {
+        try {
+            var gameDocument = gameRef.document(getCurrentGameId())
+            var userDocument = gameDocument.collection("users").document(uid)
+            val current: User = activeUsers.value!!.get(uid)!!
+            var currentDebt = current.debt
 
-        var gameDocument = gameRef.document(getCurrentGameId())
-        var userDocument = gameDocument.collection("users").document(uid)
-        val current: User = activeUsers.value!!.get(uid)!!
-        var currentDebt = current.debt
-
-        if (payValue > currentDebt) {
-            throw Exception("You can't pay more")
+            if (payValue > currentDebt) {
+                throw Exception("You can't pay more")
+            }
+            return userDocument.update("Debt", currentDebt - payValue)
+        } catch (e: Exception) {
+            return myTask()
         }
-        return userDocument.update("Debt", currentDebt - payValue)
+
     }
 
     fun depositEndavans(uid: String, valueToDeposit: Int): Task<Void> {
-        var gameDocument = gameRef.document(getCurrentGameId())
-        var userDocument = gameDocument.collection("users").document(uid)
-        val current: User = activeUsers.value!!.get(uid)!!
+        try {
+            var gameDocument = gameRef.document(getCurrentGameId())
+            var userDocument = gameDocument.collection("users").document(uid)
+            Log.d("Game", "${activeUsers.value} uid: $uid")
+            val current: User = activeUsers.value!!.get(uid)!!
+            var currentEndavans = current.endavans
+            return userDocument.update("Endavans", currentEndavans + valueToDeposit)
+        } catch (e: Exception) {
+            return myTask()
+        }
 
-        var currentEndavans = current.endavans
-
-        return userDocument.update("Endavans", currentEndavans + valueToDeposit)
     }
 
     fun withdrawEndavans(uid: String, valueToWithDraw: Int): Task<Void> {
-        var gameDocument = gameRef.document(getCurrentGameId())
-        var userDocument = gameDocument.collection("users").document(uid)
-        val current: User = activeUsers.value!!.get(uid)!!
+        try {
+            var gameDocument = gameRef.document(getCurrentGameId())
+            var userDocument = gameDocument.collection("users").document(uid)
 
-        var currentEndavans = current.endavans
-        if (currentEndavans < valueToWithDraw) {
-            throw Exception("Not enough Endavans")
+            val current: User = activeUsers.value!!.get(uid)!!
+            var currentEndavans = current.endavans
+            if (currentEndavans < valueToWithDraw) {
+                throw Exception("Not enough Endavans")
+            }
+
+            return userDocument.update("Endavans", currentEndavans - valueToWithDraw)
+        } catch (e: Exception) {
+            return myTask()
         }
 
-        return userDocument.update("Endavans", currentEndavans - valueToWithDraw)
     }
 
     fun sendNotification(type: RequestType, extra: Int?): Observable<FCMResponse> {

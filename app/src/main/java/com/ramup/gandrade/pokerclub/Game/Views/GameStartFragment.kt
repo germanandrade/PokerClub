@@ -25,10 +25,7 @@ import org.koin.android.architecture.ext.viewModel
 class GameStartFragment : Fragment(), View.OnClickListener {
 
     val gameViewModel by viewModel<GameViewModel>()
-
-
     private val CAMERA_REQUEST_CODE = 101
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_game_start, container, false)
@@ -38,9 +35,8 @@ class GameStartFragment : Fragment(), View.OnClickListener {
         return view
     }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    //Called each time fragment is visible
+    fun observeActiveOrPaused() {
         checkActiveGame()
         checkPausedGame()
     }
@@ -57,7 +53,7 @@ class GameStartFragment : Fragment(), View.OnClickListener {
         gameViewModel.user.observe(this, Observer { user ->
             observeUser(user)
         })
-        //gameViewModel.currentActiveGameId.removeObservers(this)
+        gameViewModel.currentActiveGameId.removeObservers(this)
     }
 
     private fun observeUser(user: User?) {
@@ -100,7 +96,7 @@ class GameStartFragment : Fragment(), View.OnClickListener {
 
     private fun createGameM() {
         createGame.isEnabled = false
-        if (gameViewModel.currentActiveGameId.value != null || gameViewModel.pausedGameId.value != null) {
+        if (gameViewModel.currentActiveGameId==null || gameViewModel.currentActiveGameId.value != null || gameViewModel.pausedGameId.value != null) {
             Toast.makeText(context, "Can't create a game", Toast.LENGTH_SHORT).show()
         } else {
             gameViewModel.createGame()
@@ -126,6 +122,9 @@ class GameStartFragment : Fragment(), View.OnClickListener {
                 if (success != null && success) {
                     startGame()
                     joinGame.isEnabled = false
+                }
+                else{
+                    Toast.makeText(context, "Can't resume game", Toast.LENGTH_SHORT).show()
                 }
             })
         }

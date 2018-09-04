@@ -11,6 +11,7 @@ class Main2ViewPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     private val COUNT = 3
     override fun getItem(position: Int): Fragment? {
         var fragment: Fragment? = null
+
         when (position) {
             0 -> fragment = GlobalFragment()
             1 -> fragment = GameStartFragment()
@@ -22,6 +23,8 @@ class Main2ViewPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     override fun getCount(): Int {
         return COUNT
     }
+
+
 
 
 }

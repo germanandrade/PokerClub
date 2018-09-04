@@ -28,14 +28,14 @@ class FirebaseMessagingService() : FirebaseMessagingService(), KoinComponent {
         if (data.success == null) {
             sendAdminNotification(data)
         } else {
-            sendUserNotification(data, data.success!!)
+            sendUserNotification(data)
         }
     }
 
-    private fun sendUserNotification(data: Data, success: Boolean) {
+    private fun sendUserNotification(data: Data) {
         val defaultSoundUri = RingtoneManager.getDefaultUri((RingtoneManager.TYPE_NOTIFICATION))
         val notificationBuilder = NotificationCompat.Builder(applicationContext, CHANNEL)
-                .setContentText(message(data, success))
+                .setContentText(message(data, data.success!!))
                 .setAutoCancel(true)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setSound(defaultSoundUri)

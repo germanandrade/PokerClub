@@ -42,7 +42,7 @@ class UserProfileRepository() {
             if (exception != null) {
                 Log.d("fail", "fail")
             } else {
-                if(query.exists()){
+                if (query.exists()) {
                     user.value = User(query.data)
                 }
             }
@@ -56,7 +56,7 @@ class UserProfileRepository() {
         return editMode
     }
 
-    fun updateChanges(newDisplayName: String, bitmap: Bitmap?) {
+    fun updateChanges(newDisplayName: String, bitmap: Bitmap?): MutableLiveData<Boolean> {
         val user = auth.currentUser
         val profileUpdates = UserProfileChangeRequest.Builder().setDisplayName(newDisplayName).build()
         user?.updateProfile(profileUpdates)
@@ -64,8 +64,14 @@ class UserProfileRepository() {
             uploadImage(bitmap, newDisplayName)
         } else {
             val userDoc = gameRef.document(currentGameId.value!!).collection("users").document(auth.currentUser!!.uid)
-            userDoc.update("Name", newDisplayName).addOnSuccessListener { editProfile() }
+            userDoc.update("Name", newDisplayName)
+                    .addOnSuccessListener {
+                        editProfile() }
+                    .addOnFailureListener{
+                        Log.d("a",it.message)
+                    }
         }
+        return editMode
 
     }
 
@@ -78,7 +84,7 @@ class UserProfileRepository() {
         val baos = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
-        val uploadTask = ImageRef.putBytes(data)
+        ImageRef.putBytes(data)
                 .addOnSuccessListener { taskSnapshot ->
                     val url = taskSnapshot.downloadUrl!!.toString()
                     val userDoc = gameRef.document(currentGameId.value!!).collection("users").document(auth.currentUser!!.uid)

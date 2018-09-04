@@ -8,17 +8,17 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.gandrade.pokerclub.util.bitmapToUriConverter
-import com.example.gandrade.pokerclub.util.showMessage
 import com.ramup.gandrade.pokerclub.Global.ProfilePicDialog
 import com.ramup.gandrade.pokerclub.Picasso.RoundTransformation
 import com.ramup.gandrade.pokerclub.R
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_main2.*
 import kotlinx.android.synthetic.main.fragment_user_profile.*
 import org.koin.android.architecture.ext.sharedViewModel
 
@@ -72,9 +72,6 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     private fun changeProfilePic() {
         showPictureDialog()
@@ -98,6 +95,7 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
         val newName = name.text.toString()
         userProfileViewModel.updateChanges(newName, bitmap)
         progressBar.visibility = View.VISIBLE
+
     }
 
 
@@ -107,7 +105,7 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        listenEdit()
+
 
 
         userProfileViewModel.checkCurrentGameId()
@@ -122,24 +120,28 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
     }
 
 
-    private fun listenEdit() {
-        val bool = userProfileViewModel.editMode.value
+    fun listenEdit() {
+        userProfileViewModel.editProfile()
+        userProfileViewModel.editMode.observe(this, Observer { bool ->
 
-        if (bool != null && bool) {
-            endEdit.visibility = View.VISIBLE
-            name.isClickable = true
-            name.isCursorVisible = true
-            name.isFocusable = true
-            name.isFocusableInTouchMode = true
-            profilePic.setOnClickListener(this)
+            if (bool != null && bool) {
+                endEdit.visibility = View.VISIBLE
+                name.isClickable = true
+                name.isCursorVisible = true
+                name.isFocusable = true
+                name.isFocusableInTouchMode = true
+                profilePic.setOnClickListener(this)
 
-        } else if (bool != null && !bool) {
-            endEdit.visibility = View.GONE
-            name.isClickable = false
-            name.isCursorVisible = false
-            name.isFocusable = false
-            name.isFocusableInTouchMode = false
-        }
+            } else if (bool != null && !bool) {
+                endEdit.visibility = View.GONE
+                name.isClickable = false
+                name.isCursorVisible = false
+                name.isFocusable = false
+                name.isFocusableInTouchMode = false
+                progressBar.visibility = View.GONE
+
+            }
+        })
     }
 
     private fun updateUser(user: User) {
@@ -153,9 +155,13 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
                 .transform(RoundTransformation())
                 .fit()
                 .into(profilePic)
+        setImageListener(user.imageUrl)
+    }
+
+    private fun setImageListener(imageUrl:String?) {
         profilePic.setOnClickListener(View.OnClickListener {
-            if (user.imageUrl != null) {
-                ProfilePicDialog(activity!!, "", user.imageUrl!!).show()
+            if (imageUrl != null) {
+                ProfilePicDialog(activity!!, "", imageUrl!!).show()
             }
         })
     }

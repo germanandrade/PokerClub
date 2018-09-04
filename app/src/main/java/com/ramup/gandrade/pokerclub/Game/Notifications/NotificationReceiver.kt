@@ -44,11 +44,26 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
                     }
                     .addOnFailureListener {
                         data.success = false
-                        gameRepo.sendSuccessNotification(data)
+                        gameRepo.sendSuccessNotification(data).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+                                .subscribe(
+                                        { result ->
+                                            Log.d("Result", "FCM responds: ${result}")
+                                        },
+                                        { error ->
+                                            error.printStackTrace()
+                                        })
+                        Toast.makeText(context, "Sent notification $data", Toast.LENGTH_LONG).show()
                     }
         } else if (intent.action == ACTION_REJECT_TRANSACTION) {
             data.success = false
-            gameRepo.sendSuccessNotification(data)
+            gameRepo.sendSuccessNotification(data).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+                    .subscribe(
+                            { result ->
+                                Log.d("Result", "FCM responds: ${result}")
+                            },
+                            { error ->
+                                error.printStackTrace()
+                            })
 
         }
         clearNotification(context, id)

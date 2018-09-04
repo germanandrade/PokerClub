@@ -1,5 +1,6 @@
 package com.ramup.gandrade.pokerclub.Game.Views
 
+import android.app.ActionBar
 import android.app.AlertDialog
 import android.arch.lifecycle.Observer
 import android.content.DialogInterface
@@ -8,10 +9,7 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.Toast
 import com.example.gandrade.pokerclub.util.TextToImageEncode
 import com.example.gandrade.pokerclub.util.showMessage
@@ -45,10 +43,17 @@ class GameActivity : AppCompatActivity() {
             rv_user_list.adapter = UserAdapter(list!!, this)
             if (currentUser != null) disableButtons(currentUser!!)
         })
-        gameViewModel.updateAdminToken()
-        gameViewModel.adminToken.observe(this, Observer { _ ->
-            if (currentUser != null) disableButtons(currentUser!!)
-        })
+        try {
+
+            gameViewModel.updateAdminToken()
+            gameViewModel.adminToken.observe(this, Observer { _ ->
+                if (currentUser != null) disableButtons(currentUser!!)
+            })
+        } catch (e: Exception) {
+            Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT)
+            startActivity<Main2Activity>()
+            finish()
+        }
         supportActionBar!!.show()
     }
 
@@ -57,6 +62,10 @@ class GameActivity : AppCompatActivity() {
         if (user.debt == 0) payDebtButton.isEnabled = false
         if (user.endavans == 0) withdrawButton.isEnabled = false
         if (user.lifeSavers <= 0) useLifeSaver.isEnabled = false
+        setTitle("${user.name} playing")
+        val actionBar = supportActionBar!!
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setCustomView(getLayoutInflater().inflate(R.layout.action_bar_home, null))
     }
 
     private fun enableButtons() {

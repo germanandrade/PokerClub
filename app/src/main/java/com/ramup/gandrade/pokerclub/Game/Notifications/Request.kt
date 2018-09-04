@@ -21,7 +21,7 @@ data class Data(var name: String, var dbId: String, var token: String, var reque
                     when {
                         map["success"] == null -> null
                         ((map["success"] as String).equals("true")) -> true
-                        ((map["success"] as String).equals("false")) -> true
+                        ((map["success"] as String).equals("false")) -> false
                         else -> null
                     }
             )

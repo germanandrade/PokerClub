@@ -92,7 +92,12 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
     }
 
     fun updateAdminToken() {
-        adminToken = gameRepo.updateAdminToken()
+        try {
+
+            adminToken = gameRepo.updateAdminToken()
+        } catch (e: Exception) {
+            throw Exception(e.message)
+        }
     }
 
     fun sendNotification(type: RequestType, extra: Int?) {

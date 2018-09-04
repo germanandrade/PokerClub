@@ -1,6 +1,8 @@
 package com.ramup.gandrade.pokerclub.UserProfile
 
 import android.content.Context
+import android.support.v4.content.ContextCompat
+import android.support.v4.content.res.ResourcesCompat.getColor
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -42,9 +44,12 @@ class UserAdapter(var map: MutableMap<String, User>, val context: Context) : Rec
                 .fit()
                 .into(holder.tvProfileImage)
         holder.tvProfileImage.setOnClickListener(View.OnClickListener {
-            if(user.imageUrl!=null)
-            ProfilePicDialog(context, user.name, user.imageUrl!!).show()
+            if (user.imageUrl != null)
+                ProfilePicDialog(context, user.name, user.imageUrl!!).show()
         })
+        if (user.admin) {
+            holder.layout.setBackgroundColor(ContextCompat.getColor(context, R.color.gray))
+        }
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -53,6 +58,7 @@ class UserAdapter(var map: MutableMap<String, User>, val context: Context) : Rec
         val tvDebt = view.debt
         val tvLifeSaver = view.lifeSavers
         val tvProfileImage = view.profileImage
+        val layout = view.layout
     }
 
 }
