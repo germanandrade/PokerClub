@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat.requestPermissions
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,7 @@ import android.widget.Toast
 import com.ramup.gandrade.pokerclub.R
 import com.ramup.gandrade.pokerclub.UserProfile.GameViewModel
 import com.ramup.gandrade.pokerclub.UserProfile.User
+import com.ramup.gandrade.pokerclub.util.LoadingDialog
 import kotlinx.android.synthetic.main.fragment_game_start.*
 import kotlinx.android.synthetic.main.fragment_game_start.view.*
 import org.jetbrains.anko.support.v4.startActivity
@@ -53,7 +53,7 @@ class GameStartFragment : Fragment(), View.OnClickListener {
         gameViewModel.user.observe(this, Observer { user ->
             observeUser(user)
         })
-        gameViewModel.currentActiveGameId.removeObservers(this)
+        //gameViewModel.currentActiveGameId.removeObservers(this)
     }
 
     private fun observeUser(user: User?) {
@@ -74,7 +74,7 @@ class GameStartFragment : Fragment(), View.OnClickListener {
         gameViewModel.checkPausedGame()
         gameViewModel.pausedGameId.observe(this, Observer { id ->
             turnOnContinueGameButton()
-            gameViewModel.pausedGameId.removeObservers(this)
+            //gameViewModel.pausedGameId.removeObservers(this)
         })
     }
 
@@ -95,8 +95,9 @@ class GameStartFragment : Fragment(), View.OnClickListener {
     }
 
     private fun createGameM() {
+
         createGame.isEnabled = false
-        if (gameViewModel.currentActiveGameId==null || gameViewModel.currentActiveGameId.value != null || gameViewModel.pausedGameId.value != null) {
+        if (gameViewModel.currentActiveGameId == null || gameViewModel.currentActiveGameId.value != null || gameViewModel.pausedGameId.value != null) {
             Toast.makeText(context, "Can't create a game", Toast.LENGTH_SHORT).show()
         } else {
             gameViewModel.createGame()
@@ -108,26 +109,35 @@ class GameStartFragment : Fragment(), View.OnClickListener {
     }
 
     private fun startGame() {
+        val loadingDialog = LoadingDialog(context)
         startActivity<GameActivity>()
+        loadingDialog.cancel()
         activity!!.finish()
     }
 
 
     private fun resumeGame() {
+        continueGame.isEnabled=false
         if (gameViewModel.pausedGameId.value == null) {
             Toast.makeText(context, "Can't resume game", Toast.LENGTH_SHORT).show()
         } else {
+            removeObservers()
             gameViewModel.resumeGame()
             gameViewModel.successfulResume.observe(this, Observer { success ->
                 if (success != null && success) {
                     startGame()
-                    joinGame.isEnabled = false
-                }
-                else{
+                } else {
                     Toast.makeText(context, "Can't resume game", Toast.LENGTH_SHORT).show()
                 }
             })
         }
+    }
+
+    private fun removeObservers() {
+        gameViewModel.currentActiveGameId.removeObservers(this)
+        gameViewModel.pausedGameId.removeObservers(this)
+        //gameViewModel.user.removeObservers(this)
+
     }
 
     private fun joinGame() {

@@ -1,5 +1,15 @@
 ### The app will support these functionalities:
 
+* Campeonatos
+	* Inscripción
+	* Mesas
+	* Límites de jugadores
+	* Cantidad de fichas en juego
+	* La apuesta mínima
+	* Valor de las fichas
+	* 
+	
+
 /**** DOING ****\
 * Stop observable
 * Playstore! (Con código ofuscado proguard)
