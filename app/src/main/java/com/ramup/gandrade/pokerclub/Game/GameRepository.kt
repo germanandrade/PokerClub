@@ -2,12 +2,9 @@ package com.ramup.gandrade.pokerclub.UserProfile
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.os.AsyncTask
 import android.util.Log
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
-import com.google.android.gms.tasks.Tasks.call
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,8 +12,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.ramup.gandrade.pokerclub.Game.*
 import com.ramup.gandrade.pokerclub.Game.Notifications.*
 import io.reactivex.Observable
-import android.widget.Toast
-import com.ramup.gandrade.pokerclub.myTask
+import com.ramup.gandrade.pokerclub.MyTask
 
 
 class GameRepository(private val notificationApiService: NotificationApiService) {
@@ -173,7 +169,14 @@ class GameRepository(private val notificationApiService: NotificationApiService)
                             .addOnSuccessListener {
                                 success.value = true
                             }
-                            .addOnFailureListener { it -> Log.d("ex", "Exception") }
+                            .addOnFailureListener { it ->
+                                Log.d("ex", "Exception")
+                                val map = User(auth.currentUser?.displayName!!, 0, 0, auth.currentUser!!.uid, admin = true).toMap()
+                                map.put("Token", FirebaseInstanceId.getInstance().token!!)
+                                userDocument.set(map).addOnSuccessListener {
+                                    success.value = true
+                                }
+                            }
                 }
             }
         }
@@ -226,7 +229,7 @@ class GameRepository(private val notificationApiService: NotificationApiService)
     }
 
     fun updateAdminToken(): LiveData<String> {
-        try{
+        try {
             if (currentActiveGameId.value != null) {
 
                 gameRef.document(currentActiveGameId.value!!)
@@ -246,8 +249,7 @@ class GameRepository(private val notificationApiService: NotificationApiService)
                         })
                 return adminToken
             }
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             throw Exception("${e.message} Game isn't active")
         }
         return adminToken
@@ -264,7 +266,7 @@ class GameRepository(private val notificationApiService: NotificationApiService)
             val current: User = activeUsers.value!!.get(uid)!!
             return userDocument.update("Debt", current.debt + 500)
         } catch (e: Exception) {
-            return myTask()
+            return MyTask()
         }
 
     }
@@ -276,7 +278,7 @@ class GameRepository(private val notificationApiService: NotificationApiService)
             val current: User = activeUsers.value!!.get(uid)!!
             return userDocument.update("LifeSavers", current.lifeSavers - 1)
         } catch (e: Exception) {
-            return myTask()
+            return MyTask()
         }
     }
 
@@ -292,7 +294,7 @@ class GameRepository(private val notificationApiService: NotificationApiService)
             }
             return userDocument.update("Debt", currentDebt - payValue)
         } catch (e: Exception) {
-            return myTask()
+            return MyTask()
         }
 
     }
@@ -306,7 +308,7 @@ class GameRepository(private val notificationApiService: NotificationApiService)
             var currentEndavans = current.endavans
             return userDocument.update("Endavans", currentEndavans + valueToDeposit)
         } catch (e: Exception) {
-            return myTask()
+            return MyTask()
         }
 
     }
@@ -324,7 +326,7 @@ class GameRepository(private val notificationApiService: NotificationApiService)
 
             return userDocument.update("Endavans", currentEndavans - valueToWithDraw)
         } catch (e: Exception) {
-            return myTask()
+            return MyTask()
         }
 
     }

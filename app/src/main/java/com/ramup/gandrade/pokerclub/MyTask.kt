@@ -7,7 +7,7 @@ import com.google.android.gms.tasks.Task
 import java.lang.Exception
 import java.util.concurrent.Executor
 
-class myTask(): Task<Void>() {
+class MyTask(): Task<Void>() {
 
     override fun isComplete(): Boolean {
 

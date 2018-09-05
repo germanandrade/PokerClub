@@ -97,7 +97,8 @@ class GameStartFragment : Fragment(), View.OnClickListener {
     private fun createGameM() {
 
         createGame.isEnabled = false
-        if (gameViewModel.currentActiveGameId == null || gameViewModel.currentActiveGameId.value != null || gameViewModel.pausedGameId.value != null) {
+        if (gameViewModel.currentActiveGameId == null || gameViewModel.currentActiveGameId.value != null
+                || gameViewModel.pausedGameId.value != null) {
             Toast.makeText(context, "Can't create a game", Toast.LENGTH_SHORT).show()
         } else {
             gameViewModel.createGame()
