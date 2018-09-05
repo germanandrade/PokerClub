@@ -11,12 +11,10 @@
 	
 
 /**** DOING ****\
-* Stop observable
-* Playstore! (Con código ofuscado proguard)
-* Test (Unit, Intrumentation: Expresso, automatiz)
-
+* Stop observable [DONE]
+* Playstore! (Con código ofuscado proguard) [DONE]!
 * execute function only once kotlin [DONE]
-
+* Test (Unit, Intrumentation: Expresso, automatiz)
 
 * No network -> queue or can't but feedback 
 * Clubs
