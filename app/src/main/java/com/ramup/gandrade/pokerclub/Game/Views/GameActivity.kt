@@ -1,6 +1,5 @@
 package com.ramup.gandrade.pokerclub.Game.Views
 
-import android.app.ActionBar
 import android.app.AlertDialog
 import android.arch.lifecycle.Observer
 import android.content.DialogInterface
@@ -9,7 +8,10 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import com.example.gandrade.pokerclub.util.TextToImageEncode
 import com.example.gandrade.pokerclub.util.showMessage
@@ -27,9 +29,11 @@ import org.koin.android.architecture.ext.viewModel
 
 class GameActivity : AppCompatActivity() {
     val gameViewModel by viewModel<GameViewModel>()
-    lateinit var pauseItem: MenuItem
-    lateinit var leaveItem: MenuItem
-    lateinit var changeAdminItem: MenuItem
+
+    var pauseItem: MenuItem? = null
+    var leaveItem: MenuItem? = null
+    var changeAdminItem: MenuItem? = null
+
     var currentUser: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +70,7 @@ class GameActivity : AppCompatActivity() {
         val actionBar = supportActionBar!!
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setCustomView(getLayoutInflater().inflate(R.layout.action_bar_home, null))
+        setMenu(user)
     }
 
     private fun enableButtons() {
@@ -80,10 +85,12 @@ class GameActivity : AppCompatActivity() {
     fun setMenu(user: User) {
         if (user.admin) {
             showMessage(rv_user_list, "You're admin!", Snackbar.LENGTH_SHORT)
-            pauseItem.setVisible(true)
+            if (pauseItem != null) pauseItem!!.setVisible(true)
             //changeAdminItem.setVisible(true)
         } else {
-            leaveItem.setVisible(true)
+            if (leaveItem != null) leaveItem!!.setVisible(true)
+            showMessage(rv_user_list, "You're not admin!", Snackbar.LENGTH_SHORT)
+
         }
     }
 
@@ -93,11 +100,8 @@ class GameActivity : AppCompatActivity() {
         pauseItem = menu!!.findItem(R.id.pause)
         leaveItem = menu!!.findItem(R.id.leave)
         changeAdminItem = menu!!.findItem(R.id.changeAdmin)
+        if (currentUser != null) setMenu(currentUser!!)
 
-        val user = gameViewModel.getCurrentUser()
-        if (user != null) {
-            setMenu(user)
-        }
         return true
     }
 

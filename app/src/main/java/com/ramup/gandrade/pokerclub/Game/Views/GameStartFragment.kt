@@ -103,7 +103,6 @@ class GameStartFragment : Fragment(), View.OnClickListener {
         } else {
             gameViewModel.createGame()
             gameViewModel.currentActiveGameId.observe(this, Observer {
-                startGame()
                 gameViewModel.currentActiveGameId.removeObservers(this)
             })
         }
