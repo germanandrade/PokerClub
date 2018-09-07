@@ -35,6 +35,11 @@ class GameStartFragment : Fragment(), View.OnClickListener {
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeActiveOrPaused()
+    }
+
     //Called each time fragment is visible
     fun observeActiveOrPaused() {
         checkActiveGame()

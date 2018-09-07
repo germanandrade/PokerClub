@@ -7,6 +7,7 @@ import com.example.gandrade.pokerclub.util.hideSoftKeyboard
 import com.example.gandrade.pokerclub.util.isEmpty
 import com.example.gandrade.pokerclub.util.showMessage
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.ramup.gandrade.pokerclub.Main2Activity
 import com.ramup.gandrade.pokerclub.R

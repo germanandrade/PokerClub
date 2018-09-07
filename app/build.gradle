@@ -48,8 +48,12 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:$android_version"
 
     //Koin
-    implementation "org.koin:koin-android-architecture:0.9.3"
-    implementation "org.koin:koin-core:0.9.3"
+    def koin_version = "0.9.3"
+
+    implementation "org.koin:koin-android-architecture:$koin_version"
+    implementation "org.koin:koin-core:$koin_version"
+    testImplementation "org.koin:koin-test:$koin_version"
+
 
     //Snackbar
     implementation "com.android.support:design:$android_version"
@@ -92,6 +96,11 @@ dependencies {
 
     //Multidex
     implementation 'com.android.support:multidex:1.0.3'
+
+    //Roboelectric
+    testImplementation 'org.robolectric:robolectric:4.0-alpha-3'
+    testImplementation 'org.robolectric:shadows-playservices:4.0-alpha-3'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
 
 }

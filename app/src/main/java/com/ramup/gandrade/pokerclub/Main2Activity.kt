@@ -74,10 +74,7 @@ class Main2Activity : AppCompatActivity() {
                 if (fragment != null)
                 {
                     if(fragment::class.simpleName.equals(GameStartFragment::class.simpleName)) {
-                        val gamestart = fragment as GameStartFragment
-                        gamestart.observeActiveOrPaused()
                         supportActionBar!!.hide()
-
                     }
                     else if(fragment::class.simpleName.equals(ProfileFragment::class.simpleName)) {
                         supportActionBar!!.show()

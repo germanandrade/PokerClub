@@ -8,6 +8,8 @@ import com.google.firebase.auth.UserProfileChangeRequest
 
 
 class LoginViewModel() : ViewModel() {
+
+
     val mAuth = FirebaseAuth.getInstance();
 
     fun sigIn(email: String, password: String): Task<AuthResult> {
