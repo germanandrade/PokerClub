@@ -9,10 +9,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
-import com.ramup.gandrade.pokerclub.game.*
+import com.ramup.gandrade.pokerclub.MyTask
+import com.ramup.gandrade.pokerclub.game.Game
+import com.ramup.gandrade.pokerclub.game.GameState
 import com.ramup.gandrade.pokerclub.game.notifications.*
 import io.reactivex.Observable
-import com.ramup.gandrade.pokerclub.MyTask
 
 
 class GameRepository(private val notificationApiService: NotificationApiService) {
@@ -39,25 +40,11 @@ class GameRepository(private val notificationApiService: NotificationApiService)
                     if (exception != null) {
                         Log.d("fail", "fail")
                     } else {
-                        for (doc in query) {
-                            if (doc.exists()) {
-                                currentPausedGameId.value = doc.id
-                            }
-                        }
+                        if (!query.documents.isEmpty())
+                            currentPausedGameId.value = query.documents[0].id
+
                     }
                 })
-        /*
-                .get().addOnCompleteListener { task ->
-            if (task.isComplete) {
-                for (doc in task.result) {
-                    currentPausedGameId.value = doc.id
-                }
-                if (task.result.isEmpty) {
-                    currentPausedGameId.value = null
-                }
-            }
-        }
-        */
         return currentPausedGameId
     }
 
@@ -67,13 +54,8 @@ class GameRepository(private val notificationApiService: NotificationApiService)
                     if (exception != null) {
                         Log.d("fail", "fail")
                     } else {
-                        for (doc in query) {
-                            if (doc.exists()) {
-                                currentActiveGameId.value = doc.id
-                                //tHIS FIXES NOT DISPLAYING join button but breakes GameActivity
-                                //currentPausedGameId = MutableLiveData<String>()
-                            }
-                        }
+                        if (!query.documents.isEmpty())
+                            currentActiveGameId.value = query.documents[0].id
                     }
                 })
         return currentActiveGameId
@@ -203,27 +185,21 @@ class GameRepository(private val notificationApiService: NotificationApiService)
 
 
     fun getActiveUsers(): LiveData<MutableMap<String, User>> {
-        if (currentActiveGameId.value != null) {
-            gameRef.document(currentActiveGameId.value!!)
-                    .collection("users")
-                    .whereEqualTo("Active", true)
-                    .addSnapshotListener(EventListener { query, exception ->
-                        if (exception != null) {
-                            Log.d("fail", "fail")
-                        } else {
-                            val arr = mutableMapOf<String, User>()
-
-                            for (document in query) {
-                                if (document.exists()) {
-                                    val newUser = User(document.data)
-                                    arr.put(newUser.id, newUser)
-                                }
-                            }
-                            activeUsers.value = arr
-                            user.value = arr[auth.currentUser!!.uid]
+        if (currentActiveGameId.value != null) gameRef.document(currentActiveGameId.value!!)
+                .collection("users")
+                .whereEqualTo("Active", true)
+                .addSnapshotListener { query, exception ->
+                    if (exception != null) {
+                        Log.d("fail", exception.message)
+                    } else {
+                        val arr: MutableMap<String, User> = query.documents.filter { it.exists() }.associateTo(mutableMapOf<String, User>()) {
+                            val u = User(it.data)
+                            u.id to u
                         }
-                    })
-        }
+                        activeUsers.value = arr
+                        user.value = arr[auth.currentUser!!.uid]
+                    }
+                }
 
         return activeUsers
     }
@@ -235,18 +211,16 @@ class GameRepository(private val notificationApiService: NotificationApiService)
                 gameRef.document(currentActiveGameId.value!!)
                         .collection("users")
                         .whereEqualTo("Admin", true)
-                        .addSnapshotListener(EventListener { query, exception ->
+                        .addSnapshotListener { query, exception ->
                             if (exception != null) {
                                 Log.d("fail", "fail")
                             } else {
-                                for (document in query) {
-                                    if (document.exists()) {
-                                        adminToken.value = document.data["Token"] as String?
-                                        Log.d(TAG, "AdminToken:${adminToken.value}")
-                                    }
+                                if (!query.documents.isEmpty()) {
+                                    adminToken.value = query.documents[0].data["Token"] as String?
+                                    Log.d(TAG, "AdminToken:${adminToken.value}")
                                 }
                             }
-                        })
+                        }
                 return adminToken
             }
         } catch (e: Exception) {

@@ -51,4 +51,12 @@
         <item name="android:tint">@color/white</item>
     </style>
 
+    <style name="mytitle">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">@color/orange</item>
+        <item name="android:padding">@dimen/padding</item>
+
+    </style>
+
 </resources>

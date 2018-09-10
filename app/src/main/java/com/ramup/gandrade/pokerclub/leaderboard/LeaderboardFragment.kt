@@ -15,15 +15,15 @@ import kotlinx.android.synthetic.main.fragment_global.view.*
 import org.koin.android.architecture.ext.viewModel
 
 class LeaderboardFragment : Fragment() {
-    val globalViewModel by viewModel<LeaderboardViewModel>()
+    val leaderboardViewModel by viewModel<LeaderboardViewModel>()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        globalViewModel.checkCurrentGameId()
-        globalViewModel.currentGameId.observe(this, Observer {
-            globalViewModel.fetchUsers()
-            globalViewModel.activeUsers.observe(this, Observer { list ->
+        leaderboardViewModel.checkCurrentGameId()
+        leaderboardViewModel.currentGameId.observe(this, Observer {
+            leaderboardViewModel.fetchUsers()
+            leaderboardViewModel.activeUsers.observe(this, Observer { list ->
                 rv_user_list.adapter = UserAdapter(list!!, activity!!)
             })
         })

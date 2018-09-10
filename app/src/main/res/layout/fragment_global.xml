@@ -8,6 +8,11 @@
     android:orientation="vertical"
     tools:context=".leaderboard.LeaderboardFragment">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/mytitle"
+        android:text="@string/title_leaderboard"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_user_list"

@@ -20,42 +20,27 @@ class LeaderboardRepository() {
     fun fetchUsers(): LiveData<MutableMap<String, User>> {
         gameRef.document(currentGameId.value!!)
                 .collection("users")
+                .orderBy("LifeSavers", Query.Direction.DESCENDING)
                 .orderBy("Endavans", Query.Direction.DESCENDING)
-                .orderBy("Debt", Query.Direction.DESCENDING)
+                .orderBy("Debt", Query.Direction.ASCENDING)
                 .get().addOnSuccessListener { query ->
-                    val arr = mutableMapOf<String, User>()
-                    for (document in query) {
-                        if (document.exists()) {
-                            val newUser = User(document.data)
-                            arr.put(newUser.id, newUser)
-                        }
+                    val arr: MutableMap<String, User> = query.documents.filter { it.exists() }.associateTo(mutableMapOf<String, User>()) {
+                        val u = User(it.data)
+                        u.id to u
                     }
                     activeUsers.value = arr
                 }
                 .addOnFailureListener {
-                    Log.d("A", "a")
+                    Log.d("A", it.message)
                 }
-        /*
-        .addSnapshotListener(EventListener { query, exception ->
-            if (exception != null) {
-                Log.d("fail", "fail")
-            } else {
-
-
-            }
-        })
-        */
         return activeUsers
     }
 
 
     fun checkCurrentGameId(): LiveData<String?> {
         gameRef.get().addOnCompleteListener { task ->
-            if (task.isComplete) {
-                for (doc in task.result) {
-                    currentGameId.value = doc.id
-                }
-            }
+            if (!task.result.documents.isEmpty())
+                currentGameId.value = task.result.documents[0].id
         }
         return currentGameId
     }
