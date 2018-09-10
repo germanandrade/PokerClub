@@ -5,18 +5,16 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
-import com.ramup.gandrade.pokerclub.Game.Views.GameStartFragment
-import com.ramup.gandrade.pokerclub.GetStarted.GetStartedActivity
-import com.ramup.gandrade.pokerclub.Login.LoginActivity
-import com.ramup.gandrade.pokerclub.UserProfile.GameViewModel
-import com.ramup.gandrade.pokerclub.UserProfile.ProfileFragment
-import com.ramup.gandrade.pokerclub.UserProfile.UserProfileViewModel
+import com.ramup.gandrade.pokerclub.game.views.GameStartFragment
+import com.ramup.gandrade.pokerclub.getstarted.GetStartedActivity
+import com.ramup.gandrade.pokerclub.login.LoginActivity
+import com.ramup.gandrade.pokerclub.userprofile.GameViewModel
+import com.ramup.gandrade.pokerclub.userprofile.ProfileFragment
+import com.ramup.gandrade.pokerclub.userprofile.UserProfileViewModel
 import kotlinx.android.synthetic.main.activity_main2.*
 import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
@@ -28,7 +26,7 @@ class Main2Activity : AppCompatActivity() {
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
-            R.id.navigation_global -> {
+            R.id.navigation_leaderboard -> {
                 myViewPager.setCurrentItem(0)
 
                 return@OnNavigationItemSelectedListener true

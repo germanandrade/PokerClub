@@ -20,33 +20,33 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Login.LoginActivity">
+        <activity android:name=".login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Login.SignUpActivity" />
-        <activity android:name=".GetStarted.GetStartedActivity" />
+        <activity android:name=".login.SignUpActivity" />
+        <activity android:name=".getstarted.GetStartedActivity" />
         <activity
             android:name=".Main2Activity"
             android:label="@string/title_activity_main2" />
 
-        <activity android:name=".Game.Views.ScanActivity" />
+        <activity android:name=".game.views.ScanActivity" />
         <activity
-            android:name=".Game.Views.GameActivity"
+            android:name=".game.views.GameActivity"
             android:label="@string/title_activity_game"
             android:windowSoftInputMode="adjustPan" />
 
-        <service android:name=".Game.Notifications.FirebaseMessagingService">
+        <service android:name=".game.notifications.FirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <receiver
-            android:name=".Game.Notifications.NotificationReceiver"
+            android:name=".game.notifications.NotificationReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

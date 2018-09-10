@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_marginBottom="@dimen/bottom_margin"
     android:orientation="vertical"
-    tools:context=".Global.GlobalFragment">
+    tools:context=".leaderboard.LeaderboardFragment">
 
 
     <android.support.v7.widget.RecyclerView

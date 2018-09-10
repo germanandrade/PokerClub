@@ -2,13 +2,10 @@ package com.ramup.gandrade.pokerclub
 
 import android.content.Context
 import android.content.Intent
-import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
-import com.ramup.gandrade.pokerclub.Login.LoginActivity
-import com.ramup.gandrade.pokerclub.Login.LoginViewModel
+import com.ramup.gandrade.pokerclub.login.LoginActivity
+import com.ramup.gandrade.pokerclub.login.LoginViewModel
 import kotlinx.android.synthetic.main.activity_login.*
 import org.junit.After
-import org.koin.android.ext.android.startKoin
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
