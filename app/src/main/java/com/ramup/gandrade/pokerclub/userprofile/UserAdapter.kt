@@ -43,7 +43,7 @@ class UserAdapter(var map: MutableMap<String, User>, val context: Context) : Rec
                 .into(holder.tvProfileImage)
         holder.tvProfileImage.setOnClickListener(View.OnClickListener {
             if (user.imageUrl != null)
-                ProfilePicDialog(context, user.name, user.imageUrl!!).show()
+                ProfilePicDialog(context, user.name, user.imageUrl!!, null).show()
         })
         if (user.admin) {
             holder.layout.setBackgroundColor(ContextCompat.getColor(context, R.color.gray))
