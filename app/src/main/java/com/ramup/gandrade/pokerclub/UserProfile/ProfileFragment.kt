@@ -30,6 +30,23 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
     var bitmap: Bitmap? = null
     var uri: Uri? = null
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_user_profile, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        userProfileViewModel.checkCurrentGameId()
+        userProfileViewModel.currentGameId.observe(this, Observer {
+            userProfileViewModel.fetchUser()
+            userProfileViewModel.user.observe(this, Observer { user ->
+                updateUser(user!!)
+            })
+        })
+        endEdit.setOnClickListener(this)
+
+    }
+
     override fun invoke(p1: DialogInterface, pos: Int) {
         when (pos) {
             0 -> chooseFromGallery()
@@ -103,21 +120,7 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
     private val TAG: String = ProfileFragment::class.java.simpleName
 
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
-
-
-        userProfileViewModel.checkCurrentGameId()
-        userProfileViewModel.currentGameId.observe(this, Observer {
-            userProfileViewModel.fetchUser()
-            userProfileViewModel.user.observe(this, Observer { user ->
-                updateUser(user!!)
-            })
-        })
-        endEdit.setOnClickListener(this)
-
-    }
 
 
     fun listenEdit() {
@@ -145,6 +148,8 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
     }
 
     private fun updateUser(user: User) {
+        profileLayout.visibility=View.VISIBLE
+        profilePic.visibility=View.VISIBLE
         name.setText(user.name)
         debt.setText(user.debt.toString())
         endavans.setText(user.endavans.toString())
@@ -166,9 +171,7 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
         })
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_user_profile, container, false)
-    }
+
 
 
     companion object {
