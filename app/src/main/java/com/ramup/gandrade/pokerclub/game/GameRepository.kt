@@ -305,8 +305,9 @@ class GameRepository(private val notificationApiService: NotificationApiService)
 
     }
 
-    fun sendNotification(type: RequestType, extra: Int?): Observable<FCMResponse> {
-        val data = Data(auth.currentUser!!.displayName!!, auth.currentUser!!.uid, FirebaseInstanceId.getInstance().token!!, type.toString(), extra)
+    fun sendNotification(type: RequestType, extra: Int?, user: User?): Observable<FCMResponse> {
+        val token = if (user != null && user.admin) adminToken.value!! else FirebaseInstanceId.getInstance().token!!
+        val data = Data(auth.currentUser!!.displayName!!, auth.currentUser!!.uid, token, type.toString(), extra)
         val request = Request(adminToken.value!!, data)
         return notificationApiService.sendNotification(request)
     }

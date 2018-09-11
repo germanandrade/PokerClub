@@ -150,7 +150,7 @@ class GameActivity : AppCompatActivity() {
 
     val onclick: (requestType: RequestType, defaultValue: Int?) -> Unit =
             { requestType, value ->
-                gameViewModel.sendNotification(requestType, value)
+                gameViewModel.sendNotification(requestType, value,currentUser )
                 Toast.makeText(this, "Request sent!", Toast.LENGTH_SHORT).show()
             }
 

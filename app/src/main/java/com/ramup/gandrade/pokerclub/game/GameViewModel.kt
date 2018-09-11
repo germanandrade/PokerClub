@@ -99,8 +99,8 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
         }
     }
 
-    fun sendNotification(type: RequestType, extra: Int?) {
-        gameRepo.sendNotification(type, extra).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+    fun sendNotification(type: RequestType, extra: Int?,user:User?) {
+        gameRepo.sendNotification(type, extra,user).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
                 .subscribe({ result ->
                     Log.d("Result", "There are ${result} Java developers in Lagos")
                 }, { error ->
