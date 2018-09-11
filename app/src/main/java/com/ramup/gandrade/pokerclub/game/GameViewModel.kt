@@ -1,14 +1,18 @@
-package com.ramup.gandrade.pokerclub.userprofile
+package com.ramup.gandrade.pokerclub.game
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.support.annotation.Keep
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.ramup.gandrade.pokerclub.game.notifications.RequestType
+import com.ramup.gandrade.pokerclub.userprofile.GameRepository
+import com.ramup.gandrade.pokerclub.userprofile.User
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
+@Keep
 class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
 
     lateinit var pausedGameId: LiveData<String>
@@ -23,6 +27,7 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
 
     lateinit var adminToken: LiveData<String>
 
+    private val TAG = GameViewModel::class.simpleName
 
     fun getCurrentUser(): User? {
         return gameRepo.getCurrentUser()
@@ -99,10 +104,10 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
         }
     }
 
-    fun sendNotification(type: RequestType, extra: Int?,user:User?) {
-        gameRepo.sendNotification(type, extra,user).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+    fun sendNotification(type: RequestType, extra: Int?, user: User?) {
+        gameRepo.sendNotification(type, extra, user).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
                 .subscribe({ result ->
-                    Log.d("Result", "There are ${result} Java developers in Lagos")
+                    Log.d(TAG, "Result is ${result}")
                 }, { error ->
                     error.printStackTrace()
                 })

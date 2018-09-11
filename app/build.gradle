@@ -10,8 +10,8 @@ android {
         applicationId "com.ramup.gandrade.pokerclub"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 11
-        versionName "11.0"
+        versionCode 12
+        versionName "11.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -19,7 +19,7 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            debuggable false
+            debuggable true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

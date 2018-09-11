@@ -16,10 +16,10 @@ import android.widget.Toast
 import com.example.gandrade.pokerclub.util.TextToImageEncode
 import com.example.gandrade.pokerclub.util.showMessage
 import com.google.firebase.auth.FirebaseAuth
-import com.ramup.gandrade.pokerclub.game.notifications.RequestType
 import com.ramup.gandrade.pokerclub.Main2Activity
 import com.ramup.gandrade.pokerclub.R
-import com.ramup.gandrade.pokerclub.userprofile.GameViewModel
+import com.ramup.gandrade.pokerclub.game.GameViewModel
+import com.ramup.gandrade.pokerclub.game.notifications.RequestType
 import com.ramup.gandrade.pokerclub.userprofile.User
 import com.ramup.gandrade.pokerclub.userprofile.UserAdapter
 import kotlinx.android.synthetic.main.activity_game.*
@@ -60,6 +60,8 @@ class GameActivity : AppCompatActivity() {
         }
         supportActionBar!!.show()
     }
+
+
 
     private fun disableButtons(user: User) {
         enableButtons()
@@ -150,7 +152,7 @@ class GameActivity : AppCompatActivity() {
 
     val onclick: (requestType: RequestType, defaultValue: Int?) -> Unit =
             { requestType, value ->
-                gameViewModel.sendNotification(requestType, value,currentUser )
+                gameViewModel.sendNotification(requestType, value, currentUser)
                 Toast.makeText(this, "Request sent!", Toast.LENGTH_SHORT).show()
             }
 

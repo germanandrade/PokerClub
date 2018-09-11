@@ -6,14 +6,15 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.ramup.gandrade.pokerclub.R
 import com.ramup.gandrade.pokerclub.leaderboard.ProfilePicDialog
 import com.ramup.gandrade.pokerclub.picasso.RoundTransformation
-import com.ramup.gandrade.pokerclub.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.user_list_item.view.*
 
 class UserAdapter(var map: MutableMap<String, User>, val context: Context) : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
 
+    val TAG = UserAdapter::class.simpleName
     val keys = map.keys.toTypedArray()
 
     override fun getItemCount(): Int {
@@ -29,7 +30,7 @@ class UserAdapter(var map: MutableMap<String, User>, val context: Context) : Rec
     }
 
     override fun onBindViewHolder(holder: ViewHolder, pos: Int) {
-        val user = map.get(keys[pos])!!
+        val user = requireNotNull(map.get(keys[pos])) { "$TAG ${keys[pos]} not found in $map" }
         holder.tvName.text = user.name
         holder.tvEndavans.text = user.endavans.toString()
         holder.tvDebt.text = user.debt.toString()
@@ -42,8 +43,10 @@ class UserAdapter(var map: MutableMap<String, User>, val context: Context) : Rec
                 .fit()
                 .into(holder.tvProfileImage)
         holder.tvProfileImage.setOnClickListener(View.OnClickListener {
-            if (user.imageUrl != null)
-                ProfilePicDialog(context, user.name, user.imageUrl!!, null).show()
+            user.imageUrl?.let {
+                ProfilePicDialog(context, user.name, it, null).show()
+
+            }
         })
         if (user.admin) {
             holder.layout.setBackgroundColor(ContextCompat.getColor(context, R.color.gray))

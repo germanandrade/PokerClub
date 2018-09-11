@@ -13,12 +13,13 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.ramup.gandrade.pokerclub.game.GameViewModel
+import com.ramup.gandrade.pokerclub.game.views.CAMERA_SCAN_REQUEST_CODE
 import com.ramup.gandrade.pokerclub.game.views.GameStartFragment
 import com.ramup.gandrade.pokerclub.getstarted.GetStartedActivity
 import com.ramup.gandrade.pokerclub.login.LoginActivity
 import com.ramup.gandrade.pokerclub.userprofile.CAMERA
 import com.ramup.gandrade.pokerclub.userprofile.CAMERA_REQUEST_CODE
-import com.ramup.gandrade.pokerclub.userprofile.GameViewModel
 import com.ramup.gandrade.pokerclub.userprofile.ProfileFragment
 import kotlinx.android.synthetic.main.activity_main2.*
 import org.jetbrains.anko.startActivity
@@ -93,6 +94,14 @@ class Main2Activity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
             CAMERA_REQUEST_CODE -> {
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, getString(R.string.denied_by_user), Toast.LENGTH_LONG)
+                } else {
+                    val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    startActivityForResult(intent, CAMERA)
+                }
+            }
+            CAMERA_SCAN_REQUEST_CODE -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, getString(R.string.denied_by_user), Toast.LENGTH_LONG)
                 } else {

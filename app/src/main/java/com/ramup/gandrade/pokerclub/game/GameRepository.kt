@@ -2,6 +2,7 @@ package com.ramup.gandrade.pokerclub.userprofile
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.support.annotation.Keep
 import android.util.Log
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.Task
@@ -15,7 +16,7 @@ import com.ramup.gandrade.pokerclub.game.GameState
 import com.ramup.gandrade.pokerclub.game.notifications.*
 import io.reactivex.Observable
 
-
+@Keep
 class GameRepository(private val notificationApiService: NotificationApiService) {
 
     val auth = FirebaseAuth.getInstance()

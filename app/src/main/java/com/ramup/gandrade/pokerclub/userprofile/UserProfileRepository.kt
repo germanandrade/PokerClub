@@ -1,5 +1,6 @@
 package com.ramup.gandrade.pokerclub.userprofile
 
+import GAMES
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.graphics.Bitmap
@@ -15,7 +16,7 @@ import java.util.*
 
 class UserProfileRepository() {
     private val db = FirebaseFirestore.getInstance()
-    private val gameRef = db.collection("games")
+    private val gameRef = db.collection(GAMES)
     private val auth = FirebaseAuth.getInstance()
     var storage = FirebaseStorage.getInstance()
 

@@ -169,12 +169,12 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
                 .into(profilePic, object : com.squareup.picasso.Callback {
                     override fun onError(e: Exception?) {
                         Log.e("ProfilePicDialog", e?.message)
-                        progressBar.visibility = View.GONE
+                        progressBar?.visibility = View.GONE
                     }
 
                     override fun onSuccess() {
                         //do smth when picture is loaded successfully
-                        progressBar.visibility = View.GONE
+                        progressBar?.visibility = View.GONE
                     }
                 })
         setListeners(user.imageUrl)
