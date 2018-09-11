@@ -1,20 +1,25 @@
 package com.ramup.gandrade.pokerclub
 
 import android.arch.lifecycle.Observer
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.provider.MediaStore
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.ramup.gandrade.pokerclub.game.views.GameStartFragment
 import com.ramup.gandrade.pokerclub.getstarted.GetStartedActivity
 import com.ramup.gandrade.pokerclub.login.LoginActivity
+import com.ramup.gandrade.pokerclub.userprofile.CAMERA
+import com.ramup.gandrade.pokerclub.userprofile.CAMERA_REQUEST_CODE
 import com.ramup.gandrade.pokerclub.userprofile.GameViewModel
 import com.ramup.gandrade.pokerclub.userprofile.ProfileFragment
-import com.ramup.gandrade.pokerclub.userprofile.UserProfileViewModel
 import kotlinx.android.synthetic.main.activity_main2.*
 import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
@@ -22,7 +27,6 @@ import org.koin.android.architecture.ext.viewModel
 
 class Main2Activity : AppCompatActivity() {
     val gameViewModel by viewModel<GameViewModel>()
-    val userProfileViewModel by viewModel<UserProfileViewModel>()
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -55,10 +59,9 @@ class Main2Activity : AppCompatActivity() {
         }
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        gameViewModel.loggedIn.observe(this, Observer { loggedIn ->
-            logged(loggedIn!!).let { }
-        })
-        supportActionBar!!.hide()
+        gameViewModel.loggedIn.observe(this, Observer { log() })
+        val actionBar = supportActionBar!!
+        actionBar.hide()
 
 
         myViewPager.adapter = Main2ViewPagerAdapter(supportFragmentManager)
@@ -69,27 +72,35 @@ class Main2Activity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 val name = makeFragmentName(myViewPager.getId(), position)
                 var fragment: Fragment = supportFragmentManager.findFragmentByTag(name)
-                if (fragment != null)
-                {
-                    if(fragment::class.simpleName.equals(GameStartFragment::class.simpleName)) {
-                        supportActionBar!!.hide()
-                    }
-                    else if(fragment::class.simpleName.equals(ProfileFragment::class.simpleName)) {
-                        supportActionBar!!.show()
-                    }
-                    else{
-                        supportActionBar!!.hide()
 
-                    }
+                if (fragment::class.simpleName.equals(GameStartFragment::class.simpleName)) {
+                    actionBar.hide()
+                } else if (fragment::class.simpleName.equals(ProfileFragment::class.simpleName)) {
+                    actionBar.show()
+                } else {
+                    actionBar.hide()
                 }
                 navigation.menu.getItem(position).isChecked = true
             }
         })
     }
 
-    fun logged(logged: Boolean) {
+    fun log() {
         startActivity<LoginActivity>()
         finish()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            CAMERA_REQUEST_CODE -> {
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, getString(R.string.denied_by_user), Toast.LENGTH_LONG)
+                } else {
+                    val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    startActivityForResult(intent, CAMERA)
+                }
+            }
+        }
     }
 
 
@@ -101,17 +112,8 @@ class Main2Activity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.signout -> gameViewModel.signOut()
-            R.id.editProfile -> editProfile()
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun editProfile() {
-        val name = makeFragmentName(myViewPager.getId(), 2)
-        var profileFragment: ProfileFragment = supportFragmentManager.findFragmentByTag(name) as ProfileFragment
-        profileFragment.listenEdit()
-
-
     }
 
     private fun makeFragmentName(viewId: Int, id: Int): String {

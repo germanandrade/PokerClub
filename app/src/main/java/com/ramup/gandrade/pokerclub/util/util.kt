@@ -14,13 +14,7 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.WriterException
 import com.google.zxing.common.BitMatrix
-import java.io.BufferedReader
-import java.io.DataOutputStream
 import java.io.File
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
-import java.nio.charset.StandardCharsets
 import java.util.*
 
 
@@ -80,8 +74,8 @@ fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeig
     return inSampleSize;
 }
 
-fun bitmapToUriConverter(mBitmap: Bitmap, activity: Activity): Uri? {
-    var uri: Uri? = null;
+fun bitmapToUriConverter(mBitmap: Bitmap, activity: Activity): Uri {
+    lateinit var uri: Uri
     try {
         var options = BitmapFactory.Options();
         // Calculate inSampleSize
@@ -106,3 +100,8 @@ fun bitmapToUriConverter(mBitmap: Bitmap, activity: Activity): Uri? {
     return uri;
 }
 
+fun <T1, T2> ifNotNull(value1: T1?, value2: T2?, bothNotNull: (T1, T2) -> (Unit)) {
+    if (value1 != null && value2 != null) {
+        bothNotNull(value1, value2)
+    }
+}

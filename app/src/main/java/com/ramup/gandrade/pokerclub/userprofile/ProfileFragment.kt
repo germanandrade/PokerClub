@@ -20,6 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.example.gandrade.pokerclub.util.bitmapToUriConverter
+import com.example.gandrade.pokerclub.util.ifNotNull
 import com.ramup.gandrade.pokerclub.R
 import com.ramup.gandrade.pokerclub.leaderboard.ProfilePicDialog
 import com.ramup.gandrade.pokerclub.picasso.RoundTransformation
@@ -28,16 +29,17 @@ import kotlinx.android.synthetic.main.fragment_user_profile.*
 import org.koin.android.architecture.ext.sharedViewModel
 import java.lang.Exception
 
+internal const val CAMERA_REQUEST_CODE = 101
+private const val GALLERY = 1
+internal const val CAMERA = 2
 
 class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int) -> Unit {
 
-    private val CAMERA_REQUEST_CODE = 101
     private var editMode = false
+    private lateinit var bitmap: Bitmap
+    private lateinit var uri: Uri
+    private val TAG: String = ProfileFragment::class.java.simpleName
 
-    val GALLERY = 1
-    val CAMERA = 2
-    var bitmap: Bitmap? = null
-    var uri: Uri? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_user_profile, container, false)
@@ -49,7 +51,7 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
         userProfileViewModel.currentGameId.observe(this, Observer {
             userProfileViewModel.fetchUser()
             userProfileViewModel.user.observe(this, Observer { user ->
-                updateUser(user!!)
+                updateUser(requireNotNull(user) { "$TAG user was null while fetchUser()" })
             })
         })
         endEdit.setOnClickListener(this)
@@ -60,16 +62,23 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
 
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == GALLERY && data != null) {
-            uri = data.data
-            bitmap = MediaStore.Images.Media.getBitmap(activity!!.getContentResolver(), data.data)
+        ifNotNull(data, activity) { mData, mActivity ->
+            run {
+                if (requestCode == GALLERY) {
+                    uri = mData.data
+                    bitmap = MediaStore.Images.Media.getBitmap(activity?.getContentResolver(), mData.data)
 
-        } else if (requestCode == CAMERA && data != null) {
-            bitmap = data.extras.get("data") as Bitmap
-            uri = bitmapToUriConverter(bitmap!!, activity!!)
+                } else if (requestCode == CAMERA) {
+                    bitmap = mData.extras.get("data") as Bitmap
+                    bitmapToUriConverter(bitmap, mActivity)
+                }
+            }
         }
+
+
         val newName = name.text.toString()
         userProfileViewModel.updateChanges(newName, bitmap)
         progressBar.visibility = View.VISIBLE
@@ -78,13 +87,15 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
 
 
     fun capturePicture() {
-        val permission = ContextCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA)
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(activity, "Permission to camera denied", Toast.LENGTH_LONG)
-            makeRequest()
-        } else {
-            val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(intent, CAMERA)
+        activity?.let {
+            val permission = ContextCompat.checkSelfPermission(it.applicationContext, Manifest.permission.CAMERA)
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(activity, "Permission to camera denied", Toast.LENGTH_LONG)
+                makeRequest()
+            } else {
+                val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
+                startActivityForResult(intent, CAMERA)
+            }
         }
 
     }
@@ -92,21 +103,10 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
     private fun makeRequest() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE)
+            Toast.makeText(context, "called", Toast.LENGTH_SHORT)
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            CAMERA_REQUEST_CODE -> {
-                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(activity, "Permission has been denied by user", Toast.LENGTH_LONG)
-                } else {
-                    val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
-                    startActivityForResult(intent, CAMERA)
-                }
-            }
-        }
-    }
 
     fun chooseFromGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -128,7 +128,6 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
 
 
     val userProfileViewModel by sharedViewModel<UserProfileViewModel>()
-    private val TAG: String = ProfileFragment::class.java.simpleName
 
 
     fun listenEdit() {
@@ -184,7 +183,9 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
 
     private fun setListeners(imageUrl: String?) {
         profilePic.setOnClickListener(View.OnClickListener {
-            ProfilePicDialog(activity!!, "", imageUrl ?: "nopath", this).show()
+            activity?.let {
+                ProfilePicDialog(it, "", imageUrl ?: "nopath", this).show()
+            }
         })
         name.setOnClickListener {
             if (!editMode) {

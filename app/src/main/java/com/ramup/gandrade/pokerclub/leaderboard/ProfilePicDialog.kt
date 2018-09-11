@@ -16,8 +16,8 @@ import java.lang.Exception
 class ProfilePicDialog(context: Context, val name: String, val image: String, val profileFragment: ProfileFragment?) : Dialog(context), View.OnClickListener {
     override fun onClick(view: View?) {
         when (view?.id) {
-            R.id.capturePictureButton -> profileFragment!!.capturePicture()
-            R.id.chooseFromGalleryButton -> profileFragment!!.chooseFromGallery()
+            R.id.capturePictureButton -> profileFragment?.let { it.capturePicture() }
+            R.id.chooseFromGalleryButton -> profileFragment?.let { it.chooseFromGallery() }
         }
         cancel()
     }

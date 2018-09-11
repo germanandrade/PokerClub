@@ -56,4 +56,5 @@
     <string name="deposit">Deposit</string>
     <string name="withdraw">Withdraw</string>
     <string name="title_activity_get_started">GetStarted</string>
+    <string name="denied_by_user">Permission has been denied by user</string>
 </resources>
