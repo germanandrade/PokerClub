@@ -7,7 +7,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -19,7 +18,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.example.gandrade.pokerclub.util.bitmapToUriConverter
 import com.example.gandrade.pokerclub.util.ifNotNull
 import com.ramup.gandrade.pokerclub.R
 import com.ramup.gandrade.pokerclub.leaderboard.ProfilePicDialog
@@ -36,9 +34,10 @@ internal const val CAMERA = 2
 class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int) -> Unit {
 
     private var editMode = false
-    private lateinit var bitmap: Bitmap
-    private lateinit var uri: Uri
+    //private lateinit var bitmap: Bitmap
+    //private lateinit var uri: Uri
     private val TAG: String = ProfileFragment::class.java.simpleName
+    private val userProfileViewModel by sharedViewModel<UserProfileViewModel>()
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -68,21 +67,18 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
         ifNotNull(data, activity) { mData, mActivity ->
             run {
                 if (requestCode == GALLERY) {
-                    uri = mData.data
-                    bitmap = MediaStore.Images.Media.getBitmap(activity?.getContentResolver(), mData.data)
-
+                    update(MediaStore.Images.Media.getBitmap(activity?.getContentResolver(), mData.data)
+                    )
                 } else if (requestCode == CAMERA) {
-                    bitmap = mData.extras.get("data") as Bitmap
-                    bitmapToUriConverter(bitmap, mActivity)
+                    update(mData.extras.get("data") as Bitmap)
                 }
             }
         }
+    }
 
-
-        val newName = name.text.toString()
-        userProfileViewModel.updateChanges(newName, bitmap)
+    fun update(bitmap: Bitmap) {
+        userProfileViewModel.uploadImage(bitmap)
         progressBar.visibility = View.VISIBLE
-
     }
 
 
@@ -122,12 +118,9 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
 
     private fun doneEdition() {
         val newName = name.text.toString()
-        userProfileViewModel.updateChanges(newName, bitmap)
+        userProfileViewModel.updateName(newName)
         progressBar.visibility = View.VISIBLE
     }
-
-
-    val userProfileViewModel by sharedViewModel<UserProfileViewModel>()
 
 
     fun listenEdit() {
