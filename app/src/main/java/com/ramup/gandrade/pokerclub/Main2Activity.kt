@@ -28,8 +28,8 @@ import org.koin.android.architecture.ext.viewModel
 
 
 class Main2Activity : AppCompatActivity() {
-    val gameViewModel by viewModel<GameViewModel>()
-
+    private val gameViewModel by viewModel<GameViewModel>()
+    private val TAG = Main2Activity::class.simpleName
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_leaderboard -> {
@@ -62,7 +62,7 @@ class Main2Activity : AppCompatActivity() {
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         gameViewModel.loggedIn.observe(this, Observer { log() })
-        val actionBar = supportActionBar!!
+        val actionBar = requireNotNull(supportActionBar) { "supportActionBar was null at $TAG" }
         actionBar.hide()
 
 
