@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.support.design.widget.Snackbar
+import android.support.v7.app.ActionBar
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -104,4 +105,27 @@ fun <T1, T2> ifNotNull(value1: T1?, value2: T2?, bothNotNull: (T1, T2) -> (Unit)
     if (value1 != null && value2 != null) {
         bothNotNull(value1, value2)
     }
+}
+
+fun disableABCShowHideAnimation(actionBar: ActionBar) {
+    try {
+        actionBar::class.java.getDeclaredMethod("setShowHideAnimationEnabled", Boolean::class.javaPrimitiveType).invoke(actionBar, false)
+    } catch (exception: Exception) {
+        try {
+            val mActionBarField = actionBar::class.java.getSuperclass().getDeclaredField("mActionBar")
+            mActionBarField.setAccessible(true)
+            val icsActionBar = mActionBarField.get(actionBar)
+            val mShowHideAnimationEnabledField = icsActionBar.javaClass.getDeclaredField("mShowHideAnimationEnabled")
+            mShowHideAnimationEnabledField.setAccessible(true)
+            mShowHideAnimationEnabledField.set(icsActionBar, false)
+            val mCurrentShowAnimField = icsActionBar.javaClass.getDeclaredField("mCurrentShowAnim")
+            mCurrentShowAnimField.setAccessible(true)
+            mCurrentShowAnimField.set(icsActionBar, null)
+            //icsActionBar.getClass().getDeclaredMethod("setShowHideAnimationEnabled", boolean.class).invoke(icsActionBar, false);
+        } catch (e: Exception) {
+            //....
+        }
+
+    }
+
 }

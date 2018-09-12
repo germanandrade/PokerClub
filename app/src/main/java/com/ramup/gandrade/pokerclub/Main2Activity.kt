@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.example.gandrade.pokerclub.util.disableABCShowHideAnimation
 import com.ramup.gandrade.pokerclub.game.GameViewModel
 import com.ramup.gandrade.pokerclub.game.views.CAMERA_SCAN_REQUEST_CODE
 import com.ramup.gandrade.pokerclub.game.views.ScanActivity
@@ -60,6 +61,7 @@ class Main2Activity : AppCompatActivity() {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         gameViewModel.loggedIn.observe(this, Observer { log() })
         val myActionBar = requireNotNull(supportActionBar) { "supportActionBar was null at $TAG" }
+        disableABCShowHideAnimation(myActionBar)
         myActionBar.hide()
 
 
@@ -73,8 +75,11 @@ class Main2Activity : AppCompatActivity() {
                 //var fragment: Fragment = supportFragmentManager.findFragmentByTag(name)
 
                 if (position == 2) {
+                    disableABCShowHideAnimation(myActionBar)
+
                     myActionBar.show()
                 } else {
+                    disableABCShowHideAnimation(myActionBar)
                     myActionBar.hide()
                 }
                 navigation.menu.getItem(position).isChecked = true
