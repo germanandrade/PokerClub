@@ -2,10 +2,7 @@ package com.ramup.gandrade.pokerclub.game.notifications
 
 import java.io.Serializable
 
-
-data class Request(val to: String, val data: Data) {
-
-}
+data class Request(val to: String, val data: Data)
 
 data class Data(var name: String, var dbId: String, var token: String, var requestType: String, var extra: Int?, var success: Boolean? = null) : Serializable {
     constructor(map: Map<String, String>?) :

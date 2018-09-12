@@ -169,19 +169,6 @@ class GameStartFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            CAMERA_SCAN_REQUEST_CODE -> {
-                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(activity, "Permission has been denied by user", Toast.LENGTH_LONG)
-                } else {
-                    startActivity<ScanActivity>()
-                    activity!!.finish()
-                }
-            }
-        }
-    }
-
     companion object {
         fun newInstance(): GameStartFragment {
             return GameStartFragment()

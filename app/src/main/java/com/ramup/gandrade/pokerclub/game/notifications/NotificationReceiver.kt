@@ -6,7 +6,6 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.nfc.Tag
 import android.util.Log
 import android.widget.Toast
 import com.ramup.gandrade.pokerclub.userprofile.GameRepository
@@ -28,36 +27,38 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
             val task = when {
                 data.requestType.equals(RequestType.BUY.toString()) -> gameRepo.buyEndavans(data.dbId)
                 data.requestType.equals(RequestType.LIFESAVER.toString()) -> gameRepo.useLifeSaver(data.dbId)
-                data.requestType.equals(RequestType.DEPOSIT.toString()) -> gameRepo.depositEndavans(data.dbId, data.extra!!)
-                data.requestType.equals(RequestType.PAY.toString()) -> gameRepo.payDebt(data.dbId, data.extra!!)
-                data.requestType.equals(RequestType.WITHDRAW.toString()) -> gameRepo.withdrawEndavans(data.dbId, data.extra!!)
+                data.requestType.equals(RequestType.DEPOSIT.toString()) -> gameRepo.depositEndavans(data.dbId, requireNotNull(data.extra) { "data.extra was null at DEPOSIT $TAG" })
+                data.requestType.equals(RequestType.PAY.toString()) -> gameRepo.payDebt(data.dbId, requireNotNull(data.extra) { "data.extra was null at PAY $TAG" })
+                data.requestType.equals(RequestType.WITHDRAW.toString()) -> gameRepo.withdrawEndavans(data.dbId, requireNotNull(data.extra) { "data.extra was null at WITHDRAW $TAG" })
                 else -> null
             }
-            task!!
-                    .addOnSuccessListener {
-                        data.success = true
-                        gameRepo.sendSuccessNotification(data).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
-                                .subscribe(
-                                        { result ->
-                                            Log.d("Result", "FCM responds: ${result}")
-                                        },
-                                        { error ->
-                                            error.printStackTrace()
-                                        })
-                        Toast.makeText(context, "Sent notification $data", Toast.LENGTH_LONG).show()
-                    }
-                    .addOnFailureListener {
-                        data.success = false
-                        gameRepo.sendSuccessNotification(data).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
-                                .subscribe(
-                                        { result ->
-                                            Log.d("Result", "FCM responds: ${result}")
-                                        },
-                                        { error ->
-                                            error.printStackTrace()
-                                        })
-                        Toast.makeText(context, "Sent notification $data", Toast.LENGTH_LONG).show()
-                    }
+            task?.let { it ->
+
+                it.addOnSuccessListener {
+                    data.success = true
+                    gameRepo.sendSuccessNotification(data).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+                            .subscribe(
+                                    { result ->
+                                        Log.d("Result", "FCM responds: ${result}")
+                                    },
+                                    { error ->
+                                        error.printStackTrace()
+                                    })
+                    Toast.makeText(context, "Sent notification $data", Toast.LENGTH_LONG).show()
+                }
+                        .addOnFailureListener {
+                            data.success = false
+                            gameRepo.sendSuccessNotification(data).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+                                    .subscribe(
+                                            { result ->
+                                                Log.d("Result", "FCM responds: ${result}")
+                                            },
+                                            { error ->
+                                                error.printStackTrace()
+                                            })
+                            Toast.makeText(context, "Sent notification $data", Toast.LENGTH_LONG).show()
+                        }
+            }
         } else if (intent.action == ACTION_REJECT_TRANSACTION) {
             data.success = false
             gameRepo.sendSuccessNotification(data).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
@@ -73,7 +74,7 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
         clearNotification(context, id)
     }
 
-    fun clearNotification(context: Context, id: Int) {
+    private fun clearNotification(context: Context, id: Int) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(id)
     }
