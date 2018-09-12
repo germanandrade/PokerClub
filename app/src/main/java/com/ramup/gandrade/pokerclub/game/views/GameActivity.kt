@@ -93,10 +93,14 @@ class GameActivity : AppCompatActivity() {
     fun setMenu(user: User) {
         if (user.admin) {
             showMessage(rv_user_list, "You're admin!", Snackbar.LENGTH_SHORT)
-            pauseItem.setVisible(true)
+            if (::pauseItem.isInitialized) {
+                pauseItem.setVisible(true)
+            }
             //changeAdminItem.setVisible(true)
         } else {
-            leaveItem.setVisible(true)
+            if (::leaveItem.isInitialized) {
+                leaveItem.setVisible(true)
+            }
             showMessage(rv_user_list, "You're not admin!", Snackbar.LENGTH_SHORT)
 
         }
