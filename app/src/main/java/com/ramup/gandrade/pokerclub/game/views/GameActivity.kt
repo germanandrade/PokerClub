@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -34,6 +35,8 @@ class GameActivity : AppCompatActivity() {
     private lateinit var changeAdminItem: MenuItem
     private var currentUser: User? = null
     private val TAG = GameActivity::class.simpleName
+    private lateinit var myActionBar: ActionBar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
@@ -62,7 +65,8 @@ class GameActivity : AppCompatActivity() {
             startActivity<Main2Activity>()
             finish()
         }
-        actionBar.show()
+        myActionBar = requireNotNull(supportActionBar) { "supportActionBar was null at $TAG" }
+        myActionBar.show()
     }
 
 
@@ -72,9 +76,8 @@ class GameActivity : AppCompatActivity() {
         if (user.endavans == 0) withdrawButton.isEnabled = false
         if (user.lifeSavers <= 0) useLifeSaver.isEnabled = false
         setTitle("${user.name} playing")
-        val actionBar = requireNotNull(supportActionBar) { "supportActionBar was null at $TAG" }
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setCustomView(getLayoutInflater().inflate(R.layout.action_bar_home, null))
+        myActionBar.setDisplayShowCustomEnabled(true);
+        myActionBar.setCustomView(getLayoutInflater().inflate(R.layout.action_bar_home, null))
         setMenu(user)
     }
 

@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.support.design.widget.BottomNavigationView
-import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
@@ -15,13 +14,11 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.ramup.gandrade.pokerclub.game.GameViewModel
 import com.ramup.gandrade.pokerclub.game.views.CAMERA_SCAN_REQUEST_CODE
-import com.ramup.gandrade.pokerclub.game.views.GameStartFragment
 import com.ramup.gandrade.pokerclub.game.views.ScanActivity
 import com.ramup.gandrade.pokerclub.getstarted.GetStartedActivity
 import com.ramup.gandrade.pokerclub.login.LoginActivity
 import com.ramup.gandrade.pokerclub.userprofile.CAMERA
 import com.ramup.gandrade.pokerclub.userprofile.CAMERA_REQUEST_CODE
-import com.ramup.gandrade.pokerclub.userprofile.ProfileFragment
 import kotlinx.android.synthetic.main.activity_main2.*
 import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
@@ -62,8 +59,8 @@ class Main2Activity : AppCompatActivity() {
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         gameViewModel.loggedIn.observe(this, Observer { log() })
-        val actionBar = requireNotNull(supportActionBar) { "supportActionBar was null at $TAG" }
-        actionBar.hide()
+        val myActionBar = requireNotNull(supportActionBar) { "supportActionBar was null at $TAG" }
+        myActionBar.hide()
 
 
         myViewPager.adapter = Main2ViewPagerAdapter(supportFragmentManager)
@@ -72,15 +69,13 @@ class Main2Activity : AppCompatActivity() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
-                val name = makeFragmentName(myViewPager.getId(), position)
-                var fragment: Fragment = supportFragmentManager.findFragmentByTag(name)
+                //val name = makeFragmentName(myViewPager.getId(), position)
+                //var fragment: Fragment = supportFragmentManager.findFragmentByTag(name)
 
-                if (fragment::class.simpleName.equals(GameStartFragment::class.simpleName)) {
-                    actionBar.hide()
-                } else if (fragment::class.simpleName.equals(ProfileFragment::class.simpleName)) {
-                    actionBar.show()
+                if (position == 2) {
+                    myActionBar.show()
                 } else {
-                    actionBar.hide()
+                    myActionBar.hide()
                 }
                 navigation.menu.getItem(position).isChecked = true
             }
@@ -127,7 +122,11 @@ class Main2Activity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    /**
+     *
     private fun makeFragmentName(viewId: Int, id: Int): String {
-        return "android:switcher:$viewId:$id"
+    return "android:switcher:$viewId:$id"
     }
+     */
+
 }
