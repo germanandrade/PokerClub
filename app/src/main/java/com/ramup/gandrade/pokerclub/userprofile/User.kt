@@ -15,4 +15,6 @@ data class User(var name: String, var endavans: Int, var debt: Int, var id: Stri
             map["Admin"] as Boolean,
             (map["LifeSavers"] as Long).toInt()
     )
+
+    constructor(name: String, id: String, pAdmin: Boolean =true) : this(name, 0, 0, id,admin=pAdmin)
 }

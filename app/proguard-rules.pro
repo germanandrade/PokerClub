@@ -51,7 +51,7 @@
 }
 -keep class com.ramup.gandrade.pokerclub.game.** {*;}
 
-//v7
+#v7
 -dontwarn android.support.v7.**
 -keep class android.support.v7.** { *; }
 -keep interface android.support.v7.** { *; }

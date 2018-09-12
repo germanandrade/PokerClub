@@ -1,5 +1,14 @@
 package com.ramup.gandrade.pokerclub.userprofile
 
+import ACTIVE
+import ADMIN
+import DEBT
+import ENDAVANS
+import GAMES
+import LIFESAVERS
+import STATE
+import TOKEN
+import USERS
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.support.annotation.Keep
@@ -7,7 +16,9 @@ import android.util.Log
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.EventListener
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ramup.gandrade.pokerclub.MyTask
@@ -19,77 +30,72 @@ import io.reactivex.Observable
 @Keep
 class GameRepository(private val notificationApiService: NotificationApiService) {
 
-    val auth = FirebaseAuth.getInstance()
-    val TAG = GameRepository::class.java.simpleName
-
-    val user = MutableLiveData<User?>()
-
-    val currentActiveGameId = MutableLiveData<String>()
-    var currentPausedGameId = MutableLiveData<String>()
-
-    val db = FirebaseFirestore.getInstance()
-    val gameRef = db.collection("games")
-
-    val adminToken = MutableLiveData<String>()
-
-    val activeUsers = MutableLiveData<MutableMap<String, User>>()
-
+    private val auth = requireNotNull(FirebaseAuth.getInstance())
+    private val TAG = GameRepository::class.java.simpleName
+    private val user = MutableLiveData<User?>()
+    private val currentActiveGameId = MutableLiveData<String>()
+    private var currentPausedGameId = MutableLiveData<String>()
+    private val db = FirebaseFirestore.getInstance()
+    private val gameRef = db.collection(GAMES)
+    private val adminToken = MutableLiveData<String>()
+    private val activeUsers = MutableLiveData<MutableMap<String, User>>()
 
     fun checkPausedGames(): LiveData<String> {
-        gameRef.whereEqualTo("State", GameState.PAUSED.toString())
-                .addSnapshotListener(EventListener { query, exception ->
+        gameRef.whereEqualTo(STATE, GameState.PAUSED.toString())
+                .addSnapshotListener { query, exception ->
                     if (exception != null) {
-                        Log.d("fail", "fail")
+                        Log.d(TAG, exception.message)
                     } else {
                         if (!query.documents.isEmpty())
                             currentPausedGameId.value = query.documents[0].id
-
                     }
-                })
+                }
         return currentPausedGameId
     }
 
     fun checkActiveGames(): LiveData<String> {
-        gameRef.whereEqualTo("State", GameState.ACTIVE.toString())
-                .addSnapshotListener(EventListener { query, exception ->
+        gameRef.whereEqualTo(STATE, GameState.ACTIVE.toString())
+                .addSnapshotListener { query, exception ->
                     if (exception != null) {
-                        Log.d("fail", "fail")
+                        Log.d(TAG, exception.message)
                     } else {
                         if (!query.documents.isEmpty())
                             currentActiveGameId.value = query.documents[0].id
                     }
-                })
+                }
         return currentActiveGameId
     }
 
-    fun createUserInGame(success: MutableLiveData<Boolean>) {
-        var userDocument = gameRef.document(getCurrentGameId()).collection("users").document(auth.currentUser!!.uid)
-        userDocument.set(User(auth.currentUser!!.displayName!!, 0, 0, auth.currentUser!!.uid).toMap()).addOnSuccessListener {
+    private fun getUserDocument(firebaseUser: FirebaseUser): DocumentReference {
+        return gameRef.document(getCurrentGameId()).collection(USERS).document(firebaseUser.uid)
+    }
+
+    private fun getEmptyUser(firebaseUser: FirebaseUser): MutableMap<String, Any> {
+        return User(requireNotNull(firebaseUser.displayName), firebaseUser.uid).toMap()
+    }
+
+    private fun createUserInGame(success: MutableLiveData<Boolean>) {
+        val firebaseUser = requireNotNull(auth.currentUser)
+        val userDocument = getUserDocument(firebaseUser)
+        userDocument.set(getEmptyUser(firebaseUser)).addOnSuccessListener {
             success.value = true
         }
     }
 
-    fun getCurrentUser(): User? {
-        return when {
-            user == null -> null
-            else -> user.value
-        }
-
-    }
-
     fun getCurrentGameId(): String {
-        return currentActiveGameId.value!!
+        return requireNotNull(currentActiveGameId.value)
     }
 
-    fun getCurrentPausedGameId(): String {
-        return currentPausedGameId.value!!
+    private fun getCurrentPausedGameId(): String {
+        return requireNotNull(currentPausedGameId.value)
     }
 
 
     fun joinUser(): MutableLiveData<Boolean> {
-        var success = MutableLiveData<Boolean>()
-        var userDocument = gameRef.document(getCurrentGameId()).collection("users").document(auth.currentUser!!.uid)
-        userDocument.update("Active", true)
+        val success = MutableLiveData<Boolean>()
+        val firebaseUser = requireNotNull(auth.currentUser)
+        val userDocument = getUserDocument(firebaseUser)
+        userDocument.update(ACTIVE, true)
                 .addOnSuccessListener { success.value = true }
                 .addOnFailureListener(OnFailureListener {
                     createUserInGame(success)
@@ -98,7 +104,8 @@ class GameRepository(private val notificationApiService: NotificationApiService)
     }
 
     fun leave(success: MutableLiveData<Boolean> = MutableLiveData()): LiveData<Boolean> {
-        var userDocument = gameRef.document(getCurrentGameId()).collection("users").document(auth.currentUser!!.uid)
+        val firebaseUser = requireNotNull(auth.currentUser)
+        val userDocument = getUserDocument(firebaseUser)
         userDocument.update("Active", false)
                 .addOnSuccessListener {
                     success.value = true
@@ -111,51 +118,51 @@ class GameRepository(private val notificationApiService: NotificationApiService)
         val doc = gameRef.document()
         currentActiveGameId.value = doc.id
         doc.set(Game().toMap())
-        val map = User(auth.currentUser?.displayName!!, 0, 0, auth.currentUser!!.uid, admin = true).toMap()
-        map.put("Token", FirebaseInstanceId.getInstance().token!!)
-        doc.collection("users").document(auth.currentUser?.uid.toString()).set(map)
+        val firebaseUser = requireNotNull(auth.currentUser)
+        val token = requireNotNull(FirebaseInstanceId.getInstance().token)
+        val map = User(requireNotNull(firebaseUser.displayName), firebaseUser.uid, true).toMap()
+        map.put(TOKEN, token)
+        doc.collection(USERS).document(auth.currentUser?.uid.toString()).set(map)
         return currentActiveGameId
     }
 
     fun pauseGame(): LiveData<Boolean> {
-
+        val firebaseUser = requireNotNull(auth.currentUser)
         var success = MutableLiveData<Boolean>()
         var gameDocument = gameRef.document(getCurrentGameId())
-        var userDocument = gameDocument.collection("users").document(auth.currentUser!!.uid)
-
-        userDocument.update("Admin", false)
+        var userDocument = getUserDocument(firebaseUser.uid)
+        userDocument.update(ADMIN, false)
                 .addOnSuccessListener {
-                    gameDocument.update("State", GameState.PAUSED.toString()).addOnSuccessListener {
+                    gameDocument.update(STATE, GameState.PAUSED.toString()).addOnSuccessListener {
                         leave(success = success)
                     }
                 }
         return success
     }
 
-    fun adminCount() {
-        var gameDocument = gameRef.document(getCurrentPausedGameId())
-
-    }
 
     fun resumeGame(): LiveData<Boolean> {
-        var success = MutableLiveData<Boolean>()
-        var gameDocument = gameRef.document(getCurrentPausedGameId())
-        var userDocument = gameDocument.collection("users").document(auth.currentUser!!.uid)
-        gameDocument.collection("users").whereEqualTo("Admin", true).get().addOnCompleteListener { task ->
+        val uid = requireNotNull(auth.currentUser).uid
+        val success = MutableLiveData<Boolean>()
+        val gameDocument = gameRef.document(getCurrentPausedGameId())
+        val userDocument = getUserDocument(uid)
+        val token = requireNotNull(FirebaseInstanceId.getInstance().token)
+        getUserRef().whereEqualTo(ADMIN, true).get().addOnCompleteListener { task ->
             if (task.isSuccessful && task.result.documents.count() > 0) {
                 success.value = false
             } else {
-                gameDocument.update("State", GameState.ACTIVE.toString()).addOnSuccessListener {
+                gameDocument.update(STATE, GameState.ACTIVE.toString()).addOnSuccessListener {_->
                     currentActiveGameId.value = currentPausedGameId.value
                     currentPausedGameId.value = null
-                    userDocument.update("Admin", true, "Active", true, "Token", FirebaseInstanceId.getInstance().token)
+                    userDocument.update(ADMIN, true, ACTIVE, true, TOKEN, FirebaseInstanceId.getInstance().token)
                             .addOnSuccessListener {
                                 success.value = true
                             }
                             .addOnFailureListener { it ->
-                                Log.d("ex", "Exception")
-                                val map = User(auth.currentUser?.displayName!!, 0, 0, auth.currentUser!!.uid, admin = true).toMap()
-                                map.put("Token", FirebaseInstanceId.getInstance().token!!)
+                                Log.d(TAG, it.message)
+                                val firebaseUser = requireNotNull(auth.currentUser)
+                                val map = User(requireNotNull(firebaseUser.displayName), 0, 0, firebaseUser.uid, admin = true).toMap()
+                                map.put(TOKEN, token)
                                 userDocument.set(map).addOnSuccessListener {
                                     success.value = true
                                 }
@@ -169,7 +176,8 @@ class GameRepository(private val notificationApiService: NotificationApiService)
 
 
     fun fetchUser(): LiveData<User?> {
-        var userDocument = gameRef.document(getCurrentGameId()).collection("users").document(auth.currentUser!!.uid)
+        val firebaseUser = requireNotNull(auth.currentUser)
+        val userDocument = getUserDocument(firebaseUser)
         userDocument.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val document = task.result
@@ -184,6 +192,33 @@ class GameRepository(private val notificationApiService: NotificationApiService)
         return user
     }
 
+    /**
+     *
+    fun getActiveUsers(): LiveData<MutableMap<String, User>> {
+        currentActiveGameId.value?.let { pCurrentActiveGameId ->
+            {
+                gameRef.document(pCurrentActiveGameId)
+                        .collection("users")
+                        .whereEqualTo("Active", true)
+                        .addSnapshotListener { query, exception ->
+                            if (exception != null) {
+                                Log.d("fail", exception.message)
+                            } else {
+                                val arr: MutableMap<String, User> = query.documents.filter { it.exists() }.associateTo(mutableMapOf<String, User>())
+                                {
+                                    val u = User(it.data)
+                                    u.id to u
+                                }
+                                activeUsers.value = arr
+                                val uid = requireNotNull(auth.currentUser).uid
+                                user.value = arr[uid]
+                            }
+                        }
+            }
+        }
+        return activeUsers
+    }
+     */
 
     fun getActiveUsers(): LiveData<MutableMap<String, User>> {
         if (currentActiveGameId.value != null) gameRef.document(currentActiveGameId.value!!)
@@ -205,19 +240,19 @@ class GameRepository(private val notificationApiService: NotificationApiService)
         return activeUsers
     }
 
+
     fun updateAdminToken(): LiveData<String> {
         try {
-            if (currentActiveGameId.value != null) {
-
-                gameRef.document(currentActiveGameId.value!!)
-                        .collection("users")
-                        .whereEqualTo("Admin", true)
+            currentActiveGameId.value?.let {
+                gameRef.document(requireNotNull(it))
+                        .collection(USERS)
+                        .whereEqualTo(ADMIN, true)
                         .addSnapshotListener { query, exception ->
                             if (exception != null) {
-                                Log.d("fail", "fail")
+                                Log.d(TAG, exception.message)
                             } else {
                                 if (!query.documents.isEmpty()) {
-                                    adminToken.value = query.documents[0].data["Token"] as String?
+                                    adminToken.value = query.documents[0].data[TOKEN] as String?
                                     Log.d(TAG, "AdminToken:${adminToken.value}")
                                 }
                             }
@@ -231,15 +266,11 @@ class GameRepository(private val notificationApiService: NotificationApiService)
     }
 
 
-    //--------------------------
-
-
     fun buyEndavans(uid: String): Task<Void> {
         try {
-            var gameDocument = gameRef.document(getCurrentGameId())
-            var userDocument = gameDocument.collection("users").document(uid)
-            val current: User = activeUsers.value!!.get(uid)!!
-            return userDocument.update("Debt", current.debt + 500)
+            val userDocument = getUserDocument(uid)
+            val current = getCurrentUser(uid)
+            return userDocument.update(DEBT, current.debt + 500)
         } catch (e: Exception) {
             return MyTask()
         }
@@ -248,10 +279,10 @@ class GameRepository(private val notificationApiService: NotificationApiService)
 
     fun useLifeSaver(uid: String): Task<Void>? {
         try {
-            var gameDocument = gameRef.document(getCurrentGameId())
-            var userDocument = gameDocument.collection("users").document(uid)
-            val current: User = activeUsers.value!!.get(uid)!!
-            return userDocument.update("LifeSavers", current.lifeSavers - 1)
+            var userDocument = getUserDocument(uid)
+            val current = getCurrentUser(uid)
+
+            return userDocument.update(LIFESAVERS, current.lifeSavers - 1)
         } catch (e: Exception) {
             return MyTask()
         }
@@ -259,15 +290,15 @@ class GameRepository(private val notificationApiService: NotificationApiService)
 
     fun payDebt(uid: String, payValue: Int): Task<Void> {
         try {
-            var gameDocument = gameRef.document(getCurrentGameId())
-            var userDocument = gameDocument.collection("users").document(uid)
-            val current: User = activeUsers.value!!.get(uid)!!
+            var userDocument = getUserDocument(uid)
+            val current = getCurrentUser(uid)
+
             var currentDebt = current.debt
 
             if (payValue > currentDebt) {
                 throw Exception("You can't pay more")
             }
-            return userDocument.update("Debt", currentDebt - payValue)
+            return userDocument.update(DEBT, currentDebt - payValue)
         } catch (e: Exception) {
             return MyTask()
         }
@@ -276,30 +307,43 @@ class GameRepository(private val notificationApiService: NotificationApiService)
 
     fun depositEndavans(uid: String, valueToDeposit: Int): Task<Void> {
         try {
-            var gameDocument = gameRef.document(getCurrentGameId())
-            var userDocument = gameDocument.collection("users").document(uid)
+            var userDocument = getUserDocument(uid)
             Log.d("Game", "${activeUsers.value} uid: $uid")
-            val current: User = activeUsers.value!!.get(uid)!!
+            val current = getCurrentUser(uid)
+
             var currentEndavans = current.endavans
-            return userDocument.update("Endavans", currentEndavans + valueToDeposit)
+            return userDocument.update(ENDAVANS, currentEndavans + valueToDeposit)
         } catch (e: Exception) {
             return MyTask()
         }
 
     }
 
+    fun getCurrentUser(uid: String): User {
+        val activeUsersValue = requireNotNull(activeUsers.value)
+        return requireNotNull(activeUsersValue.get(uid))
+    }
+
+    private fun getUserRef(): CollectionReference {
+        var gameDocument = gameRef.document(getCurrentGameId())
+        return gameDocument.collection(USERS)
+    }
+
+    private fun getUserDocument(uid: String): DocumentReference {
+        return getUserRef().document(uid)
+    }
+
     fun withdrawEndavans(uid: String, valueToWithDraw: Int): Task<Void> {
         try {
-            var gameDocument = gameRef.document(getCurrentGameId())
-            var userDocument = gameDocument.collection("users").document(uid)
+            var userDocument = getUserDocument(uid)
 
-            val current: User = activeUsers.value!!.get(uid)!!
+            val current = getCurrentUser(uid)
             var currentEndavans = current.endavans
             if (currentEndavans < valueToWithDraw) {
                 throw Exception("Not enough Endavans")
             }
 
-            return userDocument.update("Endavans", currentEndavans - valueToWithDraw)
+            return userDocument.update(ENDAVANS, currentEndavans - valueToWithDraw)
         } catch (e: Exception) {
             return MyTask()
         }
@@ -307,9 +351,12 @@ class GameRepository(private val notificationApiService: NotificationApiService)
     }
 
     fun sendNotification(type: RequestType, extra: Int?, user: User?): Observable<FCMResponse> {
-        val token = if (user != null && user.admin) adminToken.value!! else FirebaseInstanceId.getInstance().token!!
-        val data = Data(auth.currentUser!!.displayName!!, auth.currentUser!!.uid, token, type.toString(), extra)
-        val request = Request(adminToken.value!!, data)
+        val firebaseUser = requireNotNull(auth.currentUser)
+        val tokenAdmin = requireNotNull(adminToken.value)
+        val newToken = requireNotNull(FirebaseInstanceId.getInstance().token)
+        val token = if (user != null && user.admin) tokenAdmin else newToken
+        val data = Data(requireNotNull(firebaseUser.displayName), firebaseUser.uid, token, type.toString(), extra)
+        val request = Request(tokenAdmin, data)
         return notificationApiService.sendNotification(request)
     }
 
