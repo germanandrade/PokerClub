@@ -57,23 +57,26 @@ class UserProfileRepository() {
         return editMode
     }
 
-    fun updateName(newDisplayName: String): MutableLiveData<Boolean> {
+    fun updateChanges(newDisplayName: String, bitmap: Bitmap?): MutableLiveData<Boolean> {
         val user = auth.currentUser
         val profileUpdates = UserProfileChangeRequest.Builder().setDisplayName(newDisplayName).build()
         user?.updateProfile(profileUpdates)
-        val userDoc = gameRef.document(currentGameId.value!!).collection("users").document(auth.currentUser!!.uid)
-        userDoc.update("Name", newDisplayName)
-                .addOnSuccessListener {
-                    editProfile()
-                }
-                .addOnFailureListener {
-                    Log.d("a", it.message)
-                }
+        if (bitmap != null) {
+            uploadImage(bitmap, newDisplayName)
+        } else {
+            val userDoc = gameRef.document(currentGameId.value!!).collection("users").document(auth.currentUser!!.uid)
+            userDoc.update("Name", newDisplayName)
+                    .addOnSuccessListener {
+                        editProfile() }
+                    .addOnFailureListener{
+                        Log.d("a",it.message)
+                    }
+        }
         return editMode
 
     }
 
-    fun uploadImage(bitmap: Bitmap): MutableLiveData<Boolean> {
+    fun uploadImage(bitmap: Bitmap, newDisplayName: String) {
         val storageRef = storage.reference
         val df = SimpleDateFormat("ddMMyyHHmmss")
         val dataobj = Date()
@@ -86,12 +89,10 @@ class UserProfileRepository() {
                 .addOnSuccessListener { taskSnapshot ->
                     val url = taskSnapshot.downloadUrl!!.toString()
                     val userDoc = gameRef.document(currentGameId.value!!).collection("users").document(auth.currentUser!!.uid)
-                    userDoc.update("ImgUrl", url)
+                    userDoc.update("ImgUrl", url, "Name", newDisplayName)
                     editProfile()
                 }
-        return editMode
     }
-
 }
 
 

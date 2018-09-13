@@ -23,13 +23,8 @@ class UserProfileViewModel(val userRepo: UserProfileRepository) : ViewModel() {
         editMode = userRepo.editProfile()
     }
 
-
-    fun uploadImage(bitmap: Bitmap) {
-        editMode = userRepo.uploadImage(bitmap)
-    }
-
-    fun updateName(newName: String) {
-        editMode = userRepo.updateName(newName)
+    fun updateChanges(newName: String, bitmap: Bitmap?) {
+        editMode = userRepo.updateChanges(newName,bitmap)
     }
 
 

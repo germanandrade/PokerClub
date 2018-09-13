@@ -57,8 +57,4 @@
     <string name="withdraw">Withdraw</string>
     <string name="title_activity_get_started">GetStarted</string>
     <string name="denied_by_user">Permission has been denied by user</string>
-    <string name="succesfully">Succesfully</string>
-    <string name="failed">Failed</string>
-    <string name="reject">Reject</string>
-    <string name="accept">Accept</string>
 </resources>

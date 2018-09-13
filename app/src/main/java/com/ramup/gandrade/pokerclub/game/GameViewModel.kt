@@ -6,7 +6,6 @@ import android.arch.lifecycle.ViewModel
 import android.support.annotation.Keep
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.ramup.gandrade.pokerclub.game.notifications.RequestType
 import com.ramup.gandrade.pokerclub.userprofile.GameRepository
 import com.ramup.gandrade.pokerclub.userprofile.User
@@ -29,6 +28,11 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
     lateinit var adminToken: LiveData<String>
 
     private val TAG = GameViewModel::class.simpleName
+
+    fun getCurrentUser(): User? {
+        return gameRepo.getCurrentUser()
+    }
+
 
     fun checkActiveGames() {
         currentActiveGameId = gameRepo.checkActiveGames()
@@ -107,10 +111,6 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
                 }, { error ->
                     error.printStackTrace()
                 })
-    }
-
-    fun getFirebaseUser(): FirebaseUser? {
-        return mAuth.currentUser
     }
 
 

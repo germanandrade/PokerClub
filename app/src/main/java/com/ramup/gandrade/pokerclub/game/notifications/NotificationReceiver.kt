@@ -2,8 +2,6 @@ package com.ramup.gandrade.pokerclub.game.notifications
 
 import ACTION_ACCEPT_TRANSACTION
 import ACTION_REJECT_TRANSACTION
-import DATA
-import ID
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -22,9 +20,9 @@ class NotificationReceiver : BroadcastReceiver(), KoinComponent {
     val TAG = NotificationReceiver::class.simpleName
 
     override fun onReceive(context: Context, intent: Intent) {
-        val data: Data = intent.getSerializableExtra(DATA) as Data
-        //Log.d(TAG, data.toString())
-        val id: Int = intent.getIntExtra(ID, 0)
+        val data: Data = intent.getSerializableExtra("data") as Data
+        Log.d(TAG, data.toString())
+        val id: Int = intent.getIntExtra("id", 0)
         if (intent.action == ACTION_ACCEPT_TRANSACTION) {
             val task = when {
                 data.requestType.equals(RequestType.BUY.toString()) -> gameRepo.buyEndavans(data.dbId)

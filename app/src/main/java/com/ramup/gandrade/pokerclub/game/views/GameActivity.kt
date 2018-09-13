@@ -6,7 +6,6 @@ import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -15,8 +14,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.example.gandrade.pokerclub.util.TextToImageEncode
-import com.example.gandrade.pokerclub.util.ifNotNull
 import com.example.gandrade.pokerclub.util.showMessage
+import com.google.firebase.auth.FirebaseAuth
 import com.ramup.gandrade.pokerclub.Main2Activity
 import com.ramup.gandrade.pokerclub.R
 import com.ramup.gandrade.pokerclub.game.GameViewModel
@@ -29,13 +28,13 @@ import org.jetbrains.anko.startActivity
 import org.koin.android.architecture.ext.viewModel
 
 class GameActivity : AppCompatActivity() {
-    private val gameViewModel by viewModel<GameViewModel>()
-    private lateinit var pauseItem: MenuItem
-    private lateinit var leaveItem: MenuItem
-    private lateinit var changeAdminItem: MenuItem
-    private var currentUser: User? = null
-    private val TAG = GameActivity::class.simpleName
-    private lateinit var myActionBar: ActionBar
+    val gameViewModel by viewModel<GameViewModel>()
+
+    var pauseItem: MenuItem? = null
+    var leaveItem: MenuItem? = null
+    var changeAdminItem: MenuItem? = null
+
+    var currentUser: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,30 +43,24 @@ class GameActivity : AppCompatActivity() {
         rv_user_list.adapter = UserAdapter(mutableMapOf<String, User>(), this)
         gameViewModel.checkActiveUsers()
         gameViewModel.activeUsers.observe(this, Observer { list ->
-            val firebaseUser = gameViewModel.getFirebaseUser()
-            ifNotNull(list, firebaseUser) { mList, mFirebaseUser ->
-                run {
-                    currentUser = mList[mFirebaseUser.uid]
-                    rv_user_list.adapter = UserAdapter(mList, this)
-                    currentUser?.let { disableButtons(it) }
-                }
-            }
-
+            currentUser = list!![FirebaseAuth.getInstance().currentUser!!.uid]
+            rv_user_list.adapter = UserAdapter(list!!, this)
+            if (currentUser != null) disableButtons(currentUser!!)
         })
         try {
 
             gameViewModel.updateAdminToken()
-            gameViewModel.adminToken.observe(this, Observer {
-                currentUser?.let { disableButtons(it) }
+            gameViewModel.adminToken.observe(this, Observer { _ ->
+                if (currentUser != null) disableButtons(currentUser!!)
             })
         } catch (e: Exception) {
             Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT)
             startActivity<Main2Activity>()
             finish()
         }
-        myActionBar = requireNotNull(supportActionBar) { "supportActionBar was null at $TAG" }
-        myActionBar.show()
+        supportActionBar!!.show()
     }
+
 
 
     private fun disableButtons(user: User) {
@@ -76,8 +69,9 @@ class GameActivity : AppCompatActivity() {
         if (user.endavans == 0) withdrawButton.isEnabled = false
         if (user.lifeSavers <= 0) useLifeSaver.isEnabled = false
         setTitle("${user.name} playing")
-        myActionBar.setDisplayShowCustomEnabled(true);
-        myActionBar.setCustomView(getLayoutInflater().inflate(R.layout.action_bar_home, null))
+        val actionBar = supportActionBar!!
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setCustomView(getLayoutInflater().inflate(R.layout.action_bar_home, null))
         setMenu(user)
     }
 
@@ -93,14 +87,10 @@ class GameActivity : AppCompatActivity() {
     fun setMenu(user: User) {
         if (user.admin) {
             showMessage(rv_user_list, "You're admin!", Snackbar.LENGTH_SHORT)
-            if (::pauseItem.isInitialized) {
-                pauseItem.setVisible(true)
-            }
+            if (pauseItem != null) pauseItem!!.setVisible(true)
             //changeAdminItem.setVisible(true)
         } else {
-            if (::leaveItem.isInitialized) {
-                leaveItem.setVisible(true)
-            }
+            if (leaveItem != null) leaveItem!!.setVisible(true)
             showMessage(rv_user_list, "You're not admin!", Snackbar.LENGTH_SHORT)
 
         }
@@ -109,10 +99,11 @@ class GameActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.game_menu, menu)
-        pauseItem = requireNotNull(menu?.let { it.findItem(R.id.pause) }) { "pauseItem null at $TAG" }
-        leaveItem = requireNotNull(menu?.let { it.findItem(R.id.leave) }) { "leaveItem null at $TAG" }
-        changeAdminItem = requireNotNull(menu?.let { it.findItem(R.id.changeAdmin) }) { "changeAdminItem null at $TAG" }
-        currentUser?.let { setMenu(it) }
+        pauseItem = menu!!.findItem(R.id.pause)
+        leaveItem = menu!!.findItem(R.id.leave)
+        changeAdminItem = menu!!.findItem(R.id.changeAdmin)
+        if (currentUser != null) setMenu(currentUser!!)
+
         return true
     }
 
@@ -176,8 +167,8 @@ class GameActivity : AppCompatActivity() {
     }
 
     fun payDebt(view: View) {
-        val debt = requireNotNull(currentUser?.debt) { "debt was null at $TAG" }
-        HelperDialog(this, onclick, getString(R.string.empty_deposit), RequestType.PAY, getString(R.string.pay_debt), getString(R.string.pay), debt, debt).show()
+        HelperDialog(this, onclick, getString(R.string.empty_deposit), RequestType.PAY
+                , getString(R.string.pay_debt), getString(R.string.pay), currentUser?.debt!!, currentUser?.debt!!).show()
     }
 
 
@@ -187,8 +178,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     fun withdrawEndavans(view: View) {
-        val endavans = requireNotNull(currentUser?.endavans) { "endavans was null at $TAG" }
         HelperDialog(this, onclick, getString(R.string.empty_withdraw),
-                RequestType.WITHDRAW, getString(R.string.withdraw_endavans), getString(R.string.withdraw), endavans, endavans).show()
+                RequestType.WITHDRAW, getString(R.string.withdraw_endavans), getString(R.string.withdraw), currentUser?.endavans!!, currentUser?.endavans!!).show()
     }
 }

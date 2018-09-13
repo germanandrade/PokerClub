@@ -1,6 +1,6 @@
 package com.ramup.gandrade.pokerclub
 
-import android.support.multidex.MultiDexApplication
+import android.app.Application
 import android.util.Log
 import com.google.firebase.FirebaseApp
 import com.ramup.gandrade.pokerclub.game.gameModule
@@ -9,10 +9,10 @@ import com.ramup.gandrade.pokerclub.login.loginModule
 import com.ramup.gandrade.pokerclub.userprofile.userProfileModule
 import org.koin.android.ext.android.startKoin
 
-class PokerClubApplication : MultiDexApplication() {
+class PokerClubApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        Log.d("PokerClubApplication", "onCreate")
+        Log.d("PokerClubApplication","onCreate")
         startKoin(this, listOf(gameModule, loginModule, userProfileModule, globalModule))
         FirebaseApp.initializeApp(this);
         //Init sharedPreferences

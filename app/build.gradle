@@ -10,27 +10,18 @@ android {
         applicationId "com.ramup.gandrade.pokerclub"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 13
-        versionName "11.2"
+        versionCode 12
+        versionName "11.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
     }
-    signingConfigs {
-        release {
-            keyAlias 'YourAppKey'
-            keyPassword 'somePassword'
-            storeFile file('appkeyfile.jks')
-            storePassword 'somePassword'
-        }
-    }
     buildTypes {
         release {
             minifyEnabled true
-            debuggable true
+            debuggable false
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
         }
         debug {
             minifyEnabled false

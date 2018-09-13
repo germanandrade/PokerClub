@@ -1,4 +1,4 @@
--keep class com.ramup.gandrade.pokerclub.login.LoginActivity { *; }
+-keep class com.ramup.gandrade.pokerclub.Login.LoginActivity { *; }
 -keepattributes Exceptions, Signature, InnerClasses, SourceFile, LineNumberTable
 -renamesourcefileattribute SourceFile
 # JSR 305 annotations are for embedding nullability information.
@@ -13,8 +13,7 @@
 # OkHttp platform used only on JVM and when Conscrypt dependency is available.
 -dontwarn okhttp3.internal.platform.ConscryptPlatform
 
--keep class com.ramup.gandrade.pokerclub.game.notifications.** {*;}
--dontwarn com.ramup.gandrade.pokerclub.game.notifications.**
+-keep class com.ramup.gandrade.pokerclub.Game.Notifications.** {*;}
 -keep class com.ramup.gandrade.pokerclub.util.** {*;}
 
 ########--------Retrofit + RxJava--------#########
@@ -50,8 +49,3 @@
    long consumerNode;
 }
 -keep class com.ramup.gandrade.pokerclub.game.** {*;}
-
-#v7
--dontwarn android.support.v7.**
--keep class android.support.v7.** { *; }
--keep interface android.support.v7.** { *; }
