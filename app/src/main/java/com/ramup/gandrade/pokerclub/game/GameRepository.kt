@@ -17,9 +17,9 @@ import com.ramup.gandrade.pokerclub.game.notifications.*
 import io.reactivex.Observable
 
 @Keep
-class GameRepository(private val notificationApiService: NotificationApiService) {
+class GameRepository(private val notificationApiService: NotificationApiService, private val auth: FirebaseAuth) {
 
-    val auth = FirebaseAuth.getInstance()
+
     val TAG = GameRepository::class.java.simpleName
 
     val user = MutableLiveData<User?>()
@@ -316,6 +316,22 @@ class GameRepository(private val notificationApiService: NotificationApiService)
     fun sendSuccessNotification(data: Data): Observable<FCMResponse> {
         val request = Request(data.token, data)
         return notificationApiService.sendNotification(request)
+    }
+
+    val loggedIn = MutableLiveData<Boolean>()
+
+    fun signOut() {
+        auth.signOut()
+    }
+
+    fun takeCareOfLogOut(): MutableLiveData<Boolean> {
+        auth.addAuthStateListener {
+            if (auth.currentUser == null) {
+                loggedIn.value = false
+            }
+        }
+        return loggedIn
+
     }
 
 

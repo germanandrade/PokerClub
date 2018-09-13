@@ -5,7 +5,6 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.support.annotation.Keep
 import android.util.Log
-import com.google.firebase.auth.FirebaseAuth
 import com.ramup.gandrade.pokerclub.game.notifications.RequestType
 import com.ramup.gandrade.pokerclub.userprofile.GameRepository
 import com.ramup.gandrade.pokerclub.userprofile.User
@@ -63,8 +62,8 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
     }
 
     //----------------
-    val mAuth = FirebaseAuth.getInstance();
-    val loggedIn = MutableLiveData<Boolean>()
+//    val mAuth = FirebaseAuth.getInstance();
+    lateinit var loggedIn: MutableLiveData<Boolean>
     lateinit var activeUsers: LiveData<MutableMap<String, User>>
 
 
@@ -73,18 +72,9 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
     }
 
     fun signOut() {
-
-        mAuth.addAuthStateListener {
-            if (mAuth.currentUser == null) {
-                loggedIn.value = false
-            }
-        }
-        mAuth.signOut()
+        gameRepo.signOut()
     }
 
-    fun getName(): String {
-        return mAuth.currentUser?.email.toString()
-    }
 
     fun checkActiveUsers() {
         activeUsers = gameRepo.getActiveUsers()
@@ -111,6 +101,10 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
                 }, { error ->
                     error.printStackTrace()
                 })
+    }
+
+    fun takeCareOfLogOut() {
+        loggedIn = gameRepo.takeCareOfLogOut()
     }
 
 

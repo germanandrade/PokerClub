@@ -62,6 +62,7 @@ class Main2Activity : AppCompatActivity() {
         }
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        gameViewModel.takeCareOfLogOut()
         gameViewModel.loggedIn.observe(this, Observer { log() })
         val actionBar = supportActionBar!!
         actionBar.hide()
