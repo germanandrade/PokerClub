@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.example.gandrade.pokerclub.util.disableABCShowHideAnimation
 import com.ramup.gandrade.pokerclub.game.GameViewModel
 import com.ramup.gandrade.pokerclub.game.views.CAMERA_SCAN_REQUEST_CODE
 import com.ramup.gandrade.pokerclub.game.views.GameStartFragment
@@ -72,14 +73,12 @@ class Main2Activity : AppCompatActivity() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
-                val name = makeFragmentName(myViewPager.getId(), position)
-                var fragment: Fragment = supportFragmentManager.findFragmentByTag(name)
 
-                if (fragment::class.simpleName.equals(GameStartFragment::class.simpleName)) {
-                    actionBar.hide()
-                } else if (fragment::class.simpleName.equals(ProfileFragment::class.simpleName)) {
+                if (position==2) {
+                    disableABCShowHideAnimation(actionBar)
                     actionBar.show()
                 } else {
+                    disableABCShowHideAnimation(actionBar)
                     actionBar.hide()
                 }
                 navigation.menu.getItem(position).isChecked = true
@@ -125,9 +124,5 @@ class Main2Activity : AppCompatActivity() {
             R.id.signout -> gameViewModel.signOut()
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun makeFragmentName(viewId: Int, id: Int): String {
-        return "android:switcher:$viewId:$id"
     }
 }

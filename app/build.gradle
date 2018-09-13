@@ -10,8 +10,8 @@ android {
         applicationId "com.ramup.gandrade.pokerclub"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 12
-        versionName "11.1"
+        versionCode 15
+        versionName "11.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
