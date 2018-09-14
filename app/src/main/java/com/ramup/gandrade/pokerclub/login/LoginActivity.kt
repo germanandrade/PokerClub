@@ -12,7 +12,7 @@ import com.ramup.gandrade.pokerclub.Main2Activity
 import com.ramup.gandrade.pokerclub.R
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.startActivity
-import org.koin.android.architecture.ext.viewModel
+import org.koin.android.viewmodel.ext.android.viewModel
 
 
 class LoginActivity : FragmentActivity() {
@@ -33,8 +33,7 @@ class LoginActivity : FragmentActivity() {
         hideSoftKeyboard(this)
         if (isEmpty(email) || isEmpty(password)) {
             showMessage(view, getString(R.string.fill_fields))
-        }
-        else {
+        } else {
             var emailString = email.text.toString()
             if (!emailString.contains("@")) {
                 emailString += "@endava.com"

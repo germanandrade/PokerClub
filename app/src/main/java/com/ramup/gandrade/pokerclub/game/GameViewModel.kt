@@ -28,9 +28,7 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
 
     private val TAG = GameViewModel::class.simpleName
 
-    fun getCurrentUser(): User? {
-        return gameRepo.getCurrentUser()
-    }
+
 
 
     fun checkActiveGames() {

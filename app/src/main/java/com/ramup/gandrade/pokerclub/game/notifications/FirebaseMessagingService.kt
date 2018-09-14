@@ -72,7 +72,7 @@ class FirebaseMessagingService() : FirebaseMessagingService(), KoinComponent {
     }
 
     fun message(data: Data, success: Boolean): String {
-        return "${if (success) "Succesfully" else "Failed"} ${data.requestType} ${if (data.extra != null) data.extra else ""}"
+        return "${if (success) "Succesfully" else "Failed"} ${data.requestType.toString()} ${if (data.extra != null) data.extra.toString() else ""}"
     }
 
 

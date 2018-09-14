@@ -8,7 +8,7 @@ import com.google.zxing.Result
 import com.ramup.gandrade.pokerclub.game.GameViewModel
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 import org.jetbrains.anko.startActivity
-import org.koin.android.architecture.ext.viewModel
+import org.koin.android.viewmodel.ext.android.viewModel
 
 
 class ScanActivity : FragmentActivity(), ZXingScannerView.ResultHandler {

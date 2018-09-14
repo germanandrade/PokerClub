@@ -25,7 +25,7 @@ import com.ramup.gandrade.pokerclub.userprofile.UserAdapter
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.image_dialog.view.*
 import org.jetbrains.anko.startActivity
-import org.koin.android.architecture.ext.viewModel
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class GameActivity : AppCompatActivity() {
     val gameViewModel by viewModel<GameViewModel>()
@@ -60,7 +60,6 @@ class GameActivity : AppCompatActivity() {
         }
         supportActionBar!!.show()
     }
-
 
 
     private fun disableButtons(user: User) {

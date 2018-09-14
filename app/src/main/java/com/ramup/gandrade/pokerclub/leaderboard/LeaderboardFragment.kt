@@ -12,7 +12,7 @@ import com.ramup.gandrade.pokerclub.userprofile.User
 import com.ramup.gandrade.pokerclub.userprofile.UserAdapter
 import kotlinx.android.synthetic.main.fragment_global.*
 import kotlinx.android.synthetic.main.fragment_global.view.*
-import org.koin.android.architecture.ext.viewModel
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class LeaderboardFragment : Fragment() {
     val leaderboardViewModel by viewModel<LeaderboardViewModel>()

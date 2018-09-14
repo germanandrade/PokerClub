@@ -42,25 +42,22 @@ dependencies {
     implementation "com.android.support:support-vector-drawable:$android_version"
 
     //Tests
-    def koin_version = "0.9.3"
-
+    def koin_version = "1.0.0"
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:1.10.19'
 
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    testImplementation 'org.koin:koin-test:1.0.0-RC-3'
-
     //Recycler view
     implementation "com.android.support:recyclerview-v7:$android_version"
 
     //Koin
 
-    implementation "org.koin:koin-android-architecture:$koin_version"
+    //implementation "org.koin:koin-android-architecture:$koin_version"
+    implementation "org.koin:koin-android-viewmodel:$koin_version"
     implementation "org.koin:koin-core:$koin_version"
     testImplementation "org.koin:koin-test:$koin_version"
-
 
     //Snackbar
     implementation "com.android.support:design:$android_version"
@@ -111,6 +108,10 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
+
+    // Arch
+    implementation "android.arch.core:runtime:1.1.1"
+    implementation "android.arch.core:common:1.1.1"
 }
 
 apply plugin: 'com.google.gms.google-services'

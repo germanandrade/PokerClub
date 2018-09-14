@@ -26,7 +26,7 @@ import com.ramup.gandrade.pokerclub.leaderboard.ProfilePicDialog
 import com.ramup.gandrade.pokerclub.picasso.RoundTransformation
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_user_profile.*
-import org.koin.android.architecture.ext.sharedViewModel
+import org.koin.android.viewmodel.ext.android.sharedViewModel
 import java.lang.Exception
 
 internal const val CAMERA_REQUEST_CODE = 101

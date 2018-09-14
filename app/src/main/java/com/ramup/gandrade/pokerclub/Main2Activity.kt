@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.support.design.widget.BottomNavigationView
-import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
@@ -16,16 +15,14 @@ import android.widget.Toast
 import com.example.gandrade.pokerclub.util.disableABCShowHideAnimation
 import com.ramup.gandrade.pokerclub.game.GameViewModel
 import com.ramup.gandrade.pokerclub.game.views.CAMERA_SCAN_REQUEST_CODE
-import com.ramup.gandrade.pokerclub.game.views.GameStartFragment
 import com.ramup.gandrade.pokerclub.game.views.ScanActivity
 import com.ramup.gandrade.pokerclub.getstarted.GetStartedActivity
 import com.ramup.gandrade.pokerclub.login.LoginActivity
 import com.ramup.gandrade.pokerclub.userprofile.CAMERA
 import com.ramup.gandrade.pokerclub.userprofile.CAMERA_REQUEST_CODE
-import com.ramup.gandrade.pokerclub.userprofile.ProfileFragment
 import kotlinx.android.synthetic.main.activity_main2.*
 import org.jetbrains.anko.startActivity
-import org.koin.android.architecture.ext.viewModel
+import org.koin.android.viewmodel.ext.android.viewModel
 
 
 class Main2Activity : AppCompatActivity() {
@@ -75,7 +72,7 @@ class Main2Activity : AppCompatActivity() {
 
             override fun onPageSelected(position: Int) {
 
-                if (position==2) {
+                if (position == 2) {
                     disableABCShowHideAnimation(actionBar)
                     actionBar.show()
                 } else {

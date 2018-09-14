@@ -20,7 +20,7 @@ import com.ramup.gandrade.pokerclub.util.LoadingDialog
 import kotlinx.android.synthetic.main.fragment_game_start.*
 import kotlinx.android.synthetic.main.fragment_game_start.view.*
 import org.jetbrains.anko.support.v4.startActivity
-import org.koin.android.architecture.ext.viewModel
+import org.koin.android.viewmodel.ext.android.viewModel
 
 const val CAMERA_SCAN_REQUEST_CODE = 999
 

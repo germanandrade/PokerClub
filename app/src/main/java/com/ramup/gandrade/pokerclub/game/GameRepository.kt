@@ -69,14 +69,6 @@ class GameRepository(private val notificationApiService: NotificationApiService,
         }
     }
 
-    fun getCurrentUser(): User? {
-        return when {
-            user == null -> null
-            else -> user.value
-        }
-
-    }
-
     fun getCurrentGameId(): String {
         return currentActiveGameId.value!!
     }
