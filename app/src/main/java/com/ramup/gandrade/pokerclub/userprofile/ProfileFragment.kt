@@ -23,6 +23,7 @@ import com.example.gandrade.pokerclub.util.bitmapToUriConverter
 import com.example.gandrade.pokerclub.util.ifNotNull
 import com.ramup.gandrade.pokerclub.R
 import com.ramup.gandrade.pokerclub.leaderboard.ProfilePicDialog
+import com.ramup.gandrade.pokerclub.model.User
 import com.ramup.gandrade.pokerclub.picasso.RoundTransformation
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_user_profile.*
@@ -44,6 +45,8 @@ class ProfileFragment : Fragment(), View.OnClickListener, (DialogInterface, Int)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_user_profile, container, false)
     }
+
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

@@ -7,7 +7,7 @@ import android.support.annotation.Keep
 import android.util.Log
 import com.ramup.gandrade.pokerclub.game.notifications.RequestType
 import com.ramup.gandrade.pokerclub.userprofile.GameRepository
-import com.ramup.gandrade.pokerclub.userprofile.User
+import com.ramup.gandrade.pokerclub.model.User
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -52,7 +52,7 @@ class GameViewModel(val gameRepo: GameRepository) : ViewModel() {
     }
 
     fun leave() {
-        successfulLeave = gameRepo.leave()
+        successfulLeave = gameRepo.leave(MutableLiveData<Boolean>())
     }
 
     fun pauseGame() {

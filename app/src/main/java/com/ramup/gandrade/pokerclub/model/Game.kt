@@ -1,4 +1,4 @@
-package com.ramup.gandrade.pokerclub.game
+package com.ramup.gandrade.pokerclub.model
 
 import java.util.*
 

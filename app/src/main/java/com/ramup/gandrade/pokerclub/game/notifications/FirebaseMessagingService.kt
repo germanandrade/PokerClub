@@ -12,6 +12,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.ramup.gandrade.pokerclub.game.NotificationCounter
 import com.ramup.gandrade.pokerclub.R
+import com.ramup.gandrade.pokerclub.model.Data
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 

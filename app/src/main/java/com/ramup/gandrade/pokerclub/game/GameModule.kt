@@ -1,6 +1,7 @@
 package com.ramup.gandrade.pokerclub.game
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.ramup.gandrade.pokerclub.game.notifications.NotificationApiService
 import com.ramup.gandrade.pokerclub.userprofile.GameRepository
 import org.koin.android.viewmodel.ext.koin.viewModel
@@ -10,8 +11,9 @@ val gameModule = module {
     viewModel {
         GameViewModel(get())
     }
-    single { GameRepository(get(), get()) }
+    single { GameRepository(get(), get(), get()) }
     single { NotificationApiService.create() }
     single { NotificationCounter() }
     single { FirebaseAuth.getInstance() }
+    single { FirebaseFirestore.getInstance() }
 }

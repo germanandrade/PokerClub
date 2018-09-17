@@ -10,6 +10,7 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.ramup.gandrade.pokerclub.model.User
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*

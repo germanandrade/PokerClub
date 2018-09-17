@@ -1,6 +1,7 @@
 package com.ramup.gandrade.pokerclub
 
 import android.app.Application
+import android.os.Bundle
 import android.util.Log
 import com.google.firebase.FirebaseApp
 import com.ramup.gandrade.pokerclub.game.gameModule
@@ -14,7 +15,9 @@ class PokerClubApplication : Application() {
         super.onCreate()
         Log.d("PokerClubApplication","onCreate")
         startKoin(this, listOf(gameModule, loginModule, userProfileModule, globalModule))
-        FirebaseApp.initializeApp(this);
+        val a = FirebaseApp.initializeApp(this);
+        val outState = Bundle()
+        //outState.putParcelable("key", a);
         //Init sharedPreferences
         //SharedPreferences
     }

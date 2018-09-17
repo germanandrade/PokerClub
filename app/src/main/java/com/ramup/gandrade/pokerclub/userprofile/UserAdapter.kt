@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.ramup.gandrade.pokerclub.R
 import com.ramup.gandrade.pokerclub.leaderboard.ProfilePicDialog
+import com.ramup.gandrade.pokerclub.model.User
 import com.ramup.gandrade.pokerclub.picasso.RoundTransformation
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.user_list_item.view.*

@@ -1,4 +1,4 @@
-package com.ramup.gandrade.pokerclub.userprofile
+package com.ramup.gandrade.pokerclub.model
 
 data class User(var name: String, var endavans: Int, var debt: Int, var id: String, var imageUrl: String? = null, var active: Boolean = true, var admin: Boolean = false, var lifeSavers: Int = 0) {
     fun toMap(): MutableMap<String, Any> {

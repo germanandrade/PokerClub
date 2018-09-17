@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ramup.gandrade.pokerclub.R
-import com.ramup.gandrade.pokerclub.userprofile.User
+import com.ramup.gandrade.pokerclub.model.User
 import com.ramup.gandrade.pokerclub.userprofile.UserAdapter
 import kotlinx.android.synthetic.main.fragment_global.*
 import kotlinx.android.synthetic.main.fragment_global.view.*

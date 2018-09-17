@@ -5,7 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.ramup.gandrade.pokerclub.userprofile.User
+import com.ramup.gandrade.pokerclub.model.User
 
 
 class LeaderboardRepository() {

@@ -15,7 +15,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.ramup.gandrade.pokerclub.R
 import com.ramup.gandrade.pokerclub.game.GameViewModel
-import com.ramup.gandrade.pokerclub.userprofile.User
+import com.ramup.gandrade.pokerclub.model.User
 import com.ramup.gandrade.pokerclub.util.LoadingDialog
 import kotlinx.android.synthetic.main.fragment_game_start.*
 import kotlinx.android.synthetic.main.fragment_game_start.view.*

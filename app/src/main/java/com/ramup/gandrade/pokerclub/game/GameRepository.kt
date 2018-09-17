@@ -11,31 +11,30 @@ import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ramup.gandrade.pokerclub.MyTask
-import com.ramup.gandrade.pokerclub.game.Game
-import com.ramup.gandrade.pokerclub.game.GameState
+import com.ramup.gandrade.pokerclub.game.GameRepoInterface
 import com.ramup.gandrade.pokerclub.game.notifications.*
+import com.ramup.gandrade.pokerclub.model.*
 import io.reactivex.Observable
 
 @Keep
-class GameRepository(private val notificationApiService: NotificationApiService, private val auth: FirebaseAuth) {
+class GameRepository(private val notificationApiService: NotificationApiService, private val auth: FirebaseAuth, private val dB: FirebaseFirestore) : GameRepoInterface {
 
 
     val TAG = GameRepository::class.java.simpleName
 
-    val user = MutableLiveData<User?>()
+    override val user = MutableLiveData<User?>()
 
-    val currentActiveGameId = MutableLiveData<String>()
-    var currentPausedGameId = MutableLiveData<String>()
+    override val currentActiveGameId = MutableLiveData<String>()
+    override var currentPausedGameId = MutableLiveData<String>()
 
-    val db = FirebaseFirestore.getInstance()
-    val gameRef = db.collection("games")
+    override val gameRef = dB.collection("games")
 
-    val adminToken = MutableLiveData<String>()
+    override val adminToken = MutableLiveData<String>()
 
-    val activeUsers = MutableLiveData<MutableMap<String, User>>()
+    override val activeUsers = MutableLiveData<MutableMap<String, User>>()
 
 
-    fun checkPausedGames(): LiveData<String> {
+    override fun checkPausedGames(): LiveData<String> {
         gameRef.whereEqualTo("State", GameState.PAUSED.toString())
                 .addSnapshotListener(EventListener { query, exception ->
                     if (exception != null) {
@@ -49,7 +48,7 @@ class GameRepository(private val notificationApiService: NotificationApiService,
         return currentPausedGameId
     }
 
-    fun checkActiveGames(): LiveData<String> {
+    override fun checkActiveGames(): LiveData<String> {
         gameRef.whereEqualTo("State", GameState.ACTIVE.toString())
                 .addSnapshotListener(EventListener { query, exception ->
                     if (exception != null) {
@@ -62,23 +61,23 @@ class GameRepository(private val notificationApiService: NotificationApiService,
         return currentActiveGameId
     }
 
-    fun createUserInGame(success: MutableLiveData<Boolean>) {
+    override fun createUserInGame(success: MutableLiveData<Boolean>) {
         var userDocument = gameRef.document(getCurrentGameId()).collection("users").document(auth.currentUser!!.uid)
         userDocument.set(User(auth.currentUser!!.displayName!!, 0, 0, auth.currentUser!!.uid).toMap()).addOnSuccessListener {
             success.value = true
         }
     }
 
-    fun getCurrentGameId(): String {
+    override fun getCurrentGameId(): String {
         return currentActiveGameId.value!!
     }
 
-    fun getCurrentPausedGameId(): String {
+    override fun getCurrentPausedGameId(): String {
         return currentPausedGameId.value!!
     }
 
 
-    fun joinUser(): MutableLiveData<Boolean> {
+    override fun joinUser(): MutableLiveData<Boolean> {
         var success = MutableLiveData<Boolean>()
         var userDocument = gameRef.document(getCurrentGameId()).collection("users").document(auth.currentUser!!.uid)
         userDocument.update("Active", true)
@@ -89,7 +88,7 @@ class GameRepository(private val notificationApiService: NotificationApiService,
         return success
     }
 
-    fun leave(success: MutableLiveData<Boolean> = MutableLiveData()): LiveData<Boolean> {
+    override fun leave(success: MutableLiveData<Boolean>): LiveData<Boolean> {
         var userDocument = gameRef.document(getCurrentGameId()).collection("users").document(auth.currentUser!!.uid)
         userDocument.update("Active", false)
                 .addOnSuccessListener {
@@ -99,7 +98,7 @@ class GameRepository(private val notificationApiService: NotificationApiService,
         return success
     }
 
-    fun createGame(): LiveData<String> {
+    override fun createGame(): LiveData<String> {
         val doc = gameRef.document()
         currentActiveGameId.value = doc.id
         doc.set(Game().toMap())
@@ -109,7 +108,7 @@ class GameRepository(private val notificationApiService: NotificationApiService,
         return currentActiveGameId
     }
 
-    fun pauseGame(): LiveData<Boolean> {
+    override fun pauseGame(): LiveData<Boolean> {
 
         var success = MutableLiveData<Boolean>()
         var gameDocument = gameRef.document(getCurrentGameId())
@@ -118,18 +117,18 @@ class GameRepository(private val notificationApiService: NotificationApiService,
         userDocument.update("Admin", false)
                 .addOnSuccessListener {
                     gameDocument.update("State", GameState.PAUSED.toString()).addOnSuccessListener {
-                        leave(success = success)
+                        leave(success)
                     }
                 }
         return success
     }
 
-    fun adminCount() {
+    override fun adminCount() {
         var gameDocument = gameRef.document(getCurrentPausedGameId())
 
     }
 
-    fun resumeGame(): LiveData<Boolean> {
+    override fun resumeGame(): LiveData<Boolean> {
         var success = MutableLiveData<Boolean>()
         var gameDocument = gameRef.document(getCurrentPausedGameId())
         var userDocument = gameDocument.collection("users").document(auth.currentUser!!.uid)
@@ -160,7 +159,7 @@ class GameRepository(private val notificationApiService: NotificationApiService,
     }
 
 
-    fun fetchUser(): LiveData<User?> {
+    override fun fetchUser(): LiveData<User?> {
         var userDocument = gameRef.document(getCurrentGameId()).collection("users").document(auth.currentUser!!.uid)
         userDocument.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -177,7 +176,7 @@ class GameRepository(private val notificationApiService: NotificationApiService,
     }
 
 
-    fun getActiveUsers(): LiveData<MutableMap<String, User>> {
+    override fun getActiveUsers(): LiveData<MutableMap<String, User>> {
         if (currentActiveGameId.value != null) gameRef.document(currentActiveGameId.value!!)
                 .collection("users")
                 .whereEqualTo("Active", true)
@@ -197,7 +196,7 @@ class GameRepository(private val notificationApiService: NotificationApiService,
         return activeUsers
     }
 
-    fun updateAdminToken(): LiveData<String> {
+    override fun updateAdminToken(): LiveData<String> {
         try {
             if (currentActiveGameId.value != null) {
 
@@ -226,7 +225,7 @@ class GameRepository(private val notificationApiService: NotificationApiService,
     //--------------------------
 
 
-    fun buyEndavans(uid: String): Task<Void> {
+    override fun buyEndavans(uid: String): Task<Void> {
         try {
             var gameDocument = gameRef.document(getCurrentGameId())
             var userDocument = gameDocument.collection("users").document(uid)
@@ -238,7 +237,7 @@ class GameRepository(private val notificationApiService: NotificationApiService,
 
     }
 
-    fun useLifeSaver(uid: String): Task<Void>? {
+    override fun useLifeSaver(uid: String): Task<Void>? {
         try {
             var gameDocument = gameRef.document(getCurrentGameId())
             var userDocument = gameDocument.collection("users").document(uid)
@@ -249,7 +248,7 @@ class GameRepository(private val notificationApiService: NotificationApiService,
         }
     }
 
-    fun payDebt(uid: String, payValue: Int): Task<Void> {
+    override fun payDebt(uid: String, payValue: Int): Task<Void> {
         try {
             var gameDocument = gameRef.document(getCurrentGameId())
             var userDocument = gameDocument.collection("users").document(uid)
@@ -266,7 +265,7 @@ class GameRepository(private val notificationApiService: NotificationApiService,
 
     }
 
-    fun depositEndavans(uid: String, valueToDeposit: Int): Task<Void> {
+    override fun depositEndavans(uid: String, valueToDeposit: Int): Task<Void> {
         try {
             var gameDocument = gameRef.document(getCurrentGameId())
             var userDocument = gameDocument.collection("users").document(uid)
@@ -280,7 +279,7 @@ class GameRepository(private val notificationApiService: NotificationApiService,
 
     }
 
-    fun withdrawEndavans(uid: String, valueToWithDraw: Int): Task<Void> {
+    override fun withdrawEndavans(uid: String, valueToWithDraw: Int): Task<Void> {
         try {
             var gameDocument = gameRef.document(getCurrentGameId())
             var userDocument = gameDocument.collection("users").document(uid)
@@ -298,25 +297,25 @@ class GameRepository(private val notificationApiService: NotificationApiService,
 
     }
 
-    fun sendNotification(type: RequestType, extra: Int?, user: User?): Observable<FCMResponse> {
+    override fun sendNotification(type: RequestType, extra: Int?, user: User?): Observable<FCMResponse> {
         val token = if (user != null && user.admin) adminToken.value!! else FirebaseInstanceId.getInstance().token!!
         val data = Data(auth.currentUser!!.displayName!!, auth.currentUser!!.uid, token, type.toString(), extra)
         val request = Request(adminToken.value!!, data)
         return notificationApiService.sendNotification(request)
     }
 
-    fun sendSuccessNotification(data: Data): Observable<FCMResponse> {
+    override fun sendSuccessNotification(data: Data): Observable<FCMResponse> {
         val request = Request(data.token, data)
         return notificationApiService.sendNotification(request)
     }
 
-    val loggedIn = MutableLiveData<Boolean>()
+    override val loggedIn = MutableLiveData<Boolean>()
 
-    fun signOut() {
+    override fun signOut() {
         auth.signOut()
     }
 
-    fun takeCareOfLogOut(): MutableLiveData<Boolean> {
+    override fun takeCareOfLogOut(): MutableLiveData<Boolean> {
         auth.addAuthStateListener {
             if (auth.currentUser == null) {
                 loggedIn.value = false

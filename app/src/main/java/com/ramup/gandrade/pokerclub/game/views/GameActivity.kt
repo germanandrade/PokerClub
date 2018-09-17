@@ -20,7 +20,7 @@ import com.ramup.gandrade.pokerclub.Main2Activity
 import com.ramup.gandrade.pokerclub.R
 import com.ramup.gandrade.pokerclub.game.GameViewModel
 import com.ramup.gandrade.pokerclub.game.notifications.RequestType
-import com.ramup.gandrade.pokerclub.userprofile.User
+import com.ramup.gandrade.pokerclub.model.User
 import com.ramup.gandrade.pokerclub.userprofile.UserAdapter
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.image_dialog.view.*

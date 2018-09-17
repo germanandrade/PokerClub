@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.graphics.Bitmap
+import com.ramup.gandrade.pokerclub.model.User
 
 class UserProfileViewModel(val userRepo: UserProfileRepository) : ViewModel() {
 

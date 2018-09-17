@@ -2,6 +2,7 @@ package com.ramup.gandrade.pokerclub.game.notifications
 
 import BASE_URL
 import android.support.annotation.Keep
+import com.ramup.gandrade.pokerclub.model.Request
 import io.reactivex.Observable
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
